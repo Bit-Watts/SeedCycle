@@ -1,0 +1,316 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  color: #333333;
+  background: #F5F5DC;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── NAVBAR ── */
+.sc-nav {
+  background: #2E7D32;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.sc-logo {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: #ffffff;
+}
+
+.sc-logo span { color: #FFC107; }
+
+.sc-navlinks {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.sc-navlinks a {
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.sc-navlinks a:hover,
+.sc-navlinks a.active { color: #ffffff; font-weight: 500; }
+
+.sc-btn-nav {
+  background: #FFC107;
+  color: #333333;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sc-btn-nav:hover { background: #e6ac00; }
+
+/* ── PAGE HEADER ── */
+.sc-guide-header {
+  background: #ffffff;
+  border-bottom: 1px solid #c8e6c9;
+  padding: 24px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sc-guide-header h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2E7D32;
+  margin-bottom: 4px;
+}
+
+.sc-guide-header p {
+  font-size: 14px;
+  color: #888888;
+}
+
+/* ── VIEW TOGGLE ── */
+.sc-view-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.sc-toggle-btn {
+  background: transparent;
+  border: 1.5px solid #c8e6c9;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: 'Roboto', sans-serif;
+  color: #555555;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sc-toggle-btn.active {
+  background: #2E7D32;
+  border-color: #2E7D32;
+  color: #ffffff;
+}
+
+.sc-toggle-btn:hover:not(.active) { border-color: #4CAF50; color: #2E7D32; }
+
+/* ── CONTENT WRAPPER ── */
+.sc-guide-content {
+  flex: 1;
+  padding: 32px 60px;
+}
+
+/* ── CALENDAR VIEW ── */
+.sc-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.sc-cal-card {
+  background: #ffffff;
+  border: 1px solid #c8e6c9;
+  border-radius: 12px;
+  padding: 18px;
+  transition: box-shadow 0.15s;
+}
+
+.sc-cal-card:hover { box-shadow: 0 4px 16px rgba(46,125,50,0.1); }
+
+.sc-cal-card.current {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76,175,80,0.2);
+}
+
+.sc-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.sc-cal-month {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2E7D32;
+}
+
+.sc-cal-season {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+.sc-cal-season.dry { background: #fff8e1; color: #f57f17; }
+.sc-cal-season.wet { background: #e3f2fd; color: #1565c0; }
+
+.sc-cal-crops {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sc-cal-crops li {
+  font-size: 13px;
+  color: #444444;
+  padding: 5px 10px;
+  background: #f9fdf9;
+  border-radius: 6px;
+  border: 1px solid #e8f5e9;
+}
+
+/* ── LIST VIEW ── */
+.sc-list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sc-list-row {
+  background: #ffffff;
+  border: 1px solid #c8e6c9;
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.sc-list-row.current {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76,175,80,0.2);
+}
+
+.sc-list-month {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.sc-list-num {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #2E7D32;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sc-list-name {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2E7D32;
+}
+
+.sc-list-season {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+.sc-list-season.dry { background: #fff8e1; color: #f57f17; }
+.sc-list-season.wet { background: #e3f2fd; color: #1565c0; }
+
+.sc-list-crops {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sc-crop-tag {
+  font-size: 12px;
+  color: #444444;
+  background: #f9fdf9;
+  border: 1px solid #e8f5e9;
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+.sc-now-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #2E7D32;
+  background: #e8f5e9;
+  padding: 4px 12px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* ── FOOTER ── */
+.sc-footer {
+  background: #1B5E20;
+  padding: 20px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sc-footer p {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  margin: 0;
+}
+
+.sc-footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.sc-footer-links a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+}
+
+.sc-footer-links a:hover { color: #ffffff; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .sc-calendar-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .sc-calendar-grid { grid-template-columns: repeat(2, 1fr); }
+  .sc-guide-content { padding: 20px 16px; }
+  .sc-guide-header { padding: 20px 16px; flex-direction: column; align-items: flex-start; gap: 14px; }
+  .sc-nav { padding: 14px 20px; }
+  .sc-navlinks { display: none; }
+  .sc-footer { padding: 16px 20px; flex-direction: column; gap: 8px; }
+  .sc-list-month { min-width: unset; }
+}
+
+@media (max-width: 480px) {
+  .sc-calendar-grid { grid-template-columns: 1fr; }
+}
