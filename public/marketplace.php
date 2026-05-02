@@ -1,1 +1,3 @@
-<?php require '../app/Views/marketplace.php'; ?>
+<?php
+require_once '../app/Controllers/SeedController.php';
+(new SeedController())->marketplace();

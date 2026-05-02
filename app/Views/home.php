@@ -5,19 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
   <link rel="stylesheet" href="assets/css/landing.css">
 </head>
 <body>
 
-  <nav class="sc-nav">
-    <div class="sc-logo">Seed<span>Cycle</span></div>
-    <ul class="sc-navlinks">
-      <li><a href="index.php">Home</a></li>
-      <li><a href="marketplace.php">Marketplace</a></li>
-      <li><a href="planting-guide.php">Planting Guide</a></li>
-    </ul>
-    <a href="login.php"><button class="sc-btn-nav">Login</button></a>
-  </nav>
+<nav class="sc-nav">
+  <a href="landing.php" class="sc-logo">Seed<span>Cycle</span></a>
+  <?php if (isset($_SESSION['user_id'])): ?>
+    <div class="sc-nav-user">
+      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?> 👋</span>
+      <a href="cart.php" class="sc-nav-icon" title="Cart">🛒</a>
+      <a href="profile.php" class="sc-nav-icon" title="Profile">👤</a>
+      <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
+    </div>
+  <?php else: ?>
+    <div class="sc-nav-user">
+      <a href="login.php"><button class="sc-btn-nav" style="background:transparent; color:#fff; border:2px solid rgba(255,255,255,0.5);">Login</button></a>
+      <a href="signup.php"><button class="sc-btn-nav">Sign Up</button></a>
+    </div>
+  <?php endif; ?>
+</nav>
 
   <section class="sc-hero">
     <div class="sc-hero-text">
@@ -75,12 +83,30 @@
 
   <footer class="sc-footer">
     <p>© 2026 SeedCycle. All rights reserved.</p>
-    <div class="sc-footer-links">
-      <a href="index.php">Home</a>
-      <a href="marketplace.php">Marketplace</a>
-      <a href="planting-guide.php">Planting Guide</a>
-    </div>
   </footer>
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+<div class="sc-logout-overlay" id="logoutOverlay">
+  <div class="sc-logout-modal">
+    <div class="sc-logout-icon">👋</div>
+    <h3>Leaving so soon?</h3>
+    <p>Are you sure you want to logout?</p>
+    <div class="sc-logout-actions">
+      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
+      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('logoutOverlay').classList.add('active');
+      });
+    });
+  });
+</script>
 
 </body>
 </html>

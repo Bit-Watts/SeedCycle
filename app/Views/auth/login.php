@@ -11,12 +11,15 @@
 
 <nav class="sc-nav">
   <div class="sc-logo">Seed<span>Cycle</span></div>
-  <ul class="sc-navlinks">
-    <li><a href="index.php">Home</a></li>
-    <li><a href="marketplace.php">Marketplace</a></li>
-    <li><a href="planting-guide.php">Planting Guide</a></li>
-  </ul>
-  <a href="login.php"><button class="sc-btn-nav">Login</button></a>
+  <?php if (isset($_SESSION['user_id'])): ?>
+    <div class="sc-nav-user">
+      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?> 👋</span>
+      <a href="index.php"><button class="sc-btn-nav">Dashboard</button></a>
+      <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
+    </div>
+  <?php else: ?>
+    <a href="login.php"><button class="sc-btn-nav">Login</button></a>
+  <?php endif; ?>
 </nav>
 
 <div class="sc-page">
@@ -48,11 +51,6 @@
 
 <footer class="sc-footer">
   <p>© 2026 SeedCycle. All rights reserved.</p>
-  <div class="sc-footer-links">
-    <a href="index.php">Home</a>
-    <a href="marketplace.php">Marketplace</a>
-    <a href="planting-guide.php">Planting Guide</a>
-  </div>
 </footer>
 
 </body>

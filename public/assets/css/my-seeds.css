@@ -1,0 +1,8 @@
+/* ── MY SEEDS PAGE ── */
+/* My Seeds page uses dashboard.css layout (sidebar + main).
+   Page-specific styles for the listing table and status badges. */
+
+/* Status badge colors for seed listings */
+.sc-listing-status-pending  { background: #fff8e1; color: #f57f17; }
+.sc-listing-status-approved { background: #e8f5e9; color: #2E7D32; }
+.sc-listing-status-rejected { background: #ffebee; color: #c62828; }

@@ -1,1 +1,3 @@
-<?php require '../app/Views/cart.php'; ?>
+<?php
+require_once '../app/Controllers/CartController.php';
+(new CartController())->index();

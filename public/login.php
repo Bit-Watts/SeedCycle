@@ -1,1 +1,3 @@
-<?php require '../app/Views/auth/login.php'; ?>
+<?php
+require_once '../app/Controllers/AuthController.php';
+(new AuthController())->login();
