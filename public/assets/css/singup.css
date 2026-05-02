@@ -237,3 +237,19 @@ body {
   .sc-navlinks { display: none; }
   .sc-footer { padding: 16px 20px; flex-direction: column; gap: 8px; }
 }
+
+/* ── NAV ICONS (cart, profile) ── */
+.sc-nav-icon {
+  font-size: 20px;
+  text-decoration: none;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.sc-nav-icon:hover {
+  background: rgba(255,255,255,0.15);
+}

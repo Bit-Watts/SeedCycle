@@ -345,3 +345,132 @@ body {
   .sc-market-main { padding: 20px 16px; }
   .sc-navlinks { display: none; }
 }
+
+/* ── NAV ICONS (cart, profile) ── */
+.sc-nav-icon {
+  font-size: 20px;
+  text-decoration: none;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.sc-nav-icon:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ── NAV ACTIONS ── */
+.sc-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sc-nav-greeting {
+  font-size: 13px;
+  color: rgba(255,255,255,0.9);
+}
+
+/* ── FILTER BUTTON (popup trigger) ── */
+.sc-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1.5px solid #c8e6c9;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-family: 'Roboto', sans-serif;
+  color: #2E7D32;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.sc-filter-btn:hover { background: #e8f5e9; border-color: #4CAF50; }
+.sc-filter-btn.active { background: #2E7D32; color: #ffffff; border-color: #2E7D32; }
+
+/* ── FILTER OVERLAY + POPUP ── */
+.sc-filter-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 500;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 80px 40px 0 0;
+}
+
+.sc-filter-overlay.active { display: flex; }
+
+.sc-filter-popup {
+  background: #ffffff;
+  border: 1px solid #c8e6c9;
+  border-radius: 14px;
+  padding: 24px 22px;
+  width: 260px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sc-filter-popup h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2E7D32;
+  margin: 0;
+}
+
+.sc-filter-popup-actions { display: flex; gap: 10px; }
+
+.sc-btn-filter-apply {
+  flex: 1;
+  background: #2E7D32;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+}
+
+.sc-btn-filter-apply:hover { background: #256427; }
+
+.sc-btn-filter-reset {
+  flex: 1;
+  background: #f5f5f5;
+  color: #555555;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+}
+
+.sc-btn-filter-reset:hover { background: #e0e0e0; }
+
+/* ── OWN SEED BADGE ── */
+.sc-own-badge {
+  font-size: 11px;
+  background: #fff8e1;
+  color: #f57f17;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* ── MARKET HEADER (inside dashboard layout) ── */
+.sc-market-header { margin-bottom: 20px; }
+
+.sc-market-main { flex: 1; min-width: 0; }

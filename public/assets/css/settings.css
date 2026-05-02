@@ -1,0 +1,83 @@
+/* ── SETTINGS PAGE ── */
+/* Settings page uses dashboard.css layout (sidebar + main).
+   Page-specific styles for the settings form sections. */
+
+.sc-settings-form-group {
+  margin-bottom: 16px;
+}
+
+.sc-settings-form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #555555;
+  margin-bottom: 6px;
+}
+
+.sc-settings-form-group input,
+.sc-settings-form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #c8e6c9;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #333333;
+  outline: none;
+  background: #ffffff;
+}
+
+.sc-settings-form-group input:focus,
+.sc-settings-form-group select:focus {
+  border-color: #4CAF50;
+}
+
+.sc-settings-avatar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e8f5e9;
+}
+
+.sc-settings-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #e8f5e9;
+  border: 2px solid #c8e6c9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.sc-btn-save {
+  background: #2E7D32;
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.sc-btn-save:hover { background: #256427; }
+
+.sc-settings-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .sc-settings-grid-2 { grid-template-columns: 1fr; }
+}

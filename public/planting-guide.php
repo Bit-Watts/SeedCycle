@@ -1,1 +1,3 @@
-<?php require '../app/Views/planting-guide.php'; ?>
+<?php
+require_once '../app/Controllers/SeedController.php';
+(new SeedController())->plantingGuide();

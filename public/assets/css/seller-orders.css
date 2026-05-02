@@ -1,0 +1,189 @@
+/* ── SELLER ORDERS / TO SHIP PAGE ── */
+
+/* Orders list - card layout */
+.sc-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sc-order-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.sc-order-card:hover {
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.1);
+}
+
+.sc-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f9fff7;
+  border-bottom: 1px solid #e8f5e9;
+}
+
+.sc-order-id {
+  font-weight: 700;
+  color: #2E7D32;
+  font-size: 15px;
+  margin-right: 12px;
+}
+
+.sc-order-date {
+  font-size: 12px;
+  color: #888;
+}
+
+.sc-order-body {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.sc-order-section h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2E7D32;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sc-order-section p {
+  font-size: 13px;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.sc-seed-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.sc-seed-qty {
+  font-weight: 600;
+  color: #2E7D32;
+  font-size: 12px;
+}
+
+.sc-shipment-info {
+  grid-column: 1 / -1;
+  background: #f9fff7;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e8f5e9;
+}
+
+.sc-shipment-info p {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+.sc-order-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.sc-btn-ship {
+  background: #2E7D32;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  transition: background 0.2s;
+}
+
+.sc-btn-ship:hover {
+  background: #1b5e20;
+}
+
+.sc-btn-update-shipment {
+  background: #fff;
+  color: #2E7D32;
+  border: 1.5px solid #2E7D32;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.2s;
+  margin-top: 12px;
+}
+
+.sc-btn-update-shipment:hover {
+  background: #2E7D32;
+  color: white;
+}
+
+/* Status badges */
+.sc-ship-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.sc-ship-pending          { background: #fff8e1; color: #f57f17; }
+.sc-ship-shipped          { background: #e8f5e9; color: #2E7D32; }
+.sc-ship-in_transit       { background: #f3e5f5; color: #6a1b9a; }
+.sc-ship-out_for_delivery { background: #fff3e0; color: #e65100; }
+.sc-ship-delivered        { background: #e8f5e9; color: #1b5e20; }
+
+/* Empty state */
+.sc-seller-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+}
+
+.sc-seller-empty .sc-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.sc-seller-empty p {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* Summary stats */
+.sc-seller-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1024px) {
+  .sc-seller-stats { grid-template-columns: repeat(2, 1fr); }
+  .sc-order-body { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .sc-seller-stats { grid-template-columns: 1fr; }
+  .sc-order-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

@@ -1,0 +1,204 @@
+/* ── CHECKOUT LAYOUT ── */
+.sc-checkout-layout {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.sc-checkout-form-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sc-checkout-section {
+  background: #ffffff;
+  border: 1px solid #c8e6c9;
+  border-radius: 12px;
+  padding: 24px 28px;
+}
+
+.sc-checkout-section h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2E7D32;
+  margin-bottom: 18px;
+}
+
+.sc-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.sc-form-group {
+  margin-bottom: 14px;
+}
+
+.sc-form-group:last-child { margin-bottom: 0; }
+.sc-form-row .sc-form-group { margin-bottom: 0; }
+
+.sc-form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444444;
+  margin-bottom: 6px;
+}
+
+.sc-form-group input,
+.sc-form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #c8e6c9;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  color: #333333;
+  outline: none;
+  background: #ffffff;
+}
+
+.sc-form-group input:focus,
+.sc-form-group select:focus { border-color: #4CAF50; }
+
+/* ── DELIVERY OPTIONS ── */
+.sc-delivery-options {
+  display: flex;
+  gap: 12px;
+}
+
+.sc-delivery-option {
+  flex: 1;
+  border: 2px solid #c8e6c9;
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.sc-delivery-option input[type="radio"] { display: none; }
+
+.sc-delivery-option.selected,
+.sc-delivery-option:has(input:checked) {
+  border-color: #4CAF50;
+  background: #f0faf0;
+}
+
+.sc-delivery-option-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2E7D32;
+  margin-bottom: 4px;
+}
+
+.sc-delivery-option-desc {
+  font-size: 12px;
+  color: #888888;
+}
+
+/* ── ERROR ── */
+.sc-error {
+  background: #ffebee;
+  color: #c62828;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ffcdd2;
+}
+
+/* ── ORDER SUMMARY ── */
+.sc-checkout-summary {
+  width: 320px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 80px;
+}
+
+.sc-checkout-summary-card {
+  background: #ffffff;
+  border: 1px solid #c8e6c9;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.sc-checkout-summary-card h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2E7D32;
+  margin-bottom: 16px;
+}
+
+.sc-order-item-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+}
+
+.sc-order-item-line:last-of-type { border-bottom: none; }
+
+.sc-order-item-name { color: #333333; font-weight: 500; }
+.sc-order-item-qty  { color: #888888; font-size: 12px; }
+.sc-order-item-price { color: #2E7D32; font-weight: 600; }
+
+.sc-order-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  margin-top: 4px;
+  border-top: 2px solid #e8f5e9;
+}
+
+.sc-order-total-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.sc-order-total-value {
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #2E7D32;
+}
+
+.sc-btn-place-order {
+  width: 100%;
+  background: #4CAF50;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 18px;
+}
+
+.sc-btn-place-order:hover { background: #43a047; }
+
+.sc-checkout-note {
+  font-size: 11px;
+  color: #aaaaaa;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sc-checkout-layout { flex-direction: column; padding: 24px 16px; }
+  .sc-checkout-summary { width: 100%; position: static; }
+  .sc-form-row { grid-template-columns: 1fr; }
+}

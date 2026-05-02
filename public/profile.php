@@ -1,1 +1,3 @@
-<?php require '../app/Views/profile.php'; ?>
+<?php
+require_once '../app/Controllers/DashboardController.php';
+(new DashboardController())->profile();

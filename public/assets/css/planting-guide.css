@@ -314,3 +314,30 @@ body {
 @media (max-width: 480px) {
   .sc-calendar-grid { grid-template-columns: 1fr; }
 }
+
+/* ── NAV ICONS (cart, profile) ── */
+.sc-nav-icon {
+  font-size: 20px;
+  text-decoration: none;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.sc-nav-icon:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.sc-nav-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sc-nav-greeting {
+  font-size: 13px;
+  color: rgba(255,255,255,0.9);
+}

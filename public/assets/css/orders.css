@@ -1,0 +1,13 @@
+/* ── ORDERS PAGE ── */
+/* Orders page uses dashboard.css layout (sidebar + main).
+   Page-specific styles are minimal as the table uses dashboard.css classes. */
+
+/* Status badge colors for orders */
+.sc-order-status-pending          { background: #fff8e1; color: #f57f17; }
+.sc-order-status-processing       { background: #e3f2fd; color: #1565c0; }
+.sc-order-status-confirmed        { background: #e3f2fd; color: #1565c0; }
+.sc-order-status-shipped          { background: #e8f5e9; color: #2E7D32; }
+.sc-order-status-in_transit       { background: #f3e5f5; color: #6a1b9a; }
+.sc-order-status-out_for_delivery { background: #fff3e0; color: #e65100; }
+.sc-order-status-delivered        { background: #e8f5e9; color: #1b5e20; }
+.sc-order-status-cancelled        { background: #ffebee; color: #c62828; }
