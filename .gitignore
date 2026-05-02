@@ -1,0 +1,25 @@
+# Kiro IDE files
+.kiro/
+
+# Claude AI files
+.claude/
+
+# XAMPP / environment
+config/Database.php
+
+# Uploads (user-generated content)
+public/assets/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PHP error logs
+*.log
+error_log
