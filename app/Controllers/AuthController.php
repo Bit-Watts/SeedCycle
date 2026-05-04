@@ -35,18 +35,17 @@ class AuthController {
                     if (isset($row['is_active']) && (int)$row['is_active'] === 0) {
                         $error = 'Your account has been deactivated. Please contact support.';
                     } else {
-                        $_SESSION['user_id']       = $row['id'];
-                        $_SESSION['first_name']    = $row['first_name'];
-                        $_SESSION['last_name']     = $row['last_name'];
-                        $_SESSION['username']      = $row['username'];
-                        $_SESSION['email']         = $row['email'];
-                        $_SESSION['role']          = $row['role'] ?? 'user';
-                        $_SESSION['profile_image'] = $row['profile_image'] ?? '';
+                        // Store pending user data in session for 2FA flow
+                        $_SESSION['2fa_pending_user_id']   = $row['id'];
+                        $_SESSION['2fa_pending_email']     = $row['email'];
+                        $_SESSION['2fa_pending_role']      = $row['role'] ?? 'user';
 
-                        if (($row['role'] ?? 'user') === 'admin') {
-                            header('Location: admin/dashboard.php');
+                        if (!empty($row['totp_enabled']) && !empty($row['totp_secret'])) {
+                            // 2FA enabled — go verify code
+                            header('Location: two-factor-verify.php');
                         } else {
-                            header('Location: index.php');
+                            // 2FA not set up yet — force setup on first login
+                            header('Location: two-factor-setup.php');
                         }
                         exit;
                     }

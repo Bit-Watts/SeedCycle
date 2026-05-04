@@ -14,6 +14,14 @@ class ComposerStaticInitf1e428a493a49914fae38c69744839f0
             'PragmaRX\\Google2FAQRCode\\' => 25,
             'ParagonIE\\ConstantTime\\' => 23,
         ),
+        'D' =>
+        array (
+            'DASPRiD\\Enum\\' => 13,
+        ),
+        'B' =>
+        array (
+            'BaconQrCode\\' => 12,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -32,6 +40,14 @@ class ComposerStaticInitf1e428a493a49914fae38c69744839f0
         'ParagonIE\\ConstantTime\\' =>
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
+        ),
+        'DASPRiD\\Enum\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/dasprid/enum/src',
+        ),
+        'BaconQrCode\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
     );
 
