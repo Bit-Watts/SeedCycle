@@ -1,79 +1,44 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle - Seed Details</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/seed-details.css">
   <link rel="stylesheet" href="assets/css/reviews.css">
 </head>
 <body>
-<nav class="sc-nav">
-  <a href="index.php" class="sc-logo">Seed<span>Cycle</span></a>
-  <?php if (isset($_SESSION['user_id'])): ?>
-    <div class="sc-nav-user">
-      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?> 👋</span>
-      <a href="cart.php" class="sc-nav-icon" title="Cart">🛒</a>
-      <a href="profile.php" class="sc-nav-icon" title="Profile">👤</a>
-      <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
-    </div>
-  <?php else: ?>
-    <a href="login.php"><button class="sc-btn-nav">Login</button></a>
-  <?php endif; ?>
-</nav>
-
 <?php
 // $seed is passed from SeedController with pre-formatted 'month_range' key
 // $isOwnSeed is true if the logged-in user owns this seed listing
+$user = ['first_name' => $_SESSION['first_name'] ?? 'Grower', 'email' => $_SESSION['email'] ?? '', 'profile_image' => $_SESSION['profile_image'] ?? ''];
+require __DIR__ . '/../includes/navbar.php';
 ?>
 
 <div class="sc-dashboard">
 
   <?php if (isset($_SESSION['user_id'])): ?>
-  <aside class="sc-sidebar">
-    <div class="sc-sidebar-avatar">
-      <div class="sc-avatar" style="overflow:hidden;">
-        <?php $pi = $_SESSION['profile_image'] ?? ''; ?>
-        <?php if (!empty($pi)): ?>
-          <img src="<?= htmlspecialchars($pi) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
-        <?php endif; ?>
-      </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($_SESSION['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link active">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
+  <?php $activePage = 'marketplace'; require __DIR__ . '/../includes/sidebar.php'; ?>
   <?php endif; ?>
 
   <main class="sc-main">
 
-    <div class="sc-breadcrumb" style="font-size:13px; margin-bottom:16px;">
-      <a href="marketplace.php" style="color:#4CAF50; text-decoration:none;">← Marketplace</a>
-      <span style="color:#888; margin:0 6px;">/</span>
-      <span style="color:#333;"><?= htmlspecialchars($seed['name']) ?></span>
+    <div class="sc-breadcrumb">
+      <a href="marketplace.php">← Marketplace</a>
+      <span>/</span>
+      <span><?= htmlspecialchars($seed['name']) ?></span>
     </div>
 
     <div class="sc-detail-card">
 
       <!-- LEFT -->
       <div class="sc-detail-left">
-        <div class="sc-detail-emoji">
+        <div class="sc-detail-image">
           <?php if (!empty($seed['image_url'])): ?>
-            <img src="<?= htmlspecialchars($seed['image_url']) ?>" alt="<?= htmlspecialchars($seed['name']) ?>"
-                 style="width:100%; max-height:200px; object-fit:cover; border-radius:12px;">
+            <img src="<?= htmlspecialchars($seed['image_url']) ?>" alt="<?= htmlspecialchars($seed['name']) ?>">
           <?php else: ?>
             🌱
           <?php endif; ?>
@@ -110,14 +75,38 @@
           <p class="sc-detail-desc"><?= nl2br(htmlspecialchars($seed['description'])) ?></p>
         <?php endif; ?>
 
+        <!-- Seller Information -->
+        <?php if (!empty($sellerInfo)): ?>
+        <div class="sc-seller-card">
+          <p class="sc-seller-card-label"><i class="fas fa-store"></i> Sold by</p>
+          <a href="seller-profile.php?id=<?= (int)$sellerInfo['id'] ?>" class="sc-seller-link">
+            <div class="sc-seller-avatar">
+              <?php if (!empty($sellerInfo['profile_image'])): ?>
+                <img src="<?= htmlspecialchars($sellerInfo['profile_image']) ?>" alt="<?= htmlspecialchars($sellerInfo['first_name']) ?>">
+              <?php else: ?>
+                <i class="fas fa-user"></i>
+              <?php endif; ?>
+            </div>
+            <div class="sc-seller-details">
+              <div class="sc-seller-name"><?= htmlspecialchars($sellerInfo['first_name'] . ' ' . $sellerInfo['last_name']) ?></div>
+              <div class="sc-seller-meta">
+                <span><i class="fas fa-seedling"></i> <?= (int)$sellerInfo['total_listings'] ?> listing<?= $sellerInfo['total_listings'] != 1 ? 's' : '' ?></span>
+                <span><i class="fas fa-calendar-alt"></i> Member since <?= date('M Y', strtotime($sellerInfo['created_at'])) ?></span>
+              </div>
+            </div>
+            <div class="sc-seller-arrow"><i class="fas fa-chevron-right"></i></div>
+          </a>
+        </div>
+        <?php endif; ?>
+
         <div class="sc-buy-section">
           <span class="sc-detail-price">₱<?= number_format($seed['price'], 2) ?></span>
           <?php if (!empty($isOwnSeed)): ?>
-            <div style="background:#fff8e1; color:#f57f17; padding:10px 16px; border-radius:8px; font-size:13px; font-weight:600; border:1px solid #ffe082; margin-top:10px;">
+            <div class="sc-alert sc-alert-warning">
               🌾 This is your own seed listing — you cannot purchase it.
             </div>
           <?php else: ?>
-            <form method="POST" action="cart-add.php" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:10px;">
+            <form method="POST" action="cart-add.php" class="sc-buy-form">
               <input type="hidden" name="seed_id" value="<?= (int)$seed['id'] ?>">
               <div class="sc-qty-wrap">
                 <button type="button" class="sc-qty-btn" onclick="changeQty(-1)">−</button>
@@ -279,22 +268,10 @@ function renderStars(float $rating, bool $interactive = false): string {
   </div>
 </div>
 
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
+<?php require __DIR__ . '/../includes/footer.php'; ?>
 
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
+<?php require __DIR__ . '/../includes/logout-modal.php'; ?>
+
 <script>
   function changeQty(delta) {
     const input = document.getElementById('qty');
@@ -313,14 +290,6 @@ function renderStars(float $rating, bool $interactive = false): string {
   function closeReport() {
     document.getElementById('reportOverlay').classList.remove('active');
   }
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
-  });
 </script>
 </body>
 </html>

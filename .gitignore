@@ -1,25 +1,84 @@
-# Kiro IDE files
-.kiro/
+# ============================================================================
+# SeedCycle .gitignore
+# ============================================================================
 
-# Claude AI files
-.claude/
-
-# XAMPP / environment
-config/Database.php
-
-# Uploads (user-generated content)
-public/assets/uploads/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# IDE files
+# IDE and Editor Files
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
+.DS_Store
 
-# PHP error logs
+# Configuration Files (contain sensitive data)
+config/Database.php
+config/Weather.php
+
+# Uploaded Files
+public/assets/uploads/
+public/assets/uploads/**/*
+
+# Composer
+/vendor/
+composer.lock
+
+# Logs
 *.log
 error_log
+debug.log
+
+# Temporary Files
+*.tmp
+*.temp
+*.cache
+
+# OS Files
+Thumbs.db
+.DS_Store
+
+# Backup Files
+*.bak
+*.backup
+*.old
+
+# Database Files
+*.sql.gz
+*.sql.zip
+database-backup-*.sql
+
+# Environment Files
+.env
+.env.local
+.env.*.local
+
+# Session Files
+/sessions/
+*.sess
+
+# Test Files
+test*.php
+test*.html
+*_test.php
+
+# Migration Scripts (already applied)
+add-*.php
+add-*.sql
+remove-*.php
+remove-*.sql
+create-*.php
+create-*.sql
+migration-*.php
+migration-*.sql
+
+# Node Modules (if using npm)
+node_modules/
+package-lock.json
+
+# Build Files
+/dist/
+/build/
+
+# Documentation Drafts
+*.draft.md
+NOTES.md
+TODO.md

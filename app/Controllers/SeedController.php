@@ -23,6 +23,12 @@ class SeedController {
             header('Location: login.php');
             exit;
         }
+        
+        // Redirect admin users to admin panel
+        if (($_SESSION['role'] ?? 'user') === 'admin') {
+            header('Location: admin/dashboard.php');
+            exit;
+        }
     }
 
     public function marketplace(): void {
@@ -83,6 +89,32 @@ class SeedController {
         $startM = Seed::monthName($seed['planting_start_month'] ?? null);
         $endM   = Seed::monthName($seed['planting_end_month']   ?? null);
         $seed['month_range'] = $startM && $endM ? "$startM – $endM" : ($startM ?: '');
+
+        // Get seller information
+        $stmt = mysqli_prepare($conn,
+            'SELECT u.id, u.first_name, u.last_name, u.email, u.profile_image, u.address, u.created_at,
+                    sl.created_at as listing_date
+             FROM seed_listings sl
+             JOIN users u ON u.id = sl.user_id
+             WHERE sl.inventory_id = ? AND sl.status = "approved"
+             LIMIT 1'
+        );
+        mysqli_stmt_bind_param($stmt, 'i', $id);
+        mysqli_stmt_execute($stmt);
+        $sellerInfo = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        // Get seller's total listings count
+        if ($sellerInfo) {
+            $stmt = mysqli_prepare($conn,
+                'SELECT COUNT(*) as total FROM seed_listings WHERE user_id = ? AND status = "approved"'
+            );
+            mysqli_stmt_bind_param($stmt, 'i', $sellerInfo['id']);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+            $sellerInfo['total_listings'] = $result['total'];
+            mysqli_stmt_close($stmt);
+        }
 
         // Check if this seed belongs to the logged-in user
         $isOwnSeed = isset($_SESSION['user_id'])

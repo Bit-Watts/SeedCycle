@@ -35,6 +35,21 @@ class AuthController {
                     if (isset($row['is_active']) && (int)$row['is_active'] === 0) {
                         $error = 'Your account has been deactivated. Please contact support.';
                     } else {
+                        $isAdmin = ($row['role'] ?? 'user') === 'admin';
+
+                        if ($isAdmin) {
+                            // Admins always bypass 2FA — log in directly
+                            $_SESSION['user_id']       = $row['id'];
+                            $_SESSION['first_name']    = $row['first_name'];
+                            $_SESSION['last_name']     = $row['last_name'];
+                            $_SESSION['username']      = $row['username'];
+                            $_SESSION['email']         = $row['email'];
+                            $_SESSION['role']          = $row['role'];
+                            $_SESSION['profile_image'] = $row['profile_image'] ?? '';
+                            header('Location: admin/dashboard.php');
+                            exit;
+                        }
+
                         // Store pending user data in session for 2FA flow
                         $_SESSION['2fa_pending_user_id']   = $row['id'];
                         $_SESSION['2fa_pending_email']     = $row['email'];

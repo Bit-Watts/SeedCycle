@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/landing.css">
 </head>
 <body>
@@ -14,9 +15,9 @@
   <a href="landing.php" class="sc-logo">Seed<span>Cycle</span></a>
   <?php if (isset($_SESSION['user_id'])): ?>
     <div class="sc-nav-user">
-      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?> 👋</span>
-      <a href="cart.php" class="sc-nav-icon" title="Cart">🛒</a>
-      <a href="profile.php" class="sc-nav-icon" title="Profile">👤</a>
+      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?></span>
+      <a href="cart.php" class="sc-nav-icon" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
+      <a href="profile.php" class="sc-nav-icon" title="Profile"><i class="fa-solid fa-user"></i></a>
       <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
     </div>
   <?php else: ?>
@@ -37,17 +38,17 @@
     <div class="sc-hero-visual">
       <p class="sc-visual-title">Available Seeds</p>
       <div class="sc-seed-card">
-        <div class="sc-seed-icon">🍅</div>
+        <div class="sc-seed-icon"><i class="fa-solid fa-seedling"></i></div>
         <div class="sc-seed-info"><p>Tomato Seeds <span class="sc-badge">In Season</span></p><span>Vegetable</span></div>
         <span class="sc-seed-price">₱45</span>
       </div>
       <div class="sc-seed-card">
-        <div class="sc-seed-icon">🌿</div>
+        <div class="sc-seed-icon"><i class="fa-solid fa-leaf"></i></div>
         <div class="sc-seed-info"><p>Basil Seeds</p><span>Herb</span></div>
         <span class="sc-seed-price">₱30</span>
       </div>
       <div class="sc-seed-card">
-        <div class="sc-seed-icon">🌶️</div>
+        <div class="sc-seed-icon"><i class="fa-solid fa-pepper-hot"></i></div>
         <div class="sc-seed-info"><p>Chili Seeds</p><span>Vegetable</span></div>
         <span class="sc-seed-price">₱55</span>
       </div>
@@ -58,17 +59,17 @@
     <h2>Everything You Need to Grow!</h2>
     <div class="sc-feat-grid">
       <div class="sc-feat-card">
-        <div class="sc-feat-icon">🛒</div>
+        <div class="sc-feat-icon"><i class="fa-solid fa-store"></i></div>
         <h3>Buy & Sell Seeds</h3>
         <p>Browse hundreds of seed varieties or list your own. Simple, fast, and reliable.</p>
       </div>
       <div class="sc-feat-card">
-        <div class="sc-feat-icon">🔔</div>
+        <div class="sc-feat-icon"><i class="fa-solid fa-bell"></i></div>
         <h3>Know When to Plant</h3>
         <p>Get notified at the perfect time to plant your seeds based on the season.</p>
       </div>
       <div class="sc-feat-card">
-        <div class="sc-feat-icon">🚚</div>
+        <div class="sc-feat-icon"><i class="fa-solid fa-truck"></i></div>
         <h3>Fast Delivery</h3>
         <p>Seeds delivered straight to your door. Fresh stocks, every order.</p>
       </div>
@@ -88,7 +89,7 @@
 <!-- LOGOUT CONFIRMATION MODAL -->
 <div class="sc-logout-overlay" id="logoutOverlay">
   <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
+    <div class="sc-logout-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
     <h3>Leaving so soon?</h3>
     <p>Are you sure you want to logout?</p>
     <div class="sc-logout-actions">

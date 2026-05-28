@@ -4,53 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle - Marketplace</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/marketplace.css">
 </head>
 <body>
-<nav class="sc-nav">
-  <a href="index.php" class="sc-logo">Seed<span>Cycle</span></a>
-  <div class="sc-nav-actions">
-    <?php if (isset($_SESSION['user_id'])): ?>
-      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?> 👋</span>
-      <a href="cart.php" class="sc-nav-icon" title="Cart">🛒</a>
-      <a href="profile.php" class="sc-nav-icon" title="Profile">👤</a>
-      <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
-    <?php else: ?>
-      <a href="login.php"><button class="sc-btn-nav">Login</button></a>
-    <?php endif; ?>
-  </div>
-</nav>
+<?php require __DIR__ . '/includes/navbar.php'; ?>
 
 <div class="sc-dashboard">
 
-  <?php if (isset($_SESSION['user_id'])): ?>
-  <aside class="sc-sidebar">
-    <div class="sc-sidebar-avatar">
-      <div class="sc-avatar" style="overflow:hidden;">
-        <?php $pi = $_SESSION['profile_image'] ?? ''; ?>
-        <?php if (!empty($pi)): ?>
-          <img src="<?= htmlspecialchars($pi) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
-        <?php endif; ?>
-      </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($_SESSION['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link active">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
-  <?php endif; ?>
+  <?php $activePage = 'marketplace'; require __DIR__ . '/includes/sidebar.php'; ?>
 
   <main class="sc-main">
 
@@ -60,19 +24,19 @@
     </div>
 
     <?php if (!empty($ownSeedError)): ?>
-      <div style="background:#fff8e1; color:#f57f17; padding:10px 16px; border-radius:8px; font-size:13px; border:1px solid #ffe082; margin-bottom:16px;">
+      <div class="sc-alert sc-alert-warning" style="margin-bottom:16px;">
         You cannot add your own seed to the cart.
       </div>
     <?php endif; ?>
 
     <!-- SEARCH BAR + FILTER BUTTON -->
-    <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
-      <div class="sc-search-bar" style="flex:1;">
+    <div class="sc-search-row">
+      <div class="sc-search-bar">
         <input type="text" id="search-input" placeholder="Search seeds..." oninput="applyFilters()">
-        <span class="sc-search-icon">🔍</span>
+        <span class="sc-search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
       </div>
       <button class="sc-filter-btn" id="filterToggleBtn" onclick="toggleFilterPopup()">
-        🎛️ Filters
+        <i class="fa-solid fa-sliders"></i> Filters
       </button>
     </div>
 
@@ -87,28 +51,34 @@
         <div class="sc-market-card"
              data-type="<?= htmlspecialchars($seed['category'] ?? '') ?>"
              data-price="<?= htmlspecialchars($seed['price']) ?>">
-          <div class="sc-market-emoji">
+          <div class="sc-market-thumb">
             <?php if (!empty($seed['image_url'])): ?>
-              <img src="<?= htmlspecialchars($seed['image_url']) ?>" alt="<?= htmlspecialchars($seed['name']) ?>"
-                   style="width:60px; height:60px; object-fit:cover; border-radius:10px;">
+              <img src="<?= htmlspecialchars($seed['image_url']) ?>" alt="<?= htmlspecialchars($seed['name']) ?>">
             <?php else: ?>
-              🌱
+              <div class="sc-market-thumb-placeholder">
+                <i class="fa-solid fa-seedling"></i>
+              </div>
             <?php endif; ?>
           </div>
           <div class="sc-market-info">
             <p class="sc-market-name"><?= htmlspecialchars($seed['name']) ?></p>
             <p class="sc-market-meta"><?= htmlspecialchars($seed['category'] ?? 'Seed') ?></p>
+            <?php if (!empty($seed['seller_id'])): ?>
+              <a href="seller-profile.php?id=<?= $seed['seller_id'] ?>" class="sc-market-seller">
+                <i class="fa-solid fa-store"></i> <?= htmlspecialchars($seed['seller_first_name'] . ' ' . $seed['seller_last_name']) ?>
+              </a>
+            <?php endif; ?>
             <?php if (!empty($seed['avg_rating'])): ?>
-              <p class="sc-market-months" style="color:#FFC107;">
+              <p class="sc-market-months sc-market-rating">
                 <?= str_repeat('★', (int)round($seed['avg_rating'])) ?><?= str_repeat('☆', 5 - (int)round($seed['avg_rating'])) ?>
-                <span style="color:#888; font-size:11px;">(<?= $seed['review_count'] ?>)</span>
+                <span class="sc-market-rating-count">(<?= $seed['review_count'] ?>)</span>
               </p>
             <?php endif; ?>
             <?php if (!empty($seed['month_range'])): ?>
-              <p class="sc-market-months">📅 <?= htmlspecialchars($seed['month_range']) ?></p>
+              <p class="sc-market-months"><i class="fa-solid fa-calendar-days"></i> <?= htmlspecialchars($seed['month_range']) ?></p>
             <?php endif; ?>
             <?php if (!empty($seed['growing_days'])): ?>
-              <p class="sc-market-months">🌱 <?= (int)$seed['growing_days'] ?> days to grow</p>
+              <p class="sc-market-months"><i class="fa-solid fa-seedling"></i> <?= (int)$seed['growing_days'] ?> days to grow</p>
             <?php endif; ?>
           </div>
           <div class="sc-market-footer">
@@ -117,7 +87,7 @@
             <?php if ($isOwn): ?>
               <span class="sc-own-badge">Your Seed</span>
             <?php else: ?>
-              <form method="POST" action="cart-add.php" style="display: inline;">
+              <form method="POST" action="cart-add.php">
                 <input type="hidden" name="seed_id" value="<?= $seed['id'] ?>">
                 <input type="hidden" name="quantity" value="1">
                 <button type="submit" class="sc-btn-add">Add to Cart</button>
@@ -164,23 +134,8 @@
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
+<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/includes/logout-modal.php'; ?>
 
 <script>
   function toggleFilterPopup() {

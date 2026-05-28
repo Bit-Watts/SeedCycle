@@ -18,6 +18,12 @@ abstract class BaseController {
             header('Location: login.php');
             exit;
         }
+        
+        // Redirect admin users to admin panel
+        if (($_SESSION['role'] ?? 'user') === 'admin') {
+            header('Location: admin/dashboard.php');
+            exit;
+        }
     }
 
     protected function requireAdmin(): void {

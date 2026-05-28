@@ -3,1773 +3,321 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SeedCycle - Order Tracking</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <title>SeedCycle - Track Order #<?= (int)$order['id'] ?></title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/order-tracking.css">
 </head>
 <body>
-<nav class="sc-nav">
-  <a href="index.php" class="sc-logo">Seed<span>Cycle</span></a>
-  <div class="sc-nav-user">
-    <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? $user['first_name'] ?? 'Grower') ?> 👋</span>
-    <a href="cart.php" class="sc-nav-icon" title="Cart">🛒</a>
-    <a href="profile.php" class="sc-nav-icon" title="Profile">👤</a>
-    <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
-  </div>
-</nav>
+
+<?php require __DIR__ . '/includes/navbar.php'; ?>
 
 <?php
-// Define timeline steps
+// ── TIMELINE STEPS ──
 $steps = [
-    'pending'          => ['label' => 'Order Placed',    'icon' => '📋'],
-    'processing'       => ['label' => 'Processing',      'icon' => '⚙️'],
-    'shipped'          => ['label' => 'Shipped',          'icon' => '📦'],
-    'in_transit'       => ['label' => 'In Transit',       'icon' => '🚛'],
-    'out_for_delivery' => ['label' => 'Out for Delivery', 'icon' => '🚚'],
-    'delivered'        => ['label' => 'Delivered',        'icon' => '🏠'],
+    'pending'          => ['label' => 'Order Confirmed',   'icon' => 'fa-clipboard-check',   'desc' => 'Your order has been placed'],
+    'packed'           => ['label' => 'Packed',            'icon' => 'fa-box',                'desc' => 'Seeds are being packed'],
+    'shipped'          => ['label' => 'Shipped',           'icon' => 'fa-paper-plane',        'desc' => 'Package handed to courier'],
+    'in_transit'       => ['label' => 'In Transit',        'icon' => 'fa-truck',              'desc' => 'On the way to you'],
+    'out_for_delivery' => ['label' => 'Out for Delivery',  'icon' => 'fa-truck-fast',         'desc' => 'Arriving today'],
+    'delivered'        => ['label' => 'Delivered',         'icon' => 'fa-house-circle-check', 'desc' => 'Package delivered'],
 ];
 
 $statusOrder   = array_keys($steps);
-$currentStatus = $order['shipping_status'] ?? $order['status'] ?? 'pending';
-// Normalize: if order status is processing but no shipping status yet
-if ($currentStatus === 'pending' && ($order['status'] ?? '') === 'processing') {
-    $currentStatus = 'processing';
-}
-$currentIndex = array_search($currentStatus, $statusOrder);
-if ($currentIndex === false) $currentIndex = 0;
+$currentStatus = $shipment['status'] ?? $order['shipping_status'] ?? 'pending';
+if (!in_array($currentStatus, $statusOrder)) $currentStatus = 'pending';
+$currentIndex  = array_search($currentStatus, $statusOrder);
 ?>
 
 <div class="sc-dashboard">
 
-  <aside class="sc-sidebar">
-    <div class="sc-sidebar-avatar">
-      <div class="sc-avatar" style="overflow:hidden;">
-        <?php $pi = $user['profile_image'] ?? $_SESSION['profile_image'] ?? ''; ?>
-        <?php if (!empty($pi)): ?>
-          <img src="<?= htmlspecialchars($pi) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
+  <?php $activePage = 'orders'; require __DIR__ . '/includes/sidebar.php'; ?>
+
+  <main class="sc-main">
+    <div class="sc-tracking-page">
+
+      <!-- HEADER -->
+      <div class="sc-tracking-header">
+        <div>
+          <h1><i class="fa-solid fa-location-crosshairs"></i> Track Order #<?= (int)$order['id'] ?></h1>
+          <p class="sc-tracking-subtitle">
+            Placed on <?= date('F j, Y \a\t g:i A', strtotime($order['created_at'])) ?>
+          </p>
+        </div>
+        <a href="orders.php" class="sc-back-link"><i class="fa-solid fa-arrow-left"></i> Back to Orders</a>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="sc-section">
+        <div class="sc-section-header">
+          <h2>Shipment Progress</h2>
+          <span class="sc-status-badge sc-status-<?= htmlspecialchars($currentStatus) ?>">
+            <?= htmlspecialchars(ucwords(str_replace('_', ' ', $currentStatus))) ?>
+          </span>
+        </div>
+
+        <div class="sc-timeline">
+          <?php foreach ($steps as $key => $step):
+            $idx       = array_search($key, $statusOrder);
+            $isDone    = $idx < $currentIndex;
+            $isCurrent = $idx === $currentIndex;
+            $cls       = $isDone ? 'done' : ($isCurrent ? 'current' : '');
+          ?>
+          <div class="sc-timeline-step <?= $cls ?>">
+            <?php if ($idx > 0): ?>
+              <div class="sc-timeline-connector <?= $isDone || $isCurrent ? 'filled' : '' ?>"></div>
+            <?php endif; ?>
+            <div class="sc-timeline-dot">
+              <?php if ($isDone): ?>
+                <i class="fa-solid fa-check"></i>
+              <?php else: ?>
+                <i class="fa-solid <?= $step['icon'] ?>"></i>
+              <?php endif; ?>
+            </div>
+            <div class="sc-timeline-label"><?= $step['label'] ?></div>
+            <div class="sc-timeline-desc"><?= $step['desc'] ?></div>
+          </div>
+          <?php endforeach; ?>
+        </div>
+
+        <?php if ($currentStatus === 'delivered'): ?>
+          <div class="sc-delivered-banner">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <strong>Package Delivered!</strong>
+              <span>Your seeds have arrived. Happy planting!</span>
+            </div>
+          </div>
+        <?php elseif ($currentStatus === 'out_for_delivery'): ?>
+          <div class="sc-ofd-banner">
+            <i class="fa-solid fa-truck-fast"></i>
+            <div>
+              <strong>Out for Delivery Today!</strong>
+              <span>Your package is on its way to you right now.</span>
+            </div>
+          </div>
         <?php endif; ?>
       </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
 
-  <main class="sc-main">
+      <!-- SHIPMENT DETAILS + ADDRESS -->
+      <?php if ($shipment): ?>
+      <div class="sc-tracking-grid">
+        <div class="sc-info-card">
+          <h3><i class="fa-solid fa-truck"></i> Shipment Details</h3>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Courier</span>
+            <span class="sc-info-value sc-courier-badge"><?= htmlspecialchars($shipment['courier'] ?? '—') ?></span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Tracking Number</span>
+            <span class="sc-info-value">
+              <span class="sc-tracking-num"><?= htmlspecialchars($shipment['tracking_number'] ?? '—') ?></span>
+              <button class="sc-copy-btn" onclick="copyTracking('<?= htmlspecialchars($shipment['tracking_number'] ?? '', ENT_QUOTES) ?>')" title="Copy">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            </span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Est. Delivery</span>
+            <span class="sc-info-value sc-est-delivery">
+              <?php if (!empty($shipment['estimated_delivery'])): ?>
+                <i class="fa-regular fa-calendar"></i>
+                <?= date('F j, Y', strtotime($shipment['estimated_delivery'])) ?>
+                <?php
+                $today = new DateTime();
+                $est   = new DateTime($shipment['estimated_delivery']);
+                $diff  = (int)$today->diff($est)->days;
+                $sign  = $today->diff($est)->invert;
+                if ($currentStatus !== 'delivered'):
+                  if ($sign === 0 && $diff === 0): ?>
+                    <span class="sc-eta-chip sc-eta-today">Today</span>
+                  <?php elseif ($sign === 0 && $diff === 1): ?>
+                    <span class="sc-eta-chip sc-eta-soon">Tomorrow</span>
+                  <?php elseif ($sign === 0 && $diff <= 3): ?>
+                    <span class="sc-eta-chip sc-eta-soon"><?= $diff ?> days</span>
+                  <?php elseif ($sign === 1): ?>
+                    <span class="sc-eta-chip sc-eta-late">Overdue</span>
+                  <?php endif; ?>
+                <?php endif; ?>
+              <?php else: ?>
+                <span style="color:#aaa;">Not set</span>
+              <?php endif; ?>
+            </span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Status</span>
+            <span class="sc-info-value">
+              <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipment['status'] ?? 'pending') ?>">
+                <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipment['status'] ?? 'pending'))) ?>
+              </span>
+            </span>
+          </div>
+          <?php if (!empty($shipment['notes'])): ?>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Notes</span>
+            <span class="sc-info-value" style="font-style:italic; color:#666;"><?= htmlspecialchars($shipment['notes']) ?></span>
+          </div>
+          <?php endif; ?>
+        </div>
 
-<div class="sc-tracking-page">
-
-  <div class="sc-tracking-header">
-    <h1>Order #<?= (int)$order['id'] ?> Tracking</h1>
-    <a href="orders.php" class="sc-back-link">← Back to Orders</a>
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>Shipment Status</h2>
-      <span class="sc-status-badge sc-status-<?= htmlspecialchars($currentStatus) ?>">
-        <?= htmlspecialchars(ucwords(str_replace('_', ' ', $currentStatus))) ?>
-      </span>
-    </div>
-
-    <div class="sc-timeline">
-      <?php foreach ($steps as $key => $step):
-        $idx = array_search($key, $statusOrder);
-        $isDone    = $idx < $currentIndex;
-        $isCurrent = $idx === $currentIndex;
-        $cls = $isDone ? 'done' : ($isCurrent ? 'current' : '');
-      ?>
-      <div class="sc-timeline-step <?= $cls ?>">
-        <div class="sc-timeline-dot"><?= $step['icon'] ?></div>
-        <div class="sc-timeline-label"><?= $step['label'] ?></div>
+        <div class="sc-info-card">
+          <h3><i class="fa-solid fa-location-dot"></i> Delivery Address</h3>
+          <?php if (!empty($order['street_address'])): ?>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Street</span>
+            <span class="sc-info-value"><?= htmlspecialchars($order['street_address']) ?></span>
+          </div>
+          <?php endif; ?>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Barangay</span>
+            <span class="sc-info-value"><?= htmlspecialchars($order['barangay'] ?? '—') ?></span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">City</span>
+            <span class="sc-info-value"><?= htmlspecialchars($order['city'] ?? '—') ?></span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Municipality</span>
+            <span class="sc-info-value"><?= htmlspecialchars($order['municipality'] ?? '—') ?></span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Province</span>
+            <span class="sc-info-value"><?= htmlspecialchars($order['province'] ?? '—') ?></span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">ZIP Code</span>
+            <span class="sc-info-value"><?= htmlspecialchars($order['zip_code'] ?? '—') ?></span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Method</span>
+            <span class="sc-info-value">
+              <i class="fa-solid fa-<?= ($order['delivery_method'] ?? '') === 'pickup' ? 'person-walking' : 'truck' ?>"></i>
+              <?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?>
+            </span>
+          </div>
+        </div>
       </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
 
-  <!-- SHIPMENT INFO -->
-  <?php if ($shipment): ?>
-  <div class="sc-tracking-grid">
-    <div class="sc-info-card">
-      <h3>📦 Shipment Details</h3>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Courier</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['courier'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Tracking Number</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['tracking_number'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Est. Delivery</span>
-        <span class="sc-info-value">
-          <?= $shipment['estimated_delivery'] ? date('M j, Y', strtotime($shipment['estimated_delivery'])) : '—' ?>
-        </span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Shipment Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipment['status'] ?? 'pending') ?>">
-            <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipment['status'] ?? 'pending'))) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-
-    <div class="sc-info-card">
-      <h3>📍 Delivery Address</h3>
-      <?php if (!empty($order['street_address'])): ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Street</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['street_address']) ?></span>
-      </div>
-      <?php endif; ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Barangay</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['barangay'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">City / Municipality</span>
-        <span class="sc-info-value"><?= htmlspecialchars(($order['city'] ?? '') . ', ' . ($order['municipality'] ?? '')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Province</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['province'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">ZIP Code</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['zip_code'] ?? '—') ?></span>
-      </div>
-    </div>
-  </div>
-  <?php else: ?>
-  <div class="sc-no-shipment">
-    <span style="font-size:22px;">📭</span>
-    <div>
-      <strong>Shipment details not yet available.</strong><br>
-      <span>Your order is being processed. Tracking information will appear here once your order is shipped.</span>
-    </div>
-  </div>
-  <?php endif; ?>
-
-  <!-- ORDER ITEMS -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>🌱 Items Ordered</h2>
-      <span style="font-size:12px; color:#888;"><?= count($orderItems) ?> item<?= count($orderItems) !== 1 ? 's' : '' ?></span>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:13px;">
-      <thead>
-        <tr style="border-bottom:2px solid #e8f5e9; text-align:left;">
-          <th style="padding:10px 12px; color:#2E7D32;">Seed</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Qty</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Unit Price</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orderItems as $item): ?>
-        <tr style="border-bottom:1px solid #f0f0f0;">
-          <td style="padding:10px 12px; font-weight:500;">🌱 <?= htmlspecialchars($item['name']) ?></td>
-          <td style="padding:10px 12px; color:#555;"><?= (int)$item['quantity'] ?></td>
-          <td style="padding:10px 12px; color:#555;">₱<?= number_format($item['price'], 2) ?></td>
-          <td style="padding:10px 12px; color:#2E7D32; font-weight:600;">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3" style="padding:12px 12px; text-align:right; font-weight:600; color:#333;">Total:</td>
-          <td style="padding:12px 12px; font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; color:#2E7D32;">
-            ₱<?= number_format($order['total_amount'], 2) ?>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <!-- ORDER META -->
-  <div class="sc-section">
-    <div class="sc-section-header"><h2>📋 Order Info</h2></div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order ID</span>
-        <span class="sc-info-value">#<?= (int)$order['id'] ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Date</span>
-        <span class="sc-info-value"><?= date('M j, Y g:i A', strtotime($order['created_at'])) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Delivery Method</span>
-        <span class="sc-info-value"><?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($order['status']) ?>">
-            <?= htmlspecialchars(ucfirst($order['status'])) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end sc-tracking-page -->
-
-  </main>
-</div><!-- end sc-dashboard -->
-
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
-  });
-</script>
-</body>
-</html>
-SESSION['profile_image'] ?? '';
-        ?>
-        <?php if (!empty($profileImg)): ?>
-          <img src="<?= htmlspecialchars($profileImg) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
-        <?php endif; ?>
-      </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
-
-  <main class="sc-main">
-
-<div class="sc-tracking-page">
-
-  <div class="sc-tracking-header">
-    <h1>Order #<?= (int)$order['id'] ?> Tracking</h1>
-    <a href="orders.php" class="sc-back-link">← Back to Orders</a>
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>Shipment Status</h2>
-      <span class="sc-status-badge sc-status-<?= htmlspecialchars($currentStatus) ?>">
-        <?= htmlspecialchars(ucwords(str_replace('_', ' ', $currentStatus))) ?>
-      </span>
-    </div>
-
-    <div class="sc-timeline">
-      <?php foreach ($steps as $key => $step):
-        $idx = array_search($key, $statusOrder);
-        $isDone    = $idx < $currentIndex;
-        $isCurrent = $idx === $currentIndex;
-        $cls = $isDone ? 'done' : ($isCurrent ? 'current' : '');
-      ?>
-      <div class="sc-timeline-step <?= $cls ?>">
-        <div class="sc-timeline-dot"><?= $step['icon'] ?></div>
-        <div class="sc-timeline-label"><?= $step['label'] ?></div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-
-  <!-- SHIPMENT INFO -->
-  <?php if ($shipment): ?>
-  <div class="sc-tracking-grid">
-    <div class="sc-info-card">
-      <h3>📦 Shipment Details</h3>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Courier</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['courier'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Tracking Number</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['tracking_number'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Est. Delivery</span>
-        <span class="sc-info-value">
-          <?= $shipment['estimated_delivery'] ? date('M j, Y', strtotime($shipment['estimated_delivery'])) : '—' ?>
-        </span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Shipment Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipment['status'] ?? 'pending') ?>">
-            <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipment['status'] ?? 'pending'))) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-
-    <div class="sc-info-card">
-      <h3>📍 Delivery Address</h3>
-      <?php if (!empty($order['street_address'])): ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Street</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['street_address']) ?></span>
+      <!-- SHIPMENT HISTORY LOG -->
+      <?php if (!empty($shipmentLogs)): ?>
+      <div class="sc-section">
+        <div class="sc-section-header">
+          <h2><i class="fa-solid fa-clock-rotate-left"></i> Shipment History</h2>
+        </div>
+        <div class="sc-history-list">
+          <?php foreach (array_reverse($shipmentLogs) as $log): ?>
+          <div class="sc-history-item">
+            <div class="sc-history-dot sc-history-dot--<?= htmlspecialchars($log['status']) ?>"></div>
+            <div class="sc-history-content">
+              <span class="sc-history-status">
+                <span class="sc-status-badge sc-status-<?= htmlspecialchars($log['status']) ?>">
+                  <?= htmlspecialchars(ucwords(str_replace('_', ' ', $log['status']))) ?>
+                </span>
+              </span>
+              <?php if (!empty($log['note'])): ?>
+                <span class="sc-history-note"><?= htmlspecialchars($log['note']) ?></span>
+              <?php endif; ?>
+              <span class="sc-history-time">
+                <i class="fa-regular fa-clock"></i>
+                <?= date('M j, Y g:i A', strtotime($log['created_at'])) ?>
+              </span>
+            </div>
+          </div>
+          <?php endforeach; ?>
+        </div>
       </div>
       <?php endif; ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Barangay</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['barangay'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">City / Municipality</span>
-        <span class="sc-info-value"><?= htmlspecialchars(($order['city'] ?? '') . ', ' . ($order['municipality'] ?? '')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Province</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['province'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">ZIP Code</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['zip_code'] ?? '—') ?></span>
-      </div>
-    </div>
-  </div>
-  <?php else: ?>
-  <div class="sc-no-shipment">
-    <span style="font-size:22px;">📭</span>
-    <div>
-      <strong>Shipment details not yet available.</strong><br>
-      <span>Your order is being processed. Tracking information will appear here once your order is shipped.</span>
-    </div>
-  </div>
-  <?php endif; ?>
 
-  <!-- ORDER ITEMS -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>🌱 Items Ordered</h2>
-      <span style="font-size:12px; color:#888;"><?= count($orderItems) ?> item<?= count($orderItems) !== 1 ? 's' : '' ?></span>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:13px;">
-      <thead>
-        <tr style="border-bottom:2px solid #e8f5e9; text-align:left;">
-          <th style="padding:10px 12px; color:#2E7D32;">Seed</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Qty</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Unit Price</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orderItems as $item): ?>
-        <tr style="border-bottom:1px solid #f0f0f0;">
-          <td style="padding:10px 12px; font-weight:500;">🌱 <?= htmlspecialchars($item['name']) ?></td>
-          <td style="padding:10px 12px; color:#555;"><?= (int)$item['quantity'] ?></td>
-          <td style="padding:10px 12px; color:#555;">₱<?= number_format($item['price'], 2) ?></td>
-          <td style="padding:10px 12px; color:#2E7D32; font-weight:600;">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3" style="padding:12px 12px; text-align:right; font-weight:600; color:#333;">Total:</td>
-          <td style="padding:12px 12px; font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; color:#2E7D32;">
-            ₱<?= number_format($order['total_amount'], 2) ?>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <!-- ORDER META -->
-  <div class="sc-section">
-    <div class="sc-section-header"><h2>📋 Order Info</h2></div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order ID</span>
-        <span class="sc-info-value">#<?= (int)$order['id'] ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Date</span>
-        <span class="sc-info-value"><?= date('M j, Y g:i A', strtotime($order['created_at'])) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Delivery Method</span>
-        <span class="sc-info-value"><?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($order['status']) ?>">
-            <?= htmlspecialchars(ucfirst($order['status'])) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end sc-tracking-page -->
-
-  </main>
-</div><!-- end sc-dashboard -->
-
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
-  });
-</script>
-</body>
-</html>
-SESSION['profile_image']??"";?><?php if(!empty($pi)):?><img src="<?=htmlspecialchars($pi)?>" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"><?php else:?>🌱<?php endif;?></div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
-
-  <main class="sc-main">
-
-<div class="sc-tracking-page">
-
-  <div class="sc-tracking-header">
-    <h1>Order #<?= (int)$order['id'] ?> Tracking</h1>
-    <a href="orders.php" class="sc-back-link">← Back to Orders</a>
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>Shipment Status</h2>
-      <span class="sc-status-badge sc-status-<?= htmlspecialchars($currentStatus) ?>">
-        <?= htmlspecialchars(ucwords(str_replace('_', ' ', $currentStatus))) ?>
-      </span>
-    </div>
-
-    <div class="sc-timeline">
-      <?php foreach ($steps as $key => $step):
-        $idx = array_search($key, $statusOrder);
-        $isDone    = $idx < $currentIndex;
-        $isCurrent = $idx === $currentIndex;
-        $cls = $isDone ? 'done' : ($isCurrent ? 'current' : '');
-      ?>
-      <div class="sc-timeline-step <?= $cls ?>">
-        <div class="sc-timeline-dot"><?= $step['icon'] ?></div>
-        <div class="sc-timeline-label"><?= $step['label'] ?></div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-
-  <!-- SHIPMENT INFO -->
-  <?php if ($shipment): ?>
-  <div class="sc-tracking-grid">
-    <div class="sc-info-card">
-      <h3>📦 Shipment Details</h3>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Courier</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['courier'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Tracking Number</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['tracking_number'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Est. Delivery</span>
-        <span class="sc-info-value">
-          <?= $shipment['estimated_delivery'] ? date('M j, Y', strtotime($shipment['estimated_delivery'])) : '—' ?>
-        </span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Shipment Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipment['status'] ?? 'pending') ?>">
-            <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipment['status'] ?? 'pending'))) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-
-    <div class="sc-info-card">
-      <h3>📍 Delivery Address</h3>
-      <?php if (!empty($order['street_address'])): ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Street</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['street_address']) ?></span>
+      <?php else: ?>
+      <div class="sc-no-shipment">
+        <i class="fa-solid fa-box-open"></i>
+        <div>
+          <strong>Shipment details not yet available.</strong>
+          <span>Your order is being prepared. Tracking info will appear here once the seller ships your order.</span>
+        </div>
       </div>
       <?php endif; ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Barangay</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['barangay'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">City / Municipality</span>
-        <span class="sc-info-value"><?= htmlspecialchars(($order['city'] ?? '') . ', ' . ($order['municipality'] ?? '')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Province</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['province'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">ZIP Code</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['zip_code'] ?? '—') ?></span>
-      </div>
-    </div>
-  </div>
-  <?php else: ?>
-  <div class="sc-no-shipment">
-    <span style="font-size:22px;">📭</span>
-    <div>
-      <strong>Shipment details not yet available.</strong><br>
-      <span>Your order is being processed. Tracking information will appear here once your order is shipped.</span>
-    </div>
-  </div>
-  <?php endif; ?>
 
-  <!-- ORDER ITEMS -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>🌱 Items Ordered</h2>
-      <span style="font-size:12px; color:#888;"><?= count($orderItems) ?> item<?= count($orderItems) !== 1 ? 's' : '' ?></span>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:13px;">
-      <thead>
-        <tr style="border-bottom:2px solid #e8f5e9; text-align:left;">
-          <th style="padding:10px 12px; color:#2E7D32;">Seed</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Qty</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Unit Price</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orderItems as $item): ?>
-        <tr style="border-bottom:1px solid #f0f0f0;">
-          <td style="padding:10px 12px; font-weight:500;">🌱 <?= htmlspecialchars($item['name']) ?></td>
-          <td style="padding:10px 12px; color:#555;"><?= (int)$item['quantity'] ?></td>
-          <td style="padding:10px 12px; color:#555;">₱<?= number_format($item['price'], 2) ?></td>
-          <td style="padding:10px 12px; color:#2E7D32; font-weight:600;">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3" style="padding:12px 12px; text-align:right; font-weight:600; color:#333;">Total:</td>
-          <td style="padding:12px 12px; font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; color:#2E7D32;">
-            ₱<?= number_format($order['total_amount'], 2) ?>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
+      <!-- ORDER ITEMS -->
+      <div class="sc-section">
+        <div class="sc-section-header">
+          <h2><i class="fa-solid fa-seedling"></i> Items Ordered</h2>
+          <span style="font-size:12px; color:#888;"><?= count($orderItems) ?> item<?= count($orderItems) !== 1 ? 's' : '' ?></span>
+        </div>
+        <div class="sc-items-table-wrap">
+          <table class="sc-items-table">
+            <thead>
+              <tr>
+                <th>Seed</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($orderItems as $item): ?>
+              <tr>
+                <td><i class="fa-solid fa-seedling" style="color:#4CAF50;"></i> <?= htmlspecialchars($item['name']) ?></td>
+                <td><?= (int)$item['quantity'] ?></td>
+                <td>&#8369;<?= number_format($item['price'], 2) ?></td>
+                <td class="sc-subtotal">&#8369;<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+              </tr>
+              <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="sc-total-label">Total</td>
+                <td class="sc-total-value">&#8369;<?= number_format($order['total_amount'], 2) ?></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
 
-  <!-- ORDER META -->
-  <div class="sc-section">
-    <div class="sc-section-header"><h2>📋 Order Info</h2></div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order ID</span>
-        <span class="sc-info-value">#<?= (int)$order['id'] ?></span>
+      <!-- ORDER INFO -->
+      <div class="sc-section">
+        <div class="sc-section-header"><h2><i class="fa-solid fa-clipboard-list"></i> Order Info</h2></div>
+        <div class="sc-tracking-grid">
+          <div class="sc-info-row">
+            <span class="sc-info-label">Order ID</span>
+            <span class="sc-info-value">#<?= (int)$order['id'] ?></span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Order Date</span>
+            <span class="sc-info-value"><?= date('M j, Y g:i A', strtotime($order['created_at'])) ?></span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Order Status</span>
+            <span class="sc-info-value">
+              <span class="sc-status-badge sc-status-<?= htmlspecialchars($order['status']) ?>">
+                <?= htmlspecialchars(ucfirst($order['status'])) ?>
+              </span>
+            </span>
+          </div>
+          <div class="sc-info-row">
+            <span class="sc-info-label">Delivery Method</span>
+            <span class="sc-info-value"><?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?></span>
+          </div>
+        </div>
       </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Date</span>
-        <span class="sc-info-value"><?= date('M j, Y g:i A', strtotime($order['created_at'])) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Delivery Method</span>
-        <span class="sc-info-value"><?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($order['status']) ?>">
-            <?= htmlspecialchars(ucfirst($order['status'])) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-  </div>
 
-</div><!-- end sc-tracking-page -->
-
+    </div><!-- end sc-tracking-page -->
   </main>
-</div><!-- end sc-dashboard -->
-
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
 </div>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/includes/logout-modal.php'; ?>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
+function copyTracking(text) {
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    const btn = document.querySelector('.sc-copy-btn');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    setTimeout(() => btn.innerHTML = '<i class="fa-regular fa-copy"></i>', 2000);
   });
-</script>
-</body>
-</html>
-SESSION['profile_image'] ?? '';
-        ?>
-        <?php if (!empty($profileImg)): ?>
-          <img src="<?= htmlspecialchars($profileImg) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
-        <?php endif; ?>
-      </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
-
-  <main class="sc-main">
-
-<div class="sc-tracking-page">
-
-  <div class="sc-tracking-header">
-    <h1>Order #<?= (int)$order['id'] ?> Tracking</h1>
-    <a href="orders.php" class="sc-back-link">← Back to Orders</a>
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>Shipment Status</h2>
-      <span class="sc-status-badge sc-status-<?= htmlspecialchars($currentStatus) ?>">
-        <?= htmlspecialchars(ucwords(str_replace('_', ' ', $currentStatus))) ?>
-      </span>
-    </div>
-
-    <div class="sc-timeline">
-      <?php foreach ($steps as $key => $step):
-        $idx = array_search($key, $statusOrder);
-        $isDone    = $idx < $currentIndex;
-        $isCurrent = $idx === $currentIndex;
-        $cls = $isDone ? 'done' : ($isCurrent ? 'current' : '');
-      ?>
-      <div class="sc-timeline-step <?= $cls ?>">
-        <div class="sc-timeline-dot"><?= $step['icon'] ?></div>
-        <div class="sc-timeline-label"><?= $step['label'] ?></div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-
-  <!-- SHIPMENT INFO -->
-  <?php if ($shipment): ?>
-  <div class="sc-tracking-grid">
-    <div class="sc-info-card">
-      <h3>📦 Shipment Details</h3>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Courier</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['courier'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Tracking Number</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['tracking_number'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Est. Delivery</span>
-        <span class="sc-info-value">
-          <?= $shipment['estimated_delivery'] ? date('M j, Y', strtotime($shipment['estimated_delivery'])) : '—' ?>
-        </span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Shipment Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipment['status'] ?? 'pending') ?>">
-            <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipment['status'] ?? 'pending'))) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-
-    <div class="sc-info-card">
-      <h3>📍 Delivery Address</h3>
-      <?php if (!empty($order['street_address'])): ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Street</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['street_address']) ?></span>
-      </div>
-      <?php endif; ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Barangay</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['barangay'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">City / Municipality</span>
-        <span class="sc-info-value"><?= htmlspecialchars(($order['city'] ?? '') . ', ' . ($order['municipality'] ?? '')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Province</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['province'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">ZIP Code</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['zip_code'] ?? '—') ?></span>
-      </div>
-    </div>
-  </div>
-  <?php else: ?>
-  <div class="sc-no-shipment">
-    <span style="font-size:22px;">📭</span>
-    <div>
-      <strong>Shipment details not yet available.</strong><br>
-      <span>Your order is being processed. Tracking information will appear here once your order is shipped.</span>
-    </div>
-  </div>
-  <?php endif; ?>
-
-  <!-- ORDER ITEMS -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>🌱 Items Ordered</h2>
-      <span style="font-size:12px; color:#888;"><?= count($orderItems) ?> item<?= count($orderItems) !== 1 ? 's' : '' ?></span>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:13px;">
-      <thead>
-        <tr style="border-bottom:2px solid #e8f5e9; text-align:left;">
-          <th style="padding:10px 12px; color:#2E7D32;">Seed</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Qty</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Unit Price</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orderItems as $item): ?>
-        <tr style="border-bottom:1px solid #f0f0f0;">
-          <td style="padding:10px 12px; font-weight:500;">🌱 <?= htmlspecialchars($item['name']) ?></td>
-          <td style="padding:10px 12px; color:#555;"><?= (int)$item['quantity'] ?></td>
-          <td style="padding:10px 12px; color:#555;">₱<?= number_format($item['price'], 2) ?></td>
-          <td style="padding:10px 12px; color:#2E7D32; font-weight:600;">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3" style="padding:12px 12px; text-align:right; font-weight:600; color:#333;">Total:</td>
-          <td style="padding:12px 12px; font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; color:#2E7D32;">
-            ₱<?= number_format($order['total_amount'], 2) ?>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <!-- ORDER META -->
-  <div class="sc-section">
-    <div class="sc-section-header"><h2>📋 Order Info</h2></div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order ID</span>
-        <span class="sc-info-value">#<?= (int)$order['id'] ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Date</span>
-        <span class="sc-info-value"><?= date('M j, Y g:i A', strtotime($order['created_at'])) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Delivery Method</span>
-        <span class="sc-info-value"><?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($order['status']) ?>">
-            <?= htmlspecialchars(ucfirst($order['status'])) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end sc-tracking-page -->
-
-  </main>
-</div><!-- end sc-dashboard -->
-
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
-  });
-</script>
-</body>
-</html>
-SESSION['profile_image'] ?? ''; ?>
-        <?php if (!empty($pi)): ?>
-          <img src="<?= htmlspecialchars($pi) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
-        <?php endif; ?>
-      </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
-
-  <main class="sc-main">
-
-<div class="sc-tracking-page">
-
-  <div class="sc-tracking-header">
-    <h1>Order #<?= (int)$order['id'] ?> Tracking</h1>
-    <a href="orders.php" class="sc-back-link">← Back to Orders</a>
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>Shipment Status</h2>
-      <span class="sc-status-badge sc-status-<?= htmlspecialchars($currentStatus) ?>">
-        <?= htmlspecialchars(ucwords(str_replace('_', ' ', $currentStatus))) ?>
-      </span>
-    </div>
-
-    <div class="sc-timeline">
-      <?php foreach ($steps as $key => $step):
-        $idx = array_search($key, $statusOrder);
-        $isDone    = $idx < $currentIndex;
-        $isCurrent = $idx === $currentIndex;
-        $cls = $isDone ? 'done' : ($isCurrent ? 'current' : '');
-      ?>
-      <div class="sc-timeline-step <?= $cls ?>">
-        <div class="sc-timeline-dot"><?= $step['icon'] ?></div>
-        <div class="sc-timeline-label"><?= $step['label'] ?></div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-
-  <!-- SHIPMENT INFO -->
-  <?php if ($shipment): ?>
-  <div class="sc-tracking-grid">
-    <div class="sc-info-card">
-      <h3>📦 Shipment Details</h3>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Courier</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['courier'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Tracking Number</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['tracking_number'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Est. Delivery</span>
-        <span class="sc-info-value">
-          <?= $shipment['estimated_delivery'] ? date('M j, Y', strtotime($shipment['estimated_delivery'])) : '—' ?>
-        </span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Shipment Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipment['status'] ?? 'pending') ?>">
-            <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipment['status'] ?? 'pending'))) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-
-    <div class="sc-info-card">
-      <h3>📍 Delivery Address</h3>
-      <?php if (!empty($order['street_address'])): ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Street</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['street_address']) ?></span>
-      </div>
-      <?php endif; ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Barangay</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['barangay'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">City / Municipality</span>
-        <span class="sc-info-value"><?= htmlspecialchars(($order['city'] ?? '') . ', ' . ($order['municipality'] ?? '')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Province</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['province'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">ZIP Code</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['zip_code'] ?? '—') ?></span>
-      </div>
-    </div>
-  </div>
-  <?php else: ?>
-  <div class="sc-no-shipment">
-    <span style="font-size:22px;">📭</span>
-    <div>
-      <strong>Shipment details not yet available.</strong><br>
-      <span>Your order is being processed. Tracking information will appear here once your order is shipped.</span>
-    </div>
-  </div>
-  <?php endif; ?>
-
-  <!-- ORDER ITEMS -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>🌱 Items Ordered</h2>
-      <span style="font-size:12px; color:#888;"><?= count($orderItems) ?> item<?= count($orderItems) !== 1 ? 's' : '' ?></span>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:13px;">
-      <thead>
-        <tr style="border-bottom:2px solid #e8f5e9; text-align:left;">
-          <th style="padding:10px 12px; color:#2E7D32;">Seed</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Qty</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Unit Price</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orderItems as $item): ?>
-        <tr style="border-bottom:1px solid #f0f0f0;">
-          <td style="padding:10px 12px; font-weight:500;">🌱 <?= htmlspecialchars($item['name']) ?></td>
-          <td style="padding:10px 12px; color:#555;"><?= (int)$item['quantity'] ?></td>
-          <td style="padding:10px 12px; color:#555;">₱<?= number_format($item['price'], 2) ?></td>
-          <td style="padding:10px 12px; color:#2E7D32; font-weight:600;">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3" style="padding:12px 12px; text-align:right; font-weight:600; color:#333;">Total:</td>
-          <td style="padding:12px 12px; font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; color:#2E7D32;">
-            ₱<?= number_format($order['total_amount'], 2) ?>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <!-- ORDER META -->
-  <div class="sc-section">
-    <div class="sc-section-header"><h2>📋 Order Info</h2></div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order ID</span>
-        <span class="sc-info-value">#<?= (int)$order['id'] ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Date</span>
-        <span class="sc-info-value"><?= date('M j, Y g:i A', strtotime($order['created_at'])) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Delivery Method</span>
-        <span class="sc-info-value"><?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($order['status']) ?>">
-            <?= htmlspecialchars(ucfirst($order['status'])) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end sc-tracking-page -->
-
-  </main>
-</div><!-- end sc-dashboard -->
-
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
-  });
-</script>
-</body>
-</html>
-SESSION['profile_image'] ?? '';
-        ?>
-        <?php if (!empty($profileImg)): ?>
-          <img src="<?= htmlspecialchars($profileImg) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
-        <?php endif; ?>
-      </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
-
-  <main class="sc-main">
-
-<div class="sc-tracking-page">
-
-  <div class="sc-tracking-header">
-    <h1>Order #<?= (int)$order['id'] ?> Tracking</h1>
-    <a href="orders.php" class="sc-back-link">← Back to Orders</a>
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>Shipment Status</h2>
-      <span class="sc-status-badge sc-status-<?= htmlspecialchars($currentStatus) ?>">
-        <?= htmlspecialchars(ucwords(str_replace('_', ' ', $currentStatus))) ?>
-      </span>
-    </div>
-
-    <div class="sc-timeline">
-      <?php foreach ($steps as $key => $step):
-        $idx = array_search($key, $statusOrder);
-        $isDone    = $idx < $currentIndex;
-        $isCurrent = $idx === $currentIndex;
-        $cls = $isDone ? 'done' : ($isCurrent ? 'current' : '');
-      ?>
-      <div class="sc-timeline-step <?= $cls ?>">
-        <div class="sc-timeline-dot"><?= $step['icon'] ?></div>
-        <div class="sc-timeline-label"><?= $step['label'] ?></div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-
-  <!-- SHIPMENT INFO -->
-  <?php if ($shipment): ?>
-  <div class="sc-tracking-grid">
-    <div class="sc-info-card">
-      <h3>📦 Shipment Details</h3>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Courier</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['courier'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Tracking Number</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['tracking_number'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Est. Delivery</span>
-        <span class="sc-info-value">
-          <?= $shipment['estimated_delivery'] ? date('M j, Y', strtotime($shipment['estimated_delivery'])) : '—' ?>
-        </span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Shipment Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipment['status'] ?? 'pending') ?>">
-            <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipment['status'] ?? 'pending'))) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-
-    <div class="sc-info-card">
-      <h3>📍 Delivery Address</h3>
-      <?php if (!empty($order['street_address'])): ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Street</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['street_address']) ?></span>
-      </div>
-      <?php endif; ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Barangay</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['barangay'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">City / Municipality</span>
-        <span class="sc-info-value"><?= htmlspecialchars(($order['city'] ?? '') . ', ' . ($order['municipality'] ?? '')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Province</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['province'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">ZIP Code</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['zip_code'] ?? '—') ?></span>
-      </div>
-    </div>
-  </div>
-  <?php else: ?>
-  <div class="sc-no-shipment">
-    <span style="font-size:22px;">📭</span>
-    <div>
-      <strong>Shipment details not yet available.</strong><br>
-      <span>Your order is being processed. Tracking information will appear here once your order is shipped.</span>
-    </div>
-  </div>
-  <?php endif; ?>
-
-  <!-- ORDER ITEMS -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>🌱 Items Ordered</h2>
-      <span style="font-size:12px; color:#888;"><?= count($orderItems) ?> item<?= count($orderItems) !== 1 ? 's' : '' ?></span>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:13px;">
-      <thead>
-        <tr style="border-bottom:2px solid #e8f5e9; text-align:left;">
-          <th style="padding:10px 12px; color:#2E7D32;">Seed</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Qty</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Unit Price</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orderItems as $item): ?>
-        <tr style="border-bottom:1px solid #f0f0f0;">
-          <td style="padding:10px 12px; font-weight:500;">🌱 <?= htmlspecialchars($item['name']) ?></td>
-          <td style="padding:10px 12px; color:#555;"><?= (int)$item['quantity'] ?></td>
-          <td style="padding:10px 12px; color:#555;">₱<?= number_format($item['price'], 2) ?></td>
-          <td style="padding:10px 12px; color:#2E7D32; font-weight:600;">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3" style="padding:12px 12px; text-align:right; font-weight:600; color:#333;">Total:</td>
-          <td style="padding:12px 12px; font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; color:#2E7D32;">
-            ₱<?= number_format($order['total_amount'], 2) ?>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <!-- ORDER META -->
-  <div class="sc-section">
-    <div class="sc-section-header"><h2>📋 Order Info</h2></div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order ID</span>
-        <span class="sc-info-value">#<?= (int)$order['id'] ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Date</span>
-        <span class="sc-info-value"><?= date('M j, Y g:i A', strtotime($order['created_at'])) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Delivery Method</span>
-        <span class="sc-info-value"><?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($order['status']) ?>">
-            <?= htmlspecialchars(ucfirst($order['status'])) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end sc-tracking-page -->
-
-  </main>
-</div><!-- end sc-dashboard -->
-
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
-  });
-</script>
-</body>
-</html>
-SESSION['profile_image']??"";?><?php if(!empty($pi)):?><img src="<?=htmlspecialchars($pi)?>" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"><?php else:?>🌱<?php endif;?></div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
-
-  <main class="sc-main">
-
-<div class="sc-tracking-page">
-
-  <div class="sc-tracking-header">
-    <h1>Order #<?= (int)$order['id'] ?> Tracking</h1>
-    <a href="orders.php" class="sc-back-link">← Back to Orders</a>
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>Shipment Status</h2>
-      <span class="sc-status-badge sc-status-<?= htmlspecialchars($currentStatus) ?>">
-        <?= htmlspecialchars(ucwords(str_replace('_', ' ', $currentStatus))) ?>
-      </span>
-    </div>
-
-    <div class="sc-timeline">
-      <?php foreach ($steps as $key => $step):
-        $idx = array_search($key, $statusOrder);
-        $isDone    = $idx < $currentIndex;
-        $isCurrent = $idx === $currentIndex;
-        $cls = $isDone ? 'done' : ($isCurrent ? 'current' : '');
-      ?>
-      <div class="sc-timeline-step <?= $cls ?>">
-        <div class="sc-timeline-dot"><?= $step['icon'] ?></div>
-        <div class="sc-timeline-label"><?= $step['label'] ?></div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-
-  <!-- SHIPMENT INFO -->
-  <?php if ($shipment): ?>
-  <div class="sc-tracking-grid">
-    <div class="sc-info-card">
-      <h3>📦 Shipment Details</h3>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Courier</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['courier'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Tracking Number</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['tracking_number'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Est. Delivery</span>
-        <span class="sc-info-value">
-          <?= $shipment['estimated_delivery'] ? date('M j, Y', strtotime($shipment['estimated_delivery'])) : '—' ?>
-        </span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Shipment Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipment['status'] ?? 'pending') ?>">
-            <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipment['status'] ?? 'pending'))) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-
-    <div class="sc-info-card">
-      <h3>📍 Delivery Address</h3>
-      <?php if (!empty($order['street_address'])): ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Street</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['street_address']) ?></span>
-      </div>
-      <?php endif; ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Barangay</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['barangay'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">City / Municipality</span>
-        <span class="sc-info-value"><?= htmlspecialchars(($order['city'] ?? '') . ', ' . ($order['municipality'] ?? '')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Province</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['province'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">ZIP Code</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['zip_code'] ?? '—') ?></span>
-      </div>
-    </div>
-  </div>
-  <?php else: ?>
-  <div class="sc-no-shipment">
-    <span style="font-size:22px;">📭</span>
-    <div>
-      <strong>Shipment details not yet available.</strong><br>
-      <span>Your order is being processed. Tracking information will appear here once your order is shipped.</span>
-    </div>
-  </div>
-  <?php endif; ?>
-
-  <!-- ORDER ITEMS -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>🌱 Items Ordered</h2>
-      <span style="font-size:12px; color:#888;"><?= count($orderItems) ?> item<?= count($orderItems) !== 1 ? 's' : '' ?></span>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:13px;">
-      <thead>
-        <tr style="border-bottom:2px solid #e8f5e9; text-align:left;">
-          <th style="padding:10px 12px; color:#2E7D32;">Seed</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Qty</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Unit Price</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orderItems as $item): ?>
-        <tr style="border-bottom:1px solid #f0f0f0;">
-          <td style="padding:10px 12px; font-weight:500;">🌱 <?= htmlspecialchars($item['name']) ?></td>
-          <td style="padding:10px 12px; color:#555;"><?= (int)$item['quantity'] ?></td>
-          <td style="padding:10px 12px; color:#555;">₱<?= number_format($item['price'], 2) ?></td>
-          <td style="padding:10px 12px; color:#2E7D32; font-weight:600;">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3" style="padding:12px 12px; text-align:right; font-weight:600; color:#333;">Total:</td>
-          <td style="padding:12px 12px; font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; color:#2E7D32;">
-            ₱<?= number_format($order['total_amount'], 2) ?>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <!-- ORDER META -->
-  <div class="sc-section">
-    <div class="sc-section-header"><h2>📋 Order Info</h2></div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order ID</span>
-        <span class="sc-info-value">#<?= (int)$order['id'] ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Date</span>
-        <span class="sc-info-value"><?= date('M j, Y g:i A', strtotime($order['created_at'])) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Delivery Method</span>
-        <span class="sc-info-value"><?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($order['status']) ?>">
-            <?= htmlspecialchars(ucfirst($order['status'])) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end sc-tracking-page -->
-
-  </main>
-</div><!-- end sc-dashboard -->
-
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
-  });
-</script>
-</body>
-</html>
-SESSION['profile_image'] ?? '';
-        ?>
-        <?php if (!empty($profileImg)): ?>
-          <img src="<?= htmlspecialchars($profileImg) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
-        <?php endif; ?>
-      </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
-
-  <main class="sc-main">
-
-<div class="sc-tracking-page">
-
-  <div class="sc-tracking-header">
-    <h1>Order #<?= (int)$order['id'] ?> Tracking</h1>
-    <a href="orders.php" class="sc-back-link">← Back to Orders</a>
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>Shipment Status</h2>
-      <span class="sc-status-badge sc-status-<?= htmlspecialchars($currentStatus) ?>">
-        <?= htmlspecialchars(ucwords(str_replace('_', ' ', $currentStatus))) ?>
-      </span>
-    </div>
-
-    <div class="sc-timeline">
-      <?php foreach ($steps as $key => $step):
-        $idx = array_search($key, $statusOrder);
-        $isDone    = $idx < $currentIndex;
-        $isCurrent = $idx === $currentIndex;
-        $cls = $isDone ? 'done' : ($isCurrent ? 'current' : '');
-      ?>
-      <div class="sc-timeline-step <?= $cls ?>">
-        <div class="sc-timeline-dot"><?= $step['icon'] ?></div>
-        <div class="sc-timeline-label"><?= $step['label'] ?></div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-
-  <!-- SHIPMENT INFO -->
-  <?php if ($shipment): ?>
-  <div class="sc-tracking-grid">
-    <div class="sc-info-card">
-      <h3>📦 Shipment Details</h3>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Courier</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['courier'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Tracking Number</span>
-        <span class="sc-info-value"><?= htmlspecialchars($shipment['tracking_number'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Est. Delivery</span>
-        <span class="sc-info-value">
-          <?= $shipment['estimated_delivery'] ? date('M j, Y', strtotime($shipment['estimated_delivery'])) : '—' ?>
-        </span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Shipment Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipment['status'] ?? 'pending') ?>">
-            <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipment['status'] ?? 'pending'))) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-
-    <div class="sc-info-card">
-      <h3>📍 Delivery Address</h3>
-      <?php if (!empty($order['street_address'])): ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Street</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['street_address']) ?></span>
-      </div>
-      <?php endif; ?>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Barangay</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['barangay'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">City / Municipality</span>
-        <span class="sc-info-value"><?= htmlspecialchars(($order['city'] ?? '') . ', ' . ($order['municipality'] ?? '')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Province</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['province'] ?? '—') ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">ZIP Code</span>
-        <span class="sc-info-value"><?= htmlspecialchars($order['zip_code'] ?? '—') ?></span>
-      </div>
-    </div>
-  </div>
-  <?php else: ?>
-  <div class="sc-no-shipment">
-    <span style="font-size:22px;">📭</span>
-    <div>
-      <strong>Shipment details not yet available.</strong><br>
-      <span>Your order is being processed. Tracking information will appear here once your order is shipped.</span>
-    </div>
-  </div>
-  <?php endif; ?>
-
-  <!-- ORDER ITEMS -->
-  <div class="sc-section">
-    <div class="sc-section-header">
-      <h2>🌱 Items Ordered</h2>
-      <span style="font-size:12px; color:#888;"><?= count($orderItems) ?> item<?= count($orderItems) !== 1 ? 's' : '' ?></span>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:13px;">
-      <thead>
-        <tr style="border-bottom:2px solid #e8f5e9; text-align:left;">
-          <th style="padding:10px 12px; color:#2E7D32;">Seed</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Qty</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Unit Price</th>
-          <th style="padding:10px 12px; color:#2E7D32;">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orderItems as $item): ?>
-        <tr style="border-bottom:1px solid #f0f0f0;">
-          <td style="padding:10px 12px; font-weight:500;">🌱 <?= htmlspecialchars($item['name']) ?></td>
-          <td style="padding:10px 12px; color:#555;"><?= (int)$item['quantity'] ?></td>
-          <td style="padding:10px 12px; color:#555;">₱<?= number_format($item['price'], 2) ?></td>
-          <td style="padding:10px 12px; color:#2E7D32; font-weight:600;">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3" style="padding:12px 12px; text-align:right; font-weight:600; color:#333;">Total:</td>
-          <td style="padding:12px 12px; font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; color:#2E7D32;">
-            ₱<?= number_format($order['total_amount'], 2) ?>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <!-- ORDER META -->
-  <div class="sc-section">
-    <div class="sc-section-header"><h2>📋 Order Info</h2></div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order ID</span>
-        <span class="sc-info-value">#<?= (int)$order['id'] ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Date</span>
-        <span class="sc-info-value"><?= date('M j, Y g:i A', strtotime($order['created_at'])) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Delivery Method</span>
-        <span class="sc-info-value"><?= htmlspecialchars(ucfirst($order['delivery_method'] ?? '—')) ?></span>
-      </div>
-      <div class="sc-info-row">
-        <span class="sc-info-label">Order Status</span>
-        <span class="sc-info-value">
-          <span class="sc-status-badge sc-status-<?= htmlspecialchars($order['status']) ?>">
-            <?= htmlspecialchars(ucfirst($order['status'])) ?>
-          </span>
-        </span>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end sc-tracking-page -->
-
-  </main>
-</div><!-- end sc-dashboard -->
-
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
-  });
+}
 </script>
 </body>
 </html>

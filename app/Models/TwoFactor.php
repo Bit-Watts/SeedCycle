@@ -35,7 +35,14 @@ class TwoFactor {
             new SvgImageBackEnd()
         );
         $writer = new Writer($renderer);
-        return $writer->writeString($otpAuthUrl);
+        $svg = $writer->writeString($otpAuthUrl);
+        
+        // Remove XML declaration to avoid issues when embedding in HTML
+        if (strpos($svg, '<?xml') === 0) {
+            $svg = substr($svg, strpos($svg, '<svg'));
+        }
+        
+        return $svg;
     }
 
     /** Verify a TOTP code against a secret */

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle - Two-Factor Authentication</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/two-factor.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
   <a href="<?= $isLoginFlow ? 'login.php' : 'index.php' ?>" class="sc-logo">Seed<span>Cycle</span></a>
   <?php if (!$isLoginFlow): ?>
   <div class="sc-nav-user">
-    <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($user['first_name'] ?? 'Grower') ?> 👋</span>
+    <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></span>
     <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
   </div>
   <?php endif; ?>
@@ -34,27 +34,27 @@
         <?php if (!empty($pi)): ?>
           <img src="<?= htmlspecialchars($pi) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
         <?php else: ?>
-          🌱
+          <i class="fa-solid fa-seedling" style="font-size:28px; color:#4CAF50;"></i>
         <?php endif; ?>
       </div>
       <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
       <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
     </div>
     <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📬 Seller Orders</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link">📦 My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-      <a href="two-factor-setup.php" class="sc-sidebar-link active">🔐 2FA Security</a>
+      <a href="index.php" class="sc-sidebar-link"><i class="fa-solid fa-chart-line"></i> Overview</a>
+      <a href="my-seeds.php" class="sc-sidebar-link"><i class="fa-solid fa-wheat-awn"></i> My Seeds</a>
+      <a href="sell-seeds.php" class="sc-sidebar-link"><i class="fa-solid fa-plus"></i> Sell Seeds</a>
+      <a href="seller-orders.php" class="sc-sidebar-link"><i class="fa-solid fa-envelope-open-text"></i> Seller Orders</a>
+      <a href="marketplace.php" class="sc-sidebar-link"><i class="fa-solid fa-store"></i> Marketplace</a>
+      <a href="planting-guide.php" class="sc-sidebar-link"><i class="fa-solid fa-calendar-days"></i> Planting Guide</a>
+      <a href="orders.php" class="sc-sidebar-link"><i class="fa-solid fa-bag-shopping"></i> My Orders</a>
+      <a href="settings.php" class="sc-sidebar-link"><i class="fa-solid fa-gear"></i> Settings</a>
+      <a href="two-factor-setup.php" class="sc-sidebar-link active"><i class="fa-solid fa-shield-halved"></i> 2FA Security</a>
     </nav>
   </aside>
   <main class="sc-main">
     <div class="sc-main-header">
-      <h1>🔐 Two-Factor Authentication</h1>
+      <h1><i class="fa-solid fa-shield-halved"></i> Two-Factor Authentication</h1>
       <p>Add an extra layer of security to your account.</p>
     </div>
   <div class="sc-2fa-card" style="max-width:520px;">
@@ -70,7 +70,7 @@
     <?php if ($isLoginFlow && !$status['totp_enabled']): ?>
       <!-- Login flow header -->
       <div style="text-align:center; margin-bottom:20px;">
-        <div style="font-size:48px; margin-bottom:8px;">🔐</div>
+        <div style="font-size:48px; margin-bottom:8px;"><i class="fa-solid fa-lock"></i></div>
         <h2>Secure Your Account</h2>
         <p>Set up two-factor authentication to complete your login and protect your account.</p>
       </div>
