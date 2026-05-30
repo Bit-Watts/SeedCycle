@@ -10,7 +10,8 @@ class Order {
 
     public function getByUser(int $userId): array {
         $stmt = mysqli_prepare($this->conn,
-            'SELECT o.id, o.total_amount, o.status, o.shipping_status, o.delivery_method, o.created_at,
+            'SELECT o.id, o.total_amount, o.status, o.shipping_status, o.delivery_method,
+                    o.payment_method, o.payment_status, o.created_at,
                     GROUP_CONCAT(i.name ORDER BY i.name SEPARATOR ", ") AS seed_names
              FROM orders o
              JOIN order_items oi ON oi.order_id = o.id

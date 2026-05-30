@@ -42,7 +42,7 @@
         <label>Password</label>
         <input type="password" name="password" placeholder="••••••••" required>
       </div>
-      <a href="#" class="sc-forgot">Forgot password?</a>
+      <a href="forgot-password.php" class="sc-forgot">Forgot password?</a>
       <button type="submit" class="sc-btn-login">Login</button>
     </form>
 

@@ -84,6 +84,15 @@
                       style="background:#e8f5e9; color:#2E7D32; border:none; padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; font-family:'Roboto',sans-serif; font-weight:500;">
                       <i class="fa-solid fa-plus"></i> Add Stock
                     </button>
+                    <button onclick="openRemove(<?= (int)$s['inventory_id'] ?>, '<?= htmlspecialchars($s['seed_name'], ENT_QUOTES) ?>', 'approved')"
+                      style="background:#ffebee; color:#c62828; border:none; padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; font-family:'Roboto',sans-serif; font-weight:500; margin-left:4px;">
+                      <i class="fa-solid fa-eye-slash"></i> Delist
+                    </button>
+                  <?php elseif ($s['status'] === 'pending' || $s['status'] === 'rejected'): ?>
+                    <button onclick="openRemove(<?= (int)$s['inventory_id'] ?>, '<?= htmlspecialchars($s['seed_name'], ENT_QUOTES) ?>', '<?= $s['status'] ?>')"
+                      style="background:#ffebee; color:#c62828; border:none; padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; font-family:'Roboto',sans-serif; font-weight:500;">
+                      <i class="fa-solid fa-trash"></i> Remove
+                    </button>
                   <?php else: ?>
                     <span style="font-size:12px; color:#bbb;">—</span>
                   <?php endif; ?>
@@ -97,6 +106,27 @@
     </div>
 
   </main>
+</div>
+
+<!-- REMOVE LISTING MODAL -->
+<div class="sc-logout-overlay" id="removeListingOverlay" onclick="if(event.target===this) closeRemove()">
+  <div class="sc-logout-modal" style="max-width:360px;">
+    <div class="sc-logout-icon" id="removeIcon">🗑️</div>
+    <h3 id="removeTitle">Remove Listing</h3>
+    <p id="removeDesc" style="font-size:13px; color:#666; margin-bottom:8px;"></p>
+    <p id="removeSeedName" style="font-size:13px; color:#c62828; font-weight:600; margin-bottom:16px;"></p>
+    <form method="POST" action="my-seeds.php" id="removeForm">
+      <input type="hidden" name="remove_listing" value="1">
+      <input type="hidden" name="inventory_id" id="removeInventoryId">
+      <div class="sc-logout-actions">
+        <button type="submit" class="sc-logout-confirm" id="removeConfirmBtn"
+          style="background:#c62828; color:#fff;">
+          Confirm
+        </button>
+        <button type="button" class="sc-logout-cancel" onclick="closeRemove()">Cancel</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- ADD STOCK MODAL -->
@@ -125,6 +155,29 @@
 <?php require __DIR__ . '/includes/logout-modal.php'; ?>
 
 <script>
+  function openRemove(inventoryId, seedName, status) {
+    document.getElementById('removeInventoryId').value = inventoryId;
+    document.getElementById('removeSeedName').textContent = seedName;
+    if (status === 'approved') {
+      document.getElementById('removeIcon').textContent = '👁️';
+      document.getElementById('removeTitle').textContent = 'Delist Seed';
+      document.getElementById('removeDesc').textContent =
+        'This will hide the seed from the marketplace and set stock to 0. Existing orders will not be affected.';
+      document.getElementById('removeConfirmBtn').textContent = 'Delist';
+    } else {
+      document.getElementById('removeIcon').textContent = '🗑️';
+      document.getElementById('removeTitle').textContent = 'Remove Listing';
+      document.getElementById('removeDesc').textContent =
+        'This will permanently delete this listing request.';
+      document.getElementById('removeConfirmBtn').textContent = 'Delete';
+    }
+    document.getElementById('removeListingOverlay').classList.add('active');
+  }
+
+  function closeRemove() {
+    document.getElementById('removeListingOverlay').classList.remove('active');
+  }
+
   function openAddStock(inventoryId, seedName) {
     document.getElementById('addStockInventoryId').value = inventoryId;
     document.getElementById('addStockSeedName').textContent = seedName;

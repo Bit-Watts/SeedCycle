@@ -262,7 +262,7 @@
       This is a simulated payment. Your order will be processed immediately.
     </div>
 
-    <button class="btn-pay" id="payBtn" onclick="processPayment()">
+    <button class="btn-pay" id="payBtn" onclick="showComingSoon()">
       <i class="fa-solid fa-lock"></i> Pay Now
     </button>
 
@@ -280,9 +280,47 @@
   </div>
 </div>
 
+<!-- Coming Soon Modal -->
+<div id="comingSoonModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55);
+     z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:20px; padding:36px 32px; max-width:380px; width:90%;
+              text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.25); animation:popIn .2s ease;">
+    <div style="font-size:52px; margin-bottom:12px;">🚧</div>
+    <h2 style="font-family:'Poppins',sans-serif; color:#0062CC; font-size:20px; margin-bottom:10px;">
+      Online Payment Coming Soon
+    </h2>
+    <p style="font-size:14px; color:#555; line-height:1.7; margin-bottom:24px;">
+      Options for online payments are still in the works.<br>
+      Please use <strong>Cash on Delivery</strong> for now.
+    </p>
+    <a href="orders.php"
+      style="display:block; width:100%; background:#007DFF; color:#fff; border:none; padding:13px;
+             border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; text-decoration:none;
+             font-family:'Poppins',sans-serif; margin-bottom:10px; box-sizing:border-box;">
+      View My Orders
+    </a>
+    <button onclick="document.getElementById('comingSoonModal').style.display='none'"
+      style="width:100%; background:#f5f5f5; color:#666; border:none; padding:11px;
+             border-radius:10px; font-size:14px; cursor:pointer; font-family:'Inter',sans-serif;">
+      Go Back
+    </button>
+  </div>
+</div>
+
+<style>
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+</style>
+
 <script>
   const orderId = <?= $orderId ?>;
   const amount = <?= $amount ?>;
+
+  function showComingSoon() {
+    document.getElementById('comingSoonModal').style.display = 'flex';
+  }
 
   function processPayment() {
     const btn = document.getElementById('payBtn');

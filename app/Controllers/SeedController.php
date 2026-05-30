@@ -145,6 +145,16 @@ class SeedController {
         $message = null;
         $error   = null;
 
+        // Handle remove listing POST
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_listing'])) {
+            $inventoryId = (int)($_POST['inventory_id'] ?? 0);
+            if ($this->listingModel->removeListing($inventoryId, $_SESSION['user_id'])) {
+                $message = 'Listing removed successfully.';
+            } else {
+                $error = 'Failed to remove listing.';
+            }
+        }
+
         // Handle add stock POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_stock'])) {
             $inventoryId = (int)($_POST['inventory_id'] ?? 0);

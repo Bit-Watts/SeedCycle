@@ -96,6 +96,10 @@ class AuthController {
 
             if (!$first_name || !$last_name || !$email || !$username || !$password || !$confirm_password) {
                 $error = 'Please fill in all fields.';
+            } elseif (!$phone_number) {
+                $error = 'Phone number is required.';
+            } elseif (!$address) {
+                $error = 'Address is required.';
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $error = 'Please enter a valid email address.';
             } elseif (strlen($password) < 6) {

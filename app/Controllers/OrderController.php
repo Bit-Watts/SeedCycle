@@ -388,23 +388,26 @@ class OrderController {
 
     /**
      * Sync orders.shipping_status (and status if delivered) with shipment status.
+     * For COD orders, also mark payment as paid when delivered.
      */
     private function syncOrderStatus($conn, int $orderId, string $shipmentStatus): void {
         if ($shipmentStatus === 'delivered') {
+            // Mark delivered; also set COD payment to paid
             $stmt = mysqli_prepare($conn,
-                'UPDATE orders SET shipping_status = ?, status = "delivered" WHERE id = ?'
+                'UPDATE orders
+                 SET shipping_status = ?,
+                     status = "delivered",
+                     payment_status = CASE WHEN payment_method = "cod" THEN "paid" ELSE payment_status END
+                 WHERE id = ?'
             );
+            mysqli_stmt_bind_param($stmt, 'si', $shipmentStatus, $orderId);
         } else {
             $orderStatus = in_array($shipmentStatus, ['pending', 'packed']) ? 'pending' : 'processing';
             $stmt = mysqli_prepare($conn,
                 'UPDATE orders SET shipping_status = ?, status = ? WHERE id = ?'
             );
             mysqli_stmt_bind_param($stmt, 'ssi', $shipmentStatus, $orderStatus, $orderId);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
-            return;
         }
-        mysqli_stmt_bind_param($stmt, 'si', $shipmentStatus, $orderId);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }

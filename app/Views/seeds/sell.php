@@ -58,7 +58,7 @@
         <div class="sc-form-group">
           <label>Seed Name <span class="sc-required">*</span></label>
           <input type="text" name="seed_name" placeholder="e.g. Tomato Seeds"
-                 value="<?= htmlspecialchars($_POST['seed_name'] ?? '') ?>" required>
+                 value="<?= isset($success) ? '' : htmlspecialchars($_POST['seed_name'] ?? '') ?>" required>
         </div>
 
         <!-- CATEGORY + PRICE -->
@@ -68,14 +68,14 @@
             <select name="category">
               <option value="">Select category</option>
               <?php foreach (['Vegetable','Herb','Fruit','Flower','Grain','Other'] as $cat): ?>
-                <option value="<?= $cat ?>" <?= ($_POST['category'] ?? '') === $cat ? 'selected' : '' ?>><?= $cat ?></option>
+                <option value="<?= $cat ?>" <?= (!isset($success) && ($_POST['category'] ?? '') === $cat) ? 'selected' : '' ?>><?= $cat ?></option>
               <?php endforeach; ?>
             </select>
           </div>
           <div class="sc-form-group">
             <label>Price per Pack (₱) <span class="sc-required">*</span></label>
             <input type="number" name="price" step="0.01" min="0.01" placeholder="e.g. 45.00"
-                   value="<?= htmlspecialchars($_POST['price'] ?? '') ?>" required>
+                   value="<?= isset($success) ? '' : htmlspecialchars($_POST['price'] ?? '') ?>" required>
           </div>
         </div>
 
@@ -83,7 +83,7 @@
         <div class="sc-form-group sc-form-half">
           <label>Stock Quantity (packs) <span class="sc-required">*</span></label>
           <input type="number" name="stock_quantity" min="1" placeholder="e.g. 50"
-                 value="<?= htmlspecialchars($_POST['stock_quantity'] ?? '') ?>" required>
+                 value="<?= isset($success) ? '' : htmlspecialchars($_POST['stock_quantity'] ?? '') ?>" required>
         </div>
 
         <!-- PLANTING INFO -->
@@ -97,7 +97,7 @@
             <select name="planting_start_month">
               <option value="">None</option>
               <?php for ($m = 1; $m <= 12; $m++): ?>
-                <option value="<?= $m ?>" <?= (int)($_POST['planting_start_month'] ?? 0) === $m ? 'selected' : '' ?>><?= $mNames[$m] ?></option>
+                <option value="<?= $m ?>" <?= (!isset($success) && (int)($_POST['planting_start_month'] ?? 0) === $m) ? 'selected' : '' ?>><?= $mNames[$m] ?></option>
               <?php endfor; ?>
             </select>
           </div>
@@ -106,7 +106,7 @@
             <select name="planting_end_month">
               <option value="">None</option>
               <?php for ($m = 1; $m <= 12; $m++): ?>
-                <option value="<?= $m ?>" <?= (int)($_POST['planting_end_month'] ?? 0) === $m ? 'selected' : '' ?>><?= $mNames[$m] ?></option>
+                <option value="<?= $m ?>" <?= (!isset($success) && (int)($_POST['planting_end_month'] ?? 0) === $m) ? 'selected' : '' ?>><?= $mNames[$m] ?></option>
               <?php endfor; ?>
             </select>
           </div>
@@ -115,13 +115,13 @@
         <div class="sc-form-group sc-form-half">
           <label>Growing Days</label>
           <input type="number" name="growing_days" min="1" placeholder="e.g. 60"
-                 value="<?= htmlspecialchars($_POST['growing_days'] ?? '') ?>">
+                 value="<?= isset($success) ? '' : htmlspecialchars($_POST['growing_days'] ?? '') ?>">
         </div>
 
         <!-- DESCRIPTION -->
         <div class="sc-form-group">
           <label>Description</label>
-          <textarea name="description" rows="3" placeholder="Describe your seed — variety, quality, origin, etc."><?= htmlspecialchars($_POST['description'] ?? '') ?></textarea>
+          <textarea name="description" rows="3" placeholder="Describe your seed — variety, quality, origin, etc."><?= isset($success) ? '' : htmlspecialchars($_POST['description'] ?? '') ?></textarea>
         </div>
 
         <button type="submit" class="sc-btn-submit">Submit for Approval</button>
@@ -181,6 +181,13 @@
     preview.style.display       = 'block';
     placeholder.style.display   = 'none';
   }
+
+  <?php if (isset($success)): ?>
+  // Clear image preview after successful submission
+  document.getElementById('img-preview').style.display = 'none';
+  document.getElementById('upload-placeholder').style.display = '';
+  document.getElementById('image-input').value = '';
+  <?php endif; ?>
 </script>
 </body>
 </html>

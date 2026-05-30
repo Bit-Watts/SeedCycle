@@ -135,6 +135,10 @@
                 <div class="sc-payment-desc">Pay securely online</div>
               </label>
             </div>
+            <!-- GCash coming soon notice -->
+            <div id="gcash-notice" style="display:none; margin-top:10px; padding:10px 14px; background:#fff8e1; border:1px solid #ffe082; border-radius:10px; font-size:13px; color:#f57f17;">
+              <i class="fa-solid fa-triangle-exclamation"></i> GCash online payment is currently unavailable. Please use Cash on Delivery.
+            </div>
           </div>
 
         </form>
@@ -160,7 +164,7 @@
             <span class="sc-order-total-value">₱<?= number_format($total, 2) ?></span>
           </div>
 
-          <button type="button" class="sc-btn-place-order" onclick="document.getElementById('checkout-form').submit()">
+          <button type="button" class="sc-btn-place-order">
             <i class="fa-solid fa-check-circle"></i> Place Order
           </button>
           <p class="sc-checkout-note">By placing your order, you agree to our terms of service.</p>
@@ -243,8 +247,30 @@
       opt.classList.remove('selected');
     });
     element.classList.add('selected');
-    element.querySelector('input[type="radio"]').checked = true;
+    const radio = element.querySelector('input[type="radio"]');
+    radio.checked = true;
+
+    // Show/hide GCash notice
+    const notice = document.getElementById('gcash-notice');
+    if (radio.value === 'gcash') {
+      notice.style.display = 'block';
+    } else {
+      notice.style.display = 'none';
+    }
   }
+
+  // Intercept Place Order if GCash is selected
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.sc-btn-place-order').addEventListener('click', function(e) {
+      const selected = document.querySelector('input[name="payment_method"]:checked');
+      if (selected && selected.value === 'gcash') {
+        e.preventDefault();
+        document.getElementById('gcashComingSoonModal').style.display = 'flex';
+        return;
+      }
+      document.getElementById('checkout-form').submit();
+    });
+  });
 
   // Highlight selected options on page load
   document.addEventListener('DOMContentLoaded', function() {
@@ -260,5 +286,44 @@
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
 <?php require __DIR__ . '/includes/logout-modal.php'; ?>
+
+<!-- GCash Coming Soon Modal -->
+<div id="gcashComingSoonModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+     z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:20px; padding:36px 32px; max-width:380px; width:90%;
+              text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+    <div style="font-size:52px; margin-bottom:12px;">🚧</div>
+    <h2 style="font-family:'Poppins',sans-serif; color:#2E7D32; font-size:20px; margin-bottom:10px;">
+      Online Payment Coming Soon
+    </h2>
+    <p style="font-size:14px; color:#666; line-height:1.6; margin-bottom:24px;">
+      GCash payment is still in the works and not available yet.<br>
+      Please use <strong>Cash on Delivery</strong> for now.
+    </p>
+    <button onclick="switchToCOD()"
+      style="width:100%; background:#4CAF50; color:#fff; border:none; padding:13px;
+             border-radius:12px; font-size:15px; font-weight:600; cursor:pointer;
+             font-family:'Poppins',sans-serif; margin-bottom:10px;">
+      Switch to Cash on Delivery
+    </button>
+    <button onclick="document.getElementById('gcashComingSoonModal').style.display='none'"
+      style="width:100%; background:#f5f5f5; color:#666; border:none; padding:11px;
+             border-radius:10px; font-size:14px; cursor:pointer; font-family:'Inter',sans-serif;">
+      Go Back
+    </button>
+  </div>
+</div>
+
+<script>
+function switchToCOD() {
+  // Unselect GCash, select COD
+  document.querySelectorAll('.sc-payment-option').forEach(opt => opt.classList.remove('selected'));
+  const codRadio = document.querySelector('input[name="payment_method"][value="cod"]');
+  codRadio.checked = true;
+  codRadio.closest('.sc-payment-option').classList.add('selected');
+  document.getElementById('gcash-notice').style.display = 'none';
+  document.getElementById('gcashComingSoonModal').style.display = 'none';
+}
+</script>
 </body>
 </html>

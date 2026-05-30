@@ -41,14 +41,14 @@
       <div class="sc-stat-card">
         <div class="sc-stat-icon"><i class="fa-solid fa-box"></i></div>
         <div class="sc-stat-info">
-          <span class="sc-stat-value">0</span>
+          <span class="sc-stat-value"><?= (int)($ordersReceivedCount ?? 0) ?></span>
           <span class="sc-stat-label">Orders Received</span>
         </div>
       </div>
       <div class="sc-stat-card">
         <div class="sc-stat-icon"><i class="fa-solid fa-bell"></i></div>
         <div class="sc-stat-info">
-          <span class="sc-stat-value">0</span>
+          <span class="sc-stat-value"><?= (int)($notificationsCount ?? 0) ?></span>
           <span class="sc-stat-label">Notifications</span>
         </div>
       </div>

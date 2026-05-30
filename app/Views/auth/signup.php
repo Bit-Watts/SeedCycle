@@ -39,7 +39,7 @@
     <?php endif; ?>
 
     <?php if (isset($success)): ?>
-      <div class="sc-success"><?= htmlspecialchars($success) ?></div>
+      <div class="sc-success"><?= $success ?></div>
     <?php endif; ?>
 
     <form action="" method="POST" enctype="multipart/form-data">
@@ -73,12 +73,12 @@
         <input type="text" name="username" placeholder="juandelacruz" value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
       </div>
       <div class="sc-form-group">
-        <label>Phone Number</label>
-        <input type="tel" name="phone_number" placeholder="e.g. 09123456789" value="<?= htmlspecialchars($_POST['phone_number'] ?? '') ?>">
+        <label>Phone Number <span style="color:#e53e3e;">*</span></label>
+        <input type="tel" name="phone_number" placeholder="e.g. 09123456789" value="<?= htmlspecialchars($_POST['phone_number'] ?? '') ?>" required>
       </div>
       <div class="sc-form-group">
-        <label>Address</label>
-        <input type="text" name="address" placeholder="Street, Barangay, City, Province" value="<?= htmlspecialchars($_POST['address'] ?? '') ?>">
+        <label>Address <span style="color:#e53e3e;">*</span></label>
+        <input type="text" name="address" placeholder="Street, Barangay, City, Province" value="<?= htmlspecialchars($_POST['address'] ?? '') ?>" required>
       </div>
       <div class="sc-form-group">
         <label>Password</label>

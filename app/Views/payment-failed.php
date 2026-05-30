@@ -20,15 +20,15 @@
       <i class="fa-solid fa-xmark"></i>
     </div>
 
-    <h1 class="sc-payment-title-failed">Payment Failed</h1>
+    <h1 class="sc-payment-title-failed">Online Payment Unavailable</h1>
     <p class="sc-payment-message">
-      We couldn't process your payment. Please try again or use a different payment method.
+      Options for online payments are still in the works. Please use Cash on Delivery for now.
     </p>
 
     <div class="sc-payment-error-box">
-      <div class="sc-payment-error-title">What happened?</div>
+      <div class="sc-payment-error-title">🚧 Coming Soon</div>
       <div class="sc-payment-error-text">
-        <?= htmlspecialchars($_GET['message'] ?? 'The payment transaction could not be completed. This may be due to insufficient funds, network issues, or other technical problems.') ?>
+        GCash and other online payment options are currently being set up. Your order has been saved — you can switch to Cash on Delivery from your orders page.
       </div>
     </div>
 
@@ -48,11 +48,11 @@
     </div>
 
     <div class="sc-payment-actions">
-      <a href="payment-gcash.php?order_id=<?= (int)$order['id'] ?>&amount=<?= htmlspecialchars($order['total_amount']) ?>" class="sc-btn sc-btn-green sc-btn-lg">
-        <i class="fa-solid fa-rotate-right"></i> Try Again
+      <a href="orders.php" class="sc-btn sc-btn-green sc-btn-lg">
+        <i class="fa-solid fa-bag-shopping"></i> View My Orders
       </a>
-      <a href="orders.php" class="sc-btn sc-btn-ghost sc-btn-lg">
-        <i class="fa-solid fa-bag-shopping"></i> View Orders
+      <a href="marketplace.php" class="sc-btn sc-btn-ghost sc-btn-lg">
+        <i class="fa-solid fa-store"></i> Back to Marketplace
       </a>
     </div>
 

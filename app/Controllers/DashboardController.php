@@ -52,6 +52,27 @@ class DashboardController {
         $listingsCount = (int)(mysqli_fetch_assoc(mysqli_stmt_get_result($stmt2))['cnt'] ?? 0);
         mysqli_stmt_close($stmt2);
 
+        // Real stat: orders received as seller (orders containing user's approved seeds)
+        $stmt3 = mysqli_prepare($conn,
+            'SELECT COUNT(DISTINCT o.id) AS cnt
+             FROM orders o
+             JOIN order_items oi ON oi.order_id = o.id
+             JOIN seed_listings sl ON sl.inventory_id = oi.inventory_id
+             WHERE sl.user_id = ? AND sl.status = "approved"'
+        );
+        mysqli_stmt_bind_param($stmt3, 'i', $userId);
+        mysqli_stmt_execute($stmt3);
+        $ordersReceivedCount = (int)(mysqli_fetch_assoc(mysqli_stmt_get_result($stmt3))['cnt'] ?? 0);
+        mysqli_stmt_close($stmt3);
+
+        // Real stat: unread notifications count
+        $stmt4 = mysqli_prepare($conn,
+            'SELECT COUNT(*) AS cnt FROM order_notifications WHERE user_id = ? AND is_read = 0'
+        );
+        mysqli_stmt_bind_param($stmt4, 'i', $userId);
+        mysqli_stmt_execute($stmt4);
+        $notificationsCount = (int)(mysqli_fetch_assoc(mysqli_stmt_get_result($stmt4))['cnt'] ?? 0);
+        mysqli_stmt_close($stmt4);
         require_once __DIR__ . '/../Models/Seed.php';
 
         // Recommended seeds: up to 4 active, in-stock seeds
