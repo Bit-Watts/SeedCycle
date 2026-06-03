@@ -687,44 +687,57 @@ html, body {
 @media (max-width: 600px) {
   .sc-nav {
     padding: 8px 12px !important;
-    gap: 6px !important;
     flex-wrap: wrap !important;
     align-items: center !important;
+    gap: 4px !important;
+    overflow: visible !important;
   }
-  /* Logo takes full top row */
+  /* Logo on first row */
   .sc-logo {
-    font-size: 18px !important;
+    font-size: 17px !important;
     flex: 1 1 auto !important;
     white-space: nowrap !important;
+    overflow: visible !important;
+    order: 1 !important;
   }
-  /* Icons + logout fill second row, centered */
+  /* Icons + buttons on second row, full width centered */
   .sc-nav-user {
+    order: 2 !important;
     width: 100% !important;
+    flex: 0 0 100% !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 6px !important;
     flex-wrap: nowrap !important;
-    flex: 1 1 100% !important;
+    overflow: visible !important;
+    padding-bottom: 2px !important;
   }
   .sc-nav-icon {
-    min-width: 38px !important;
-    min-height: 38px !important;
     width: 38px !important;
     height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
     font-size: 17px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     padding: 0 !important;
+    flex-shrink: 0 !important;
   }
   .sc-btn-nav {
-    padding: 8px 18px !important;
+    padding: 8px 16px !important;
     font-size: 13px !important;
     min-height: 38px !important;
     min-width: unset !important;
     white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
+}
+
+/* Ensure body overflow-x:hidden doesn't clip the navbar children */
+.sc-nav {
+  overflow: visible !important;
 }
 
 /* ── DASHBOARD LAYOUT ── */

@@ -145,7 +145,6 @@ ul, ol { list-style: none; }
   font-size: 22px;
   color: #fff;
   text-decoration: none;
-  overflow: hidden;
 }
 
 .sc-logo span { color: var(--color-accent-alt); }
