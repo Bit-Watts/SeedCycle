@@ -10,7 +10,7 @@
 </head>
 <body>
 <nav class="sc-nav">
-  <a href="dashboard.php" class="sc-logo">Seed<span>Cycle</span> Admin</a>
+  <a href="dashboard.php" class="sc-logo"><img src="../assets/images/SeedCycleLogo.png" alt="SeedCycle" class="sc-logo-img"> Seed<span>Cycle</span> Admin</a>
   <div class="sc-nav-user">
     <span class="sc-nav-greeting">Admin 👋</span>
     <a href="../logout.php"><button class="sc-btn-nav">Logout</button></a>

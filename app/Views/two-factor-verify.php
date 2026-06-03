@@ -12,7 +12,7 @@
 <body>
 
 <nav class="sc-nav">
-  <div class="sc-logo">Seed<span>Cycle</span></div>
+  <div class="sc-logo"><img src="assets/images/SeedCycleLogo.png" alt="SeedCycle" class="sc-logo-img"> Seed<span>Cycle</span></div>
 </nav>
 
 <div class="sc-2fa-page">

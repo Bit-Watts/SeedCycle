@@ -137,6 +137,9 @@ ul, ol { list-style: none; }
 }
 
 .sc-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 22px;
@@ -145,6 +148,14 @@ ul, ol { list-style: none; }
 }
 
 .sc-logo span { color: var(--color-accent-alt); }
+
+.sc-logo-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
 
 .sc-navlinks {
   display: flex;

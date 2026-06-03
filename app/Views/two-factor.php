@@ -11,7 +11,7 @@
 <body>
 
 <nav class="sc-nav">
-  <a href="<?= $isLoginFlow ? 'login.php' : 'index.php' ?>" class="sc-logo">Seed<span>Cycle</span></a>
+  <a href="<?= $isLoginFlow ? 'login.php' : 'index.php' ?>" class="sc-logo"><img src="assets/images/SeedCycleLogo.png" alt="SeedCycle" class="sc-logo-img"> Seed<span>Cycle</span></a>
   <?php if (!$isLoginFlow): ?>
   <div class="sc-nav-user">
     <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></span>
