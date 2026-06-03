@@ -3,7 +3,7 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'seedcycle-v1.2.0';
+const CACHE_NAME = 'seedcycle-v1.3.0';
 const OFFLINE_URL = '/public/offline.html';
 
 // Assets to cache on install
@@ -67,22 +67,13 @@ self.addEventListener('fetch', (event) => {
   const isPhpPage     = url.match(/\.php/) || url.endsWith('/');
 
   if (isPhpPage) {
-    // ── NETWORK-FIRST for PHP pages ──────────────────────────────────────
-    // Always fetch fresh data; only fall back to cache if offline
+    // ── NETWORK-ONLY for PHP pages ────────────────────────────────────────
+    // Never cache dynamic pages — always get fresh data from server
     event.respondWith(
       fetch(event.request)
-        .then((response) => {
-          // Valid response — update cache for offline fallback
-          if (response && response.status === 200 && response.type === 'basic') {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          }
-          return response;
-        })
         .catch(() => {
-          // Offline — serve cached version or offline page
-          return caches.match(event.request)
-            .then((cached) => cached || caches.match(OFFLINE_URL));
+          // Offline fallback only
+          return caches.match(OFFLINE_URL);
         })
     );
   } else if (isStaticAsset) {
