@@ -37,5 +37,8 @@ $_navItems = [
         <?= $item['icon'] ?> <?= $item['label'] ?>
       </a>
     <?php endforeach; ?>
+    <a href="logout.php" class="sc-sidebar-link sc-sidebar-logout">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
   </nav>
 </aside>
