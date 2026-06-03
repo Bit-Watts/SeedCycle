@@ -84,7 +84,7 @@
           </div>
           <p class="sc-form-hint" id="fetch-hint">
             <i class="fa-solid fa-circle-info"></i>
-            Click "Re-fetch Info" to auto-fill details from the Trefle plant database.
+            Click "Re-fetch Info" to auto-fill details from the Perenual plant database.
           </p>
         </div>
 
@@ -186,7 +186,7 @@
                  value="<?= htmlspecialchars($listing['growing_days'] ?? '') ?>">
         </div>
 
-        <!-- SUNLIGHT + WATER (auto-filled from Trefle) -->
+        <!-- SUNLIGHT + WATER (auto-filled from Perenual) -->
         <div class="sc-form-row">
           <div class="sc-form-group">
             <label><i class="fa-solid fa-sun" style="color:#f9a825;"></i> Sunlight Requirement</label>
@@ -237,7 +237,7 @@
     placeholder.style.display = 'none';
   }
 
-  // ── TREFLE PLANT LOOKUP ──────────────────────────────────────────────────
+  // ── PERENUAL PLANT LOOKUP ────────────────────────────────────────────────
   function fetchPlantInfo() {
     const query = document.getElementById('seed-name-input').value.trim();
     if (!query) { document.getElementById('seed-name-input').focus(); return; }

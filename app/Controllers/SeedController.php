@@ -312,10 +312,10 @@ class SeedController {
             $growingDays = (int)($_POST['growing_days'] ?? 0) ?: null;
             $stockQty    = max(1, (int)($_POST['stock_quantity'] ?? 1));
 
-            // Trefle auto-filled extras
+            // Perenual auto-filled extras
             $scientificName = trim($_POST['scientific_name'] ?? '');
             $plantFamily    = trim($_POST['plant_family']    ?? '');
-            $trefleImageUrl = trim($_POST['trefle_image_url'] ?? '');
+            $perenualImageUrl = trim($_POST['trefle_image_url'] ?? '');
 
             $allowedCategories = ['Vegetable','Herb','Fruit','Flower','Grain','Other'];
 
@@ -330,7 +330,7 @@ class SeedController {
             } elseif ($this->listingModel->alreadyPendingByName($_SESSION['user_id'], $seedName)) {
                 $error = 'You already have a pending request for a seed with this name.';
             } else {
-                // Handle image upload (manual takes priority over Trefle image)
+                // Handle image upload (manual takes priority over Perenual image)
                 $imageUrl = '';
                 if (!empty($_FILES['image']['name'])) {
                     $uploadDir = __DIR__ . '/../../public/assets/uploads/listings/';
@@ -348,12 +348,11 @@ class SeedController {
                         move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $filename);
                         $imageUrl = 'assets/uploads/listings/' . $filename;
                     }
-                } elseif ($trefleImageUrl) {
-                    // Download and save the Perenual/external image locally
-                    $imageUrl = $this->downloadExternalImage($trefleImageUrl, $_SESSION['user_id']);
+                } elseif ($perenualImageUrl) {
+                    // Download and save the Perenual image locally
+                    $imageUrl = $this->downloadExternalImage($perenualImageUrl, $_SESSION['user_id']);
                     if (!$imageUrl) {
-                        // Fallback: store the URL directly if download fails
-                        $imageUrl = $trefleImageUrl;
+                        $imageUrl = $perenualImageUrl;
                     }
                 }
 
