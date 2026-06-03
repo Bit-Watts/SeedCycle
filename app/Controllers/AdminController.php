@@ -217,43 +217,6 @@ class AdminController {
         if (session_status() === PHP_SESSION_NONE) { session_start(); }
         $this->requireAdmin();
 
-        $message = null;
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $orderId        = (int)($_POST['order_id']        ?? 0);
-            $newStatus      = trim($_POST['status']           ?? '');
-            $newShipStatus  = trim($_POST['shipping_status']  ?? '');
-            $validStatuses  = ['pending','processing','confirmed','shipped','out_for_delivery','delivered','cancelled'];
-            $validShipStatuses = ['pending','shipped','in_transit','out_for_delivery','delivered'];
-
-            // Handle remove cancelled order
-            if (isset($_POST['remove_order']) && $orderId > 0) {
-                require_once __DIR__ . '/../Models/Order.php';
-                $orderModel = new Order($this->conn);
-                $orderModel->adminDeleteCancelled($orderId);
-                $message = 'Cancelled order removed.';
-            } elseif ($orderId > 0) {
-                if ($newStatus && in_array($newStatus, $validStatuses)) {
-                    $stmt = mysqli_prepare($this->conn,
-                        'UPDATE orders SET status = ? WHERE id = ?'
-                    );
-                    mysqli_stmt_bind_param($stmt, 'si', $newStatus, $orderId);
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-                    $message = 'Order status updated.';
-                }
-                if ($newShipStatus && in_array($newShipStatus, $validShipStatuses)) {
-                    $stmt = mysqli_prepare($this->conn,
-                        'UPDATE orders SET shipping_status = ? WHERE id = ?'
-                    );
-                    mysqli_stmt_bind_param($stmt, 'si', $newShipStatus, $orderId);
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-                    $message = 'Order updated.';
-                }
-            }
-        }
-
         $result = mysqli_query($this->conn,
             'SELECT o.id, o.total_amount, o.status, o.shipping_status, o.delivery_method,
                     o.created_at, u.first_name, u.last_name, u.email,
@@ -277,94 +240,6 @@ class AdminController {
         if (session_status() === PHP_SESSION_NONE) { session_start(); }
         $this->requireAdmin();
 
-        $message = null;
-        $error   = null;
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = $_POST['action'] ?? '';
-
-            if ($action === 'add') {
-                $orderId           = (int)($_POST['order_id']          ?? 0);
-                $courier           = trim($_POST['courier']            ?? '');
-                $trackingNumber    = trim($_POST['tracking_number']    ?? '');
-                $estimatedDelivery = trim($_POST['estimated_delivery'] ?? '');
-                $status            = trim($_POST['status']             ?? 'pending');
-
-                if (!$orderId || !$courier || !$trackingNumber) {
-                    $error = 'Order ID, courier, and tracking number are required.';
-                } else {
-                    $stmt = mysqli_prepare($this->conn,
-                        'INSERT INTO shipments (order_id, courier, tracking_number, estimated_delivery, status)
-                         VALUES (?, ?, ?, ?, ?)'
-                    );
-                    mysqli_stmt_bind_param($stmt, 'issss',
-                        $orderId, $courier, $trackingNumber, $estimatedDelivery, $status
-                    );
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-
-                    // Update order shipping_status and set to processing
-                    $stmt2 = mysqli_prepare($this->conn,
-                        'UPDATE orders SET shipping_status = ?, status = "processing" WHERE id = ?'
-                    );
-                    mysqli_stmt_bind_param($stmt2, 'si', $status, $orderId);
-                    mysqli_stmt_execute($stmt2);
-                    mysqli_stmt_close($stmt2);
-
-                    $message = 'Shipment added successfully.';
-                }
-            } elseif ($action === 'update') {
-                $shipmentId        = (int)($_POST['shipment_id']       ?? 0);
-                $courier           = trim($_POST['courier']            ?? '');
-                $trackingNumber    = trim($_POST['tracking_number']    ?? '');
-                $estimatedDelivery = trim($_POST['estimated_delivery'] ?? '');
-                $status            = trim($_POST['status']             ?? 'pending');
-
-                if ($shipmentId > 0) {
-                    // If delivered, set delivered_at
-                    if ($status === 'delivered') {
-                        $stmt = mysqli_prepare($this->conn,
-                            'UPDATE shipments SET courier=?, tracking_number=?, estimated_delivery=?, status=?, delivered_at=NOW()
-                             WHERE id=?'
-                        );
-                        mysqli_stmt_bind_param($stmt, 'ssssi',
-                            $courier, $trackingNumber, $estimatedDelivery, $status, $shipmentId
-                        );
-                    } else {
-                        $stmt = mysqli_prepare($this->conn,
-                            'UPDATE shipments SET courier=?, tracking_number=?, estimated_delivery=?, status=?
-                             WHERE id=?'
-                        );
-                        mysqli_stmt_bind_param($stmt, 'ssssi',
-                            $courier, $trackingNumber, $estimatedDelivery, $status, $shipmentId
-                        );
-                    }
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-
-                    // Update order shipping_status; if delivered, update order status too
-                    if ($status === 'delivered') {
-                        $stmt2 = mysqli_prepare($this->conn,
-                            'UPDATE orders o JOIN shipments s ON s.order_id = o.id
-                             SET o.shipping_status = ?, o.status = "delivered"
-                             WHERE s.id = ?'
-                        );
-                    } else {
-                        $stmt2 = mysqli_prepare($this->conn,
-                            'UPDATE orders o JOIN shipments s ON s.order_id = o.id
-                             SET o.shipping_status = ?
-                             WHERE s.id = ?'
-                        );
-                    }
-                    mysqli_stmt_bind_param($stmt2, 'si', $status, $shipmentId);
-                    mysqli_stmt_execute($stmt2);
-                    mysqli_stmt_close($stmt2);
-
-                    $message = 'Shipment updated.';
-                }
-            }
-        }
-
         $result = mysqli_query($this->conn,
             'SELECT s.*, o.user_id, u.first_name, u.last_name
              FROM shipments s
@@ -375,19 +250,6 @@ class AdminController {
         $shipments = [];
         while ($row = mysqli_fetch_assoc($result)) {
             $shipments[] = $row;
-        }
-
-        // Orders without shipments (for add form)
-        $ordersResult = mysqli_query($this->conn,
-            'SELECT o.id, u.first_name, u.last_name
-             FROM orders o
-             JOIN users u ON u.id = o.user_id
-             WHERE o.id NOT IN (SELECT DISTINCT order_id FROM shipments)
-             ORDER BY o.created_at DESC'
-        );
-        $unshippedOrders = [];
-        while ($row = mysqli_fetch_assoc($ordersResult)) {
-            $unshippedOrders[] = $row;
         }
 
         require __DIR__ . '/../Views/admin/shipments.php';

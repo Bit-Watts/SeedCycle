@@ -4,13 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle - Sign Up</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/singup.css">
 </head>
 <body>
 
 <nav class="sc-nav">
-  <div class="sc-logo">Seed<span>Cycle</span></div>
+  <a href="landing.php" class="sc-logo">Seed<span>Cycle</span></a>
   <ul class="sc-navlinks">
     <li><a href="index.php">Home</a></li>
     <li><a href="marketplace.php">Marketplace</a></li>
@@ -18,22 +20,22 @@
   </ul>
   <?php if (isset($_SESSION['user_id'])): ?>
     <div class="sc-nav-user">
-      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?> 👋</span>
-      <a href="index.php"><button class="sc-btn-nav">Dashboard</button></a>
-      <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
+      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?></span>
+      <a href="index.php" class="sc-btn-nav">Dashboard</a>
+      <a href="logout.php" class="sc-btn-nav">Logout</a>
     </div>
   <?php else: ?>
-    <a href="login.php"><button class="sc-btn-nav">Login</button></a>
+    <a href="login.php" class="sc-btn-nav">Login</a>
   <?php endif; ?>
 </nav>
 
-<div class="sc-page">
-  <div class="sc-signup-card">
-    <h2>Create an Account</h2>
+<div class="sc-auth-page">
+  <div class="sc-auth-card sc-signup-card">
+    <h2>Create an Account 🌱</h2>
     <p>Join SeedCycle and start growing smarter</p>
 
     <?php if (isset($error)): ?>
-      <div class="sc-error"><?= $error ?></div>
+      <div class="sc-error"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
     <?php if (isset($success)): ?>
@@ -41,12 +43,13 @@
     <?php endif; ?>
 
     <form action="" method="POST" enctype="multipart/form-data">
+
       <!-- PROFILE IMAGE -->
       <div class="sc-form-group" style="text-align:center; margin-bottom:20px;">
-        <div id="avatar-preview" style="width:80px; height:80px; border-radius:50%; background:#e8f5e9; border:2px solid #c8e6c9; display:flex; align-items:center; justify-content:center; font-size:36px; margin:0 auto 10px; overflow:hidden; cursor:pointer;" onclick="document.getElementById('profile_image').click()">
-          🌱
+        <div id="avatar-preview" class="sc-signup-avatar" onclick="document.getElementById('profile_image').click()">
+          <i class="fa-solid fa-seedling"></i>
         </div>
-        <small style="font-size:11px; color:#aaa;">Click to upload profile photo</small>
+        <small style="font-size:11px; color:var(--color-text-light);">Click to upload profile photo</small>
         <input type="file" id="profile_image" name="profile_image" accept="image/*" style="display:none;" onchange="previewAvatar(event)">
       </div>
 
@@ -60,6 +63,7 @@
           <input type="text" name="last_name" placeholder="Dela Cruz" value="<?= htmlspecialchars($_POST['last_name'] ?? '') ?>" required>
         </div>
       </div>
+
       <div class="sc-form-group">
         <label>Email Address</label>
         <input type="email" name="email" placeholder="you@email.com" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
@@ -69,12 +73,12 @@
         <input type="text" name="username" placeholder="juandelacruz" value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
       </div>
       <div class="sc-form-group">
-        <label>Phone Number</label>
-        <input type="tel" name="phone_number" placeholder="e.g. 09123456789" value="<?= htmlspecialchars($_POST['phone_number'] ?? '') ?>">
+        <label>Phone Number <span style="color:#e53e3e;">*</span></label>
+        <input type="tel" name="phone_number" placeholder="e.g. 09123456789" value="<?= htmlspecialchars($_POST['phone_number'] ?? '') ?>" required>
       </div>
       <div class="sc-form-group">
-        <label>Address</label>
-        <input type="text" name="address" placeholder="Street, Barangay, City" value="<?= htmlspecialchars($_POST['address'] ?? '') ?>">
+        <label>Address <span style="color:#e53e3e;">*</span></label>
+        <input type="text" name="address" placeholder="Street, Barangay, City, Province" value="<?= htmlspecialchars($_POST['address'] ?? '') ?>" required>
       </div>
       <div class="sc-form-group">
         <label>Password</label>
@@ -84,6 +88,7 @@
         <label>Confirm Password</label>
         <input type="password" name="confirm_password" placeholder="••••••••" required>
       </div>
+
       <button type="submit" class="sc-btn-signup">Create Account</button>
     </form>
 

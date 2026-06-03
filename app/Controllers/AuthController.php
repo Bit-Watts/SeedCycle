@@ -35,6 +35,21 @@ class AuthController {
                     if (isset($row['is_active']) && (int)$row['is_active'] === 0) {
                         $error = 'Your account has been deactivated. Please contact support.';
                     } else {
+                        $isAdmin = ($row['role'] ?? 'user') === 'admin';
+
+                        if ($isAdmin) {
+                            // Admins always bypass 2FA — log in directly
+                            $_SESSION['user_id']       = $row['id'];
+                            $_SESSION['first_name']    = $row['first_name'];
+                            $_SESSION['last_name']     = $row['last_name'];
+                            $_SESSION['username']      = $row['username'];
+                            $_SESSION['email']         = $row['email'];
+                            $_SESSION['role']          = $row['role'];
+                            $_SESSION['profile_image'] = $row['profile_image'] ?? '';
+                            header('Location: admin/dashboard.php');
+                            exit;
+                        }
+
                         // Store pending user data in session for 2FA flow
                         $_SESSION['2fa_pending_user_id']   = $row['id'];
                         $_SESSION['2fa_pending_email']     = $row['email'];
@@ -81,6 +96,10 @@ class AuthController {
 
             if (!$first_name || !$last_name || !$email || !$username || !$password || !$confirm_password) {
                 $error = 'Please fill in all fields.';
+            } elseif (!$phone_number) {
+                $error = 'Phone number is required.';
+            } elseif (!$address) {
+                $error = 'Address is required.';
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $error = 'Please enter a valid email address.';
             } elseif (strlen($password) < 6) {

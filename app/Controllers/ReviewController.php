@@ -23,6 +23,12 @@ class ReviewController {
             header('Location: login.php');
             exit;
         }
+        
+        // Redirect admin users to admin panel
+        if (($_SESSION['role'] ?? 'user') === 'admin') {
+            header('Location: admin/dashboard.php');
+            exit;
+        }
     }
 
     /** Submit a review for a seed (POST from seed details page) */

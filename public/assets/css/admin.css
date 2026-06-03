@@ -4,29 +4,29 @@
 /* ── ADMIN BADGE (nav) ── */
 .sc-admin-badge {
   font-size: 12px;
-  background: #FFC107;
-  color: #333333;
+  background: var(--color-accent-alt);
+  color: var(--color-text);
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   margin-left: 8px;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-body);
   font-weight: 600;
 }
 
 /* ── ADMIN FORM ── */
 .sc-admin-form {
-  background: #f9fdf9;
-  border: 1px solid #c8e6c9;
-  border-radius: 10px;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 20px 24px;
   margin-bottom: 20px;
 }
 
 .sc-admin-form h3 {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-heading);
   font-size: 15px;
   font-weight: 600;
-  color: #2E7D32;
+  color: var(--color-primary);
   margin-bottom: 16px;
 }
 
@@ -56,29 +56,29 @@
 .sc-form-group textarea {
   width: 100%;
   padding: 9px 12px;
-  border: 1.5px solid #c8e6c9;
-  border-radius: 8px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
   font-size: 13px;
-  font-family: 'Roboto', sans-serif;
-  color: #333333;
+  font-family: var(--font-body);
+  color: var(--color-text);
   outline: none;
-  background: #ffffff;
+  background: var(--color-bg-card);
 }
 
 .sc-form-group input:focus,
 .sc-form-group select:focus,
-.sc-form-group textarea:focus { border-color: #4CAF50; }
+.sc-form-group textarea:focus { border-color: var(--color-primary-light); }
 
 /* ── ADMIN BUTTONS ── */
 .sc-btn-submit {
-  background: #4CAF50;
+  background: var(--color-primary-light);
   color: #ffffff;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   padding: 10px 24px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
 }
 
@@ -86,18 +86,18 @@
 
 .sc-btn-cancel {
   background: transparent;
-  color: #888888;
-  font-family: 'Roboto', sans-serif;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
   font-size: 13px;
   padding: 10px 16px;
   border: 1.5px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   margin-left: 8px;
   text-decoration: none;
 }
 
-.sc-btn-cancel:hover { border-color: #bdbdbd; color: #555555; }
+.sc-btn-cancel:hover { border-color: #bdbdbd; color: var(--color-text-secondary); }
 
 /* ── DETAIL POPUP (listings) ── */
 .sc-detail-overlay {
@@ -113,22 +113,22 @@
 .sc-detail-overlay.active { display: flex; }
 
 .sc-detail-popup {
-  background: #ffffff;
-  border-radius: 14px;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
   padding: 28px 32px;
   max-width: 520px;
   width: 95%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  box-shadow: var(--shadow-lg);
   position: relative;
 }
 
 .sc-detail-popup h3 {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-heading);
   font-size: 18px;
   font-weight: 700;
-  color: #2E7D32;
+  color: var(--color-primary);
   margin-bottom: 18px;
 }
 
@@ -140,10 +140,10 @@
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #888888;
+  color: var(--color-text-muted);
 }
 
-.sc-detail-popup .sc-close-btn:hover { color: #333333; }
+.sc-detail-popup .sc-close-btn:hover { color: var(--color-text); }
 
 .sc-detail-row {
   display: flex;
@@ -154,14 +154,14 @@
 }
 
 .sc-detail-row:last-of-type { border-bottom: none; }
-.sc-detail-label { color: #888888; font-weight: 500; }
-.sc-detail-value { color: #333333; font-weight: 500; text-align: right; max-width: 60%; }
+.sc-detail-label { color: var(--color-text-muted); font-weight: 500; }
+.sc-detail-value { color: var(--color-text); font-weight: 500; text-align: right; max-width: 60%; }
 
 .sc-detail-popup img {
   width: 100%;
   max-height: 200px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   margin-bottom: 18px;
 }
 
@@ -174,30 +174,30 @@
 /* ── APPROVE / REJECT BUTTONS ── */
 .sc-btn-approve {
   flex: 1;
-  background: #e8f5e9;
-  color: #2E7D32;
+  background: var(--color-success-bg);
+  color: var(--color-primary);
   border: none;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-body);
 }
 
-.sc-btn-approve:hover { background: #c8e6c9; }
+.sc-btn-approve:hover { background: var(--color-border); }
 
 .sc-btn-reject {
   flex: 1;
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
   border: none;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-body);
 }
 
 .sc-btn-reject:hover { background: #ffcdd2; }
@@ -207,10 +207,10 @@
   color: #1565c0;
   border: none;
   padding: 5px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   cursor: pointer;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-body);
 }
 
 .sc-btn-view-detail:hover { background: #bbdefb; }
@@ -223,13 +223,13 @@
 }
 
 .sc-admin-table thead tr {
-  border-bottom: 2px solid #e8f5e9;
+  border-bottom: 2px solid var(--color-border-light);
   text-align: left;
 }
 
 .sc-admin-table th {
   padding: 10px 12px;
-  color: #2E7D32;
+  color: var(--color-primary);
 }
 
 .sc-admin-table td {
@@ -239,20 +239,20 @@
 
 /* ── ADMIN MESSAGE ALERTS ── */
 .sc-admin-success {
-  background: #e8f5e9;
-  color: #2E7D32;
+  background: var(--color-success-bg);
+  color: var(--color-primary);
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 13px;
-  border: 1px solid #c8e6c9;
+  border: 1px solid var(--color-border);
   margin-bottom: 16px;
 }
 
 .sc-admin-error {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 13px;
   border: 1px solid #ffcdd2;
   margin-bottom: 16px;

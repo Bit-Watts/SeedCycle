@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle Admin - Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 <nav class="sc-nav">
-  <a href="index.php" class="sc-logo">Seed<span>Cycle</span> Admin</a>
+  <a href="dashboard.php" class="sc-logo">Seed<span>Cycle</span> Admin</a>
   <div class="sc-nav-user">
     <span class="sc-nav-greeting">Admin 👋</span>
     <a href="../logout.php"><button class="sc-btn-nav">Logout</button></a>
@@ -27,11 +27,11 @@
       <p class="sc-sidebar-email"><?= htmlspecialchars($_SESSION['email'] ?? '') ?></p>
     </div>
     <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link active">📊 Dashboard</a>
+      <a href="dashboard.php" class="sc-sidebar-link active">📊 Dashboard</a>
       <a href="users.php" class="sc-sidebar-link">👥 Users</a>
       <a href="seeds.php" class="sc-sidebar-link">🌱 Seeds</a>
       <a href="listings.php" class="sc-sidebar-link">📋 Listings</a>
-      <a href="orders.php" class="sc-sidebar-link">🛍️ My Orders</a>
+      <a href="orders.php" class="sc-sidebar-link">🛍️ User Orders</a>
       <a href="shipments.php" class="sc-sidebar-link">🚚 Shipments</a>
       <a href="reports.php" class="sc-sidebar-link">📈 Reports</a>
       <a href="../index.php" class="sc-sidebar-link" style="margin-top:12px; color:#888;">← User View</a>

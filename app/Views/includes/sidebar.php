@@ -9,14 +9,14 @@ $_email       = htmlspecialchars($user['email'] ?? '');
 $_activePage  = $activePage ?? '';
 
 $_navItems = [
-    'dashboard'     => ['href' => 'index.php',         'icon' => '📊', 'label' => 'Overview'],
-    'my-seeds'      => ['href' => 'my-seeds.php',      'icon' => '🌾', 'label' => 'My Seeds'],
-    'sell-seeds'    => ['href' => 'sell-seeds.php',    'icon' => '➕', 'label' => 'Sell Seeds'],
-    'seller-orders' => ['href' => 'seller-orders.php', 'icon' => '📬', 'label' => 'Seller Orders'],
-    'marketplace'   => ['href' => 'marketplace.php',   'icon' => '🛒', 'label' => 'Marketplace'],
-    'planting-guide'=> ['href' => 'planting-guide.php','icon' => '📅', 'label' => 'Planting Guide'],
-    'orders'        => ['href' => 'orders.php',        'icon' => '📦', 'label' => 'My Orders'],
-    'settings'      => ['href' => 'settings.php',      'icon' => '⚙️', 'label' => 'Settings'],
+    'dashboard'         => ['href' => 'index.php',            'icon' => '<i class="fa-solid fa-chart-line"></i>',           'label' => 'Overview'],
+    'my-seeds'          => ['href' => 'my-seeds.php',         'icon' => '<i class="fa-solid fa-wheat-awn"></i>',            'label' => 'My Seeds'],
+    'sell-seeds'        => ['href' => 'sell-seeds.php',       'icon' => '<i class="fa-solid fa-plus"></i>',                 'label' => 'Sell Seeds'],
+    'seller-orders'     => ['href' => 'seller-orders.php',    'icon' => '<i class="fa-solid fa-truck-fast"></i>',           'label' => 'Seller Orders'],
+    'marketplace'       => ['href' => 'marketplace.php',      'icon' => '<i class="fa-solid fa-store"></i>',                'label' => 'Marketplace'],
+    'planting-guide'    => ['href' => 'planting-guide.php',   'icon' => '<i class="fa-solid fa-calendar-days"></i>',        'label' => 'Planting Guide'],
+    'orders'            => ['href' => 'orders.php',           'icon' => '<i class="fa-solid fa-bag-shopping"></i>',         'label' => 'My Orders'],
+    'settings'          => ['href' => 'settings.php',         'icon' => '<i class="fa-solid fa-gear"></i>',                 'label' => 'Settings'],
 ];
 ?>
 <aside class="sc-sidebar">
@@ -25,7 +25,7 @@ $_navItems = [
       <?php if (!empty($_pi)): ?>
         <img src="<?= htmlspecialchars($_pi) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
       <?php else: ?>
-        🌱
+        <i class="fa-solid fa-seedling" style="font-size:28px; color:#4CAF50;"></i>
       <?php endif; ?>
     </div>
     <p class="sc-sidebar-name"><?= $_firstName ?></p>

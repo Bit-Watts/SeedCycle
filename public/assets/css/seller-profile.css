@@ -1,0 +1,387 @@
+/* =============================================================================
+   SELLER-PROFILE.CSS — Public seller profile page
+   Loads base.css first. Only seller-profile-specific styles here.
+============================================================================= */
+
+/* ── SELLER HEADER BANNER ── */
+.seller-profile-header {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  box-shadow: var(--shadow-md);
+}
+
+.seller-profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 4px solid rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.seller-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.seller-profile-avatar i {
+  font-size: 3rem;
+  color: #fff;
+}
+
+.seller-profile-info { flex: 1; }
+
+.seller-profile-info h1 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.seller-profile-info p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seller-profile-info i { color: var(--color-accent); }
+
+/* ── STATS GRID ── */
+.seller-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.seller-stat-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow var(--transition);
+}
+
+.seller-stat-card:hover { box-shadow: var(--shadow-md); }
+
+.seller-stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.seller-stat-icon i { font-size: 1.6rem; }
+
+.seller-stat-value {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.seller-stat-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* ── LISTINGS SECTION ── */
+.seller-listings-section {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 28px 32px;
+}
+
+.seller-listings-section h2 {
+  font-size: 1.3rem;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.seller-listings-section h2 i { color: var(--color-primary-light); }
+
+/* ── NO LISTINGS ── */
+.no-listings {
+  text-align: center;
+  padding: 48px 20px;
+}
+
+.no-listings i {
+  font-size: 3.5rem;
+  color: var(--color-border);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.no-listings p {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+}
+
+/* ── LISTINGS GRID ── */
+.seller-listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* ── LISTING CARD ── */
+.seller-listing-card {
+  background: var(--color-bg-subtle);
+  border: 1.5px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow var(--transition), border-color 0.2s, transform 0.2s;
+}
+
+.seller-listing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.seller-listing-image {
+  width: 100%;
+  height: 180px;
+  background: var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.seller-listing-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.seller-listing-placeholder {
+  font-size: 3.5rem;
+  color: var(--color-border);
+}
+
+.seller-listing-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.seller-listing-badge.out-of-stock {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+}
+
+.seller-listing-badge.low-stock {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.seller-listing-info {
+  padding: 16px 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.seller-listing-info h3 {
+  font-size: 1rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.seller-listing-category {
+  display: inline-block;
+  padding: 3px 10px;
+  background: var(--color-border-light);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.seller-listing-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.seller-listing-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.seller-listing-meta i {
+  font-size: 11px;
+  color: var(--color-primary-light);
+}
+
+.seller-listing-price {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .seller-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .seller-profile-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 28px 20px;
+  }
+  .seller-profile-info p { justify-content: center; }
+  .seller-stats-grid { grid-template-columns: 1fr; }
+  .seller-listings-section { padding: 20px 16px; }
+  .seller-listings-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .seller-profile-avatar { width: 80px; height: 80px; }
+  .seller-profile-info h1 { font-size: 1.4rem; }
+}
+
+/* ── CHAT BUTTON ── */
+.seller-chat-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.seller-chat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px 24px;
+  border-radius: var(--radius-md);
+  text-decoration: none !important;
+  cursor: pointer;
+  border: none;
+  transition: background var(--transition), transform var(--transition),
+              box-shadow var(--transition);
+  white-space: nowrap;
+  /* Solid accent yellow — stands out on the green header */
+  background: var(--color-accent);
+  color: #1a1a1a !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.seller-chat-btn:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+  text-decoration: none !important;
+}
+
+.seller-chat-btn:active { transform: scale(0.97); }
+
+.seller-chat-btn i { font-size: 15px; }
+
+/* Ghost variant for "Login to Chat" */
+.seller-chat-btn--ghost {
+  background: rgba(255,255,255,0.18);
+  color: #fff !important;
+  box-shadow: none;
+  border: 1.5px solid rgba(255,255,255,0.4);
+}
+
+.seller-chat-btn--ghost:hover {
+  background: rgba(255,255,255,0.28);
+  transform: translateY(-2px);
+  box-shadow: none;
+}
+
+/* ── CHAT ICON (right side of header) ── */
+.seller-header-chat {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.seller-chat-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 22px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.seller-chat-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.1);
+  text-decoration: none;
+}
+
+.seller-chat-icon-btn:active { transform: scale(0.95); }
+
+.seller-chat-icon-btn--ghost {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.seller-chat-icon-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.seller-chat-icon-btn--disabled {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+  cursor: not-allowed;
+}

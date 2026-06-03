@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle Admin - Orders</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 
 <nav class="sc-nav">
-  <div class="sc-logo">Seed<span>Cycle</span> <span style="font-size:12px; background:#FFC107; color:#333; padding:2px 8px; border-radius:4px; margin-left:8px; font-family:'Roboto',sans-serif; font-weight:600;">ADMIN</span></div>
+  <a href="dashboard.php" class="sc-logo">Seed<span>Cycle</span> <span style="font-size:12px; background:#FFC107; color:#333; padding:2px 8px; border-radius:4px; margin-left:8px; font-family:'Roboto',sans-serif; font-weight:600;">ADMIN</span></a>
   <div class="sc-nav-user">
     <span class="sc-nav-greeting">Admin 👋</span>
     <a href="../logout.php"><button class="sc-btn-nav">Logout</button></a>
@@ -25,11 +25,11 @@
       <p class="sc-sidebar-name">Admin Panel</p>
     </div>
     <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Dashboard</a>
+      <a href="dashboard.php" class="sc-sidebar-link">📊 Dashboard</a>
       <a href="users.php" class="sc-sidebar-link">👥 Users</a>
       <a href="seeds.php" class="sc-sidebar-link">🌱 Seeds</a>
       <a href="listings.php" class="sc-sidebar-link">📋 Listings</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
+      <a href="orders.php" class="sc-sidebar-link active">🛍️ User Orders</a>
       <a href="shipments.php" class="sc-sidebar-link">🚚 Shipments</a>
       <a href="reports.php" class="sc-sidebar-link">📈 Reports</a>
       <a href="../index.php" class="sc-sidebar-link" style="margin-top:12px; color:#888;">← User View</a>
@@ -41,10 +41,6 @@
       <h1>Orders</h1>
       <p>Manage all customer orders.</p>
     </div>
-
-    <?php if (!empty($message)): ?>
-      <div style="background:#e8f5e9; color:#2E7D32; padding:10px 16px; border-radius:8px; font-size:13px; border:1px solid #c8e6c9;"><?= htmlspecialchars($message) ?></div>
-    <?php endif; ?>
 
     <div class="sc-section">
       <div class="sc-section-header">
@@ -83,33 +79,10 @@
               <td style="padding:10px 12px; color:#555;"><?= htmlspecialchars(ucfirst($o['delivery_method'] ?? '—')) ?></td>
               <td style="padding:10px 12px; color:#888;"><?= date('M j, Y', strtotime($o['created_at'])) ?></td>
               <td style="padding:10px 12px;">
-                <form method="POST" action="orders.php" style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                  <input type="hidden" name="order_id" value="<?= (int)$o['id'] ?>">
-                  <div style="display:flex; flex-direction:column; gap:4px;">
-                    <select name="status" style="padding:5px 8px; border:1.5px solid #c8e6c9; border-radius:6px; font-size:11px; font-family:'Roboto',sans-serif; color:#333; outline:none; background:#fff;">
-                      <?php foreach (['pending','processing','confirmed','shipped','out_for_delivery','delivered','cancelled'] as $st): ?>
-                        <option value="<?= $st ?>" <?= $o['status'] === $st ? 'selected' : '' ?>>
-                          <?= ucwords(str_replace('_', ' ', $st)) ?>
-                        </option>
-                      <?php endforeach; ?>
-                    </select>
-                    <select name="shipping_status" style="padding:5px 8px; border:1.5px solid #c8e6c9; border-radius:6px; font-size:11px; font-family:'Roboto',sans-serif; color:#333; outline:none; background:#fff;">
-                      <?php foreach (['pending','shipped','in_transit','out_for_delivery','delivered'] as $st): ?>
-                        <option value="<?= $st ?>" <?= ($o['shipping_status'] ?? 'pending') === $st ? 'selected' : '' ?>>
-                          🚚 <?= ucwords(str_replace('_', ' ', $st)) ?>
-                        </option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div style="display:flex; flex-direction:column; gap:4px; align-self:center;">
-                    <button type="submit" style="background:#4CAF50; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer; font-family:'Roboto',sans-serif;">Update</button>
-                    <?php if ($o['status'] === 'cancelled'): ?>
-                    <button type="submit" name="remove_order" value="1"
-                      style="background:#ffebee; color:#c62828; border:none; padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer; font-family:'Roboto',sans-serif;"
-                      onclick="return confirm('Remove this cancelled order?')">🗑 Remove</button>
-                    <?php endif; ?>
-                  </div>
-                </form>
+                <span style="padding:3px 10px; border-radius:20px; font-size:11px; font-weight:500;
+                  background:#e8f5e9; color:#2E7D32;">
+                  <?= htmlspecialchars(ucwords(str_replace('_', ' ', $o['status'] ?? 'pending'))) ?>
+                </span>
               </td>
             </tr>
             <?php endforeach; ?>

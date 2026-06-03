@@ -3,53 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SeedCycle - Orders</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <title>SeedCycle - My Orders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/orders.css">
 </head>
 <body>
-<nav class="sc-nav">
-  <a href="index.php" class="sc-logo">Seed<span>Cycle</span></a>
-  <div class="sc-nav-user">
-    <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($user['first_name'] ?? 'Grower') ?> 👋</span>
-    <a href="cart.php" class="sc-nav-icon" title="Cart">🛒</a>
-    <a href="profile.php" class="sc-nav-icon" title="Profile">👤</a>
-    <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
-  </div>
-</nav>
+
+<?php require __DIR__ . '/includes/navbar.php'; ?>
 
 <div class="sc-dashboard">
 
-  <aside class="sc-sidebar">
-    <div class="sc-sidebar-avatar">
-      <div class="sc-avatar" style="overflow:hidden;">
-        <?php $pi = $user['profile_image'] ?? $_SESSION['profile_image'] ?? ''; ?>
-        <?php if (!empty($pi)): ?>
-          <img src="<?= htmlspecialchars($pi) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
-        <?php endif; ?>
-      </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link active">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
+  <?php $activePage = 'orders'; require __DIR__ . '/includes/sidebar.php'; ?>
 
   <main class="sc-main">
 
     <div class="sc-main-header">
-      <h1>Orders</h1>
+      <h1><i class="fa-solid fa-bag-shopping"></i> My Orders</h1>
       <p>Seeds you've purchased from the marketplace.</p>
     </div>
 
@@ -60,72 +31,152 @@
       </div>
 
       <?php if (empty($orders)): ?>
-        <div style="text-align:center; padding: 40px 0; color: #888;">
-          <div style="font-size:40px; margin-bottom:12px;">📦</div>
-          <p>No orders yet.</p>
-          <a href="marketplace.php" style="color:#2E7D32; font-weight:500;">Browse the marketplace →</a>
+        <div style="text-align:center; padding:60px 20px; color:#888;">
+          <i class="fa-solid fa-box-open" style="font-size:48px; color:#c8e6c9; margin-bottom:16px; display:block;"></i>
+          <p style="font-size:14px; margin-bottom:12px;">No orders yet.</p>
+          <a href="marketplace.php" style="color:#2E7D32; font-weight:500;">Browse the marketplace &rarr;</a>
         </div>
       <?php else: ?>
-        <div class="sc-table-wrap">
-          <table style="width:100%; border-collapse:collapse; font-size:13px;">
-            <thead>
-              <tr style="border-bottom:2px solid #e8f5e9; text-align:left;">
-                <th style="padding:10px 12px; color:#2E7D32;">Seeds</th>
-                <th style="padding:10px 12px; color:#2E7D32;">Total</th>
-                <th style="padding:10px 12px; color:#2E7D32;">Status</th>
-                <th style="padding:10px 12px; color:#2E7D32;">Date</th>
-                <th style="padding:10px 12px; color:#2E7D32;">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($orders as $o): ?>
-              <?php
-                $isCancelled = $o['status'] === 'cancelled';
-                $statusColors = [
-                  'pending'          => ['#fff8e1','#f57f17'],
-                  'processing'       => ['#e3f2fd','#1565c0'],
-                  'confirmed'        => ['#e3f2fd','#1565c0'],
-                  'shipped'          => ['#e8f5e9','#2E7D32'],
-                  'in_transit'       => ['#f3e5f5','#6a1b9a'],
-                  'out_for_delivery' => ['#fff3e0','#e65100'],
-                  'delivered'        => ['#e8f5e9','#1b5e20'],
-                  'cancelled'        => ['#ffebee','#c62828'],
-                ];
-                $sc = $statusColors[$o['status']] ?? ['#f5f5f5','#555'];
-              ?>
-              <tr style="border-bottom:1px solid #f0f0f0; <?= $isCancelled ? 'opacity:0.7;' : '' ?>">
-                <td style="padding:10px 12px; font-weight:500;">🌱 <?= htmlspecialchars($o['seed_names']) ?></td>
-                <td style="padding:10px 12px; color:#2E7D32; font-weight:600;">₱<?= number_format($o['total_amount'], 2) ?></td>
-                <td style="padding:10px 12px;">
-                  <span style="padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600;
-                    background:<?= $sc[0] ?>; color:<?= $sc[1] ?>;">
-                    <?= htmlspecialchars(ucwords(str_replace('_', ' ', $o['status']))) ?>
+        <div class="sc-orders-accordion">
+          <?php foreach ($orders as $o):
+            $isCancelled = $o['status'] === 'cancelled';
+            $shipStatus  = $o['shipping_status'] ?? $o['status'];
+            $paymentStatus = $o['payment_status'] ?? 'pending';
+            $paymentMethod = $o['payment_method'] ?? 'cod';
+          ?>
+          <div class="sc-order-accordion-item <?= $isCancelled ? 'sc-order-cancelled' : '' ?>">
+            <!-- Order Header (Clickable) -->
+            <div class="sc-order-accordion-header" onclick="toggleOrder(this)">
+              <div class="sc-order-accordion-left">
+                <div class="sc-order-accordion-id">
+                  <i class="fa-solid fa-receipt"></i>
+                  <span>Order #<?= (int)$o['id'] ?></span>
+                </div>
+                <div class="sc-order-accordion-date">
+                  <i class="fa-regular fa-calendar"></i>
+                  <?= date('M j, Y', strtotime($o['created_at'])) ?>
+                </div>
+              </div>
+              
+              <div class="sc-order-accordion-center">
+                <div class="sc-order-accordion-seeds">
+                  <i class="fa-solid fa-seedling"></i>
+                  <?= htmlspecialchars($o['seed_names']) ?>
+                </div>
+              </div>
+
+              <div class="sc-order-accordion-right">
+                <div class="sc-order-accordion-badges">
+                  <span class="sc-payment-badge sc-payment-<?= htmlspecialchars($paymentStatus) ?>" title="<?= htmlspecialchars(ucfirst($paymentMethod)) ?>">
+                    <?php if ($paymentStatus === 'paid'): ?>
+                      <i class="fa-solid fa-circle-check"></i> Paid
+                    <?php elseif ($paymentStatus === 'cod'): ?>
+                      <i class="fa-solid fa-money-bill"></i> COD
+                    <?php elseif ($paymentStatus === 'failed'): ?>
+                      <i class="fa-solid fa-circle-xmark"></i> Failed
+                    <?php else: ?>
+                      <i class="fa-solid fa-clock"></i> Pending
+                    <?php endif; ?>
                   </span>
-                </td>
-                <td style="padding:10px 12px; color:#888;"><?= date('M j, Y', strtotime($o['created_at'])) ?></td>
-                <td style="padding:10px 12px; display:flex; gap:8px; align-items:center;">
-                  <?php if (!$isCancelled): ?>
-                    <a href="order-tracking.php?id=<?= (int)$o['id'] ?>"
-                       style="font-size:12px; color:#4CAF50; text-decoration:none; font-weight:500;">
-                      Track →
+                  <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipStatus) ?>">
+                    <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipStatus))) ?>
+                  </span>
+                </div>
+                <div class="sc-order-accordion-total">
+                  ₱<?= number_format($o['total_amount'], 2) ?>
+                </div>
+                <div class="sc-order-accordion-toggle">
+                  <i class="fa-solid fa-chevron-down"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order Details (Collapsible) -->
+            <div class="sc-order-accordion-body">
+              <div class="sc-order-details-grid">
+                <!-- Order Information -->
+                <div class="sc-order-detail-section">
+                  <h4><i class="fa-solid fa-info-circle"></i> Order Information</h4>
+                  <div class="sc-order-detail-item">
+                    <span class="sc-detail-label">Order ID:</span>
+                    <span class="sc-detail-value">#<?= (int)$o['id'] ?></span>
+                  </div>
+                  <div class="sc-order-detail-item">
+                    <span class="sc-detail-label">Order Date:</span>
+                    <span class="sc-detail-value"><?= date('F j, Y g:i A', strtotime($o['created_at'])) ?></span>
+                  </div>
+                  <div class="sc-order-detail-item">
+                    <span class="sc-detail-label">Delivery Method:</span>
+                    <span class="sc-detail-value"><?= htmlspecialchars(ucfirst($o['delivery_method'] ?? 'Standard')) ?></span>
+                  </div>
+                </div>
+
+                <!-- Payment Information -->
+                <div class="sc-order-detail-section">
+                  <h4><i class="fa-solid fa-credit-card"></i> Payment</h4>
+                  <div class="sc-order-detail-item">
+                    <span class="sc-detail-label">Method:</span>
+                    <span class="sc-detail-value"><?= $paymentMethod === 'cod' ? 'Cash on Delivery' : 'GCash' ?></span>
+                  </div>
+                  <div class="sc-order-detail-item">
+                    <span class="sc-detail-label">Status:</span>
+                    <span class="sc-detail-value">
+                      <span class="sc-payment-badge sc-payment-<?= htmlspecialchars($paymentStatus) ?>">
+                        <?= htmlspecialchars(ucfirst($paymentStatus)) ?>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="sc-order-detail-item">
+                    <span class="sc-detail-label">Total Amount:</span>
+                    <span class="sc-detail-value sc-detail-amount">₱<?= number_format($o['total_amount'], 2) ?></span>
+                  </div>
+                </div>
+
+                <!-- Shipping Status -->
+                <div class="sc-order-detail-section">
+                  <h4><i class="fa-solid fa-truck"></i> Shipping</h4>
+                  <div class="sc-order-detail-item">
+                    <span class="sc-detail-label">Status:</span>
+                    <span class="sc-detail-value">
+                      <span class="sc-status-badge sc-status-<?= htmlspecialchars($shipStatus) ?>">
+                        <?= htmlspecialchars(ucwords(str_replace('_', ' ', $shipStatus))) ?>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="sc-order-actions">
+                <?php if (!$isCancelled): ?>
+                  <?php if ($paymentStatus === 'pending' || $paymentStatus === 'failed'): ?>
+                    <a href="payment-gcash.php?order_id=<?= (int)$o['id'] ?>&amount=<?= $o['total_amount'] ?>" class="sc-btn-action sc-btn-pay">
+                      <i class="fa-solid fa-credit-card"></i> Pay Now
                     </a>
-                  <?php else: ?>
-                    <form method="POST" action="orders.php" style="display:inline;"
-                          onsubmit="return confirm('Remove this cancelled order from your list?')">
-                      <input type="hidden" name="remove_order" value="1">
-                      <input type="hidden" name="order_id" value="<?= (int)$o['id'] ?>">
-                      <button type="submit"
-                        style="background:#ffebee; color:#c62828; border:none; padding:5px 12px;
-                               border-radius:6px; font-size:12px; cursor:pointer; font-family:'Roboto',sans-serif; font-weight:500;">
-                        🗑 Remove
-                      </button>
-                    </form>
                   <?php endif; ?>
-                </td>
-              </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
+                  <?php if ($shipStatus === 'out_for_delivery'): ?>
+                    <button class="sc-btn-action sc-btn-confirm-receipt-list"
+                            onclick="openConfirmModal(<?= (int)$o['id'] ?>)">
+                      <i class="fa-solid fa-box-circle-check"></i> Confirm Receipt
+                    </button>
+                  <?php endif; ?>
+                  <a href="order-tracking.php?id=<?= (int)$o['id'] ?>" class="sc-btn-action sc-btn-track">
+                    <i class="fa-solid fa-location-crosshairs"></i> Track Order
+                  </a>
+                <?php else: ?>
+                  <form method="POST" action="orders.php" style="display:inline;"
+                        onsubmit="return confirm('Remove this cancelled order from your list?')">
+                    <input type="hidden" name="remove_order" value="1">
+                    <input type="hidden" name="order_id" value="<?= (int)$o['id'] ?>">
+                    <button type="submit" class="sc-btn-action sc-btn-remove">
+                      <i class="fa-solid fa-trash"></i> Remove Order
+                    </button>
+                  </form>
+                <?php endif; ?>
+              </div>
+            </div>
+          </div>
+          <?php endforeach; ?>
         </div>
       <?php endif; ?>
     </div>
@@ -133,31 +184,78 @@
   </main>
 </div>
 
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
+<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/includes/logout-modal.php'; ?>
 
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
+<!-- CONFIRM RECEIPT MODAL -->
+<div id="confirmReceiptModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:#fff; border-radius:16px; max-width:420px; width:100%; padding:32px 28px; box-shadow:0 8px 32px rgba(0,0,0,0.18); text-align:center;">
+    <div style="width:64px; height:64px; background:#e8f5e9; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:#2E7D32;">
+      <i class="fa-solid fa-box-circle-check"></i>
+    </div>
+    <h3 style="font-family:'Poppins',sans-serif; font-size:18px; font-weight:700; color:#1b5e20; margin-bottom:8px;">Confirm Package Receipt</h3>
+    <p style="font-size:13px; color:#555; line-height:1.6; margin-bottom:24px;">
+      Please confirm only if you have <strong>physically received</strong> your package. This action cannot be undone.
+    </p>
+    <div style="display:flex; gap:12px; justify-content:center;">
+      <form method="POST" action="confirm-receipt.php" id="confirmReceiptForm">
+        <input type="hidden" name="order_id" id="confirmOrderId" value="">
+        <button type="submit" style="background:#2E7D32; color:#fff; border:none; padding:12px 28px; border-radius:10px; font-size:14px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">
+          <i class="fa-solid fa-check"></i> Yes, I Received It
+        </button>
+      </form>
+      <button onclick="document.getElementById('confirmReceiptModal').style.display='none'"
+              style="background:#f5f5f5; color:#555; border:none; padding:12px 24px; border-radius:10px; font-size:14px; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer;">
+        Cancel
+      </button>
     </div>
   </div>
 </div>
+
+<style>
+.sc-btn-confirm-receipt-list {
+  background: linear-gradient(135deg, #2E7D32, #388e3c);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(46,125,50,0.25);
+}
+.sc-btn-confirm-receipt-list:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46,125,50,0.35);
+}
+</style>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
+function openConfirmModal(orderId) {
+  document.getElementById('confirmOrderId').value = orderId;
+  document.getElementById('confirmReceiptModal').style.display = 'flex';
+}
+
+function toggleOrder(header) {
+  const item = header.parentElement;
+  const body = item.querySelector('.sc-order-accordion-body');
+  const icon = header.querySelector('.sc-order-accordion-toggle i');
+  
+  // Close all other orders
+  document.querySelectorAll('.sc-order-accordion-item').forEach(otherItem => {
+    if (otherItem !== item && otherItem.classList.contains('active')) {
+      otherItem.classList.remove('active');
+      otherItem.querySelector('.sc-order-accordion-body').style.maxHeight = null;
+      otherItem.querySelector('.sc-order-accordion-toggle i').style.transform = 'rotate(0deg)';
+    }
   });
+  
+  // Toggle current order
+  item.classList.toggle('active');
+  
+  if (item.classList.contains('active')) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    icon.style.transform = 'rotate(180deg)';
+  } else {
+    body.style.maxHeight = null;
+    icon.style.transform = 'rotate(0deg)';
+  }
+}
 </script>
+
 </body>
 </html>

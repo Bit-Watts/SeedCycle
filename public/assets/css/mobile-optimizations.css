@@ -1,0 +1,649 @@
+/**
+ * Mobile & Android Optimizations
+ * 
+ * This file contains optimizations specifically for mobile devices,
+ * especially Android browsers (Chrome, Firefox, Samsung Internet)
+ */
+
+/* ============================================================================
+   ANDROID-SPECIFIC OPTIMIZATIONS
+   ============================================================================ */
+
+/* Prevent text size adjustment on orientation change */
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Smooth scrolling for Android */
+* {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Prevent tap highlight color on Android */
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Better font rendering on Android */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ============================================================================
+   TOUCH-FRIENDLY ELEMENTS
+   ============================================================================ */
+
+/* Minimum touch target size (48x48px recommended by Google) */
+button,
+a,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.btn,
+.sc-btn,
+.sc-btn-nav,
+.sc-nav-icon {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px 20px;
+}
+
+/* Larger tap targets for mobile */
+@media (max-width: 768px) {
+  button,
+  .btn,
+  .sc-btn {
+    min-height: 48px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* Prevents zoom on iOS/Android */
+    min-height: 48px;
+  }
+}
+
+/* ============================================================================
+   FORM OPTIMIZATIONS FOR MOBILE
+   ============================================================================ */
+
+/* Better input styling for mobile */
+input,
+select,
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+/* Remove default styling on Android */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Better select styling for Android */
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* ============================================================================
+   RESPONSIVE IMAGES
+   ============================================================================ */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent image dragging on mobile */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* ============================================================================
+   MOBILE NAVIGATION
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Stack navigation items vertically */
+  .sc-nav {
+    flex-wrap: wrap;
+    padding: 12px 16px;
+  }
+  
+  .sc-nav-user {
+    gap: 12px;
+  }
+  
+  .sc-nav-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+  
+  .sc-logo {
+    font-size: 1.3rem;
+  }
+  
+  .sc-nav-greeting {
+    display: none; /* Hide on very small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .sc-nav {
+    padding: 10px 12px;
+  }
+  
+  .sc-logo {
+    font-size: 1.1rem;
+  }
+}
+
+/* ============================================================================
+   MOBILE CARDS & CONTAINERS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Reduce padding on mobile */
+  .sc-card,
+  .card,
+  .order-card,
+  .seed-card {
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  
+  /* Full width containers on mobile */
+  .container,
+  .sc-container {
+    padding: 0 16px;
+  }
+  
+  /* Stack grid items on mobile */
+  .sc-grid,
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* ============================================================================
+   MOBILE MODALS & DIALOGS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .modal,
+  .dialog,
+  .popup {
+    width: 95%;
+    max-width: 95%;
+    margin: 20px auto;
+  }
+  
+  .modal-content {
+    padding: 20px;
+  }
+}
+
+/* ============================================================================
+   MOBILE TABLES
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Make tables scrollable on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  /* Or convert to card layout */
+  .responsive-table {
+    display: block;
+  }
+  
+  .responsive-table thead {
+    display: none;
+  }
+  
+  .responsive-table tbody,
+  .responsive-table tr,
+  .responsive-table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .responsive-table tr {
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+  }
+  
+  .responsive-table td {
+    text-align: left;
+    padding: 8px 0;
+    border: none;
+  }
+  
+  .responsive-table td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: inline-block;
+    width: 120px;
+  }
+}
+
+/* ============================================================================
+   MOBILE CHAT INTERFACE
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .chat-container {
+    flex-direction: column;
+    height: calc(100vh - 60px);
+  }
+  
+  .chat-sidebar {
+    width: 100%;
+    max-height: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .chat-sidebar.hidden {
+    display: none;
+  }
+  
+  .chat-main {
+    width: 100%;
+    flex: 1;
+  }
+  
+  .chat-messages {
+    padding: 12px;
+  }
+  
+  .message-bubble {
+    max-width: 85%;
+  }
+  
+  .chat-input {
+    padding: 12px;
+  }
+  
+  .chat-input textarea {
+    font-size: 16px; /* Prevent zoom */
+  }
+}
+
+/* ============================================================================
+   MOBILE MARKETPLACE
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .sc-market-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .sc-seed-card {
+    padding: 12px;
+  }
+  
+  .sc-seed-image {
+    height: 140px;
+  }
+  
+  .sc-filters {
+    position: static;
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sc-market-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================================
+   MOBILE CART & CHECKOUT
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .sc-cart-page {
+    flex-direction: column;
+  }
+  
+  .sc-cart-items,
+  .sc-cart-summary {
+    width: 100%;
+  }
+  
+  .sc-cart-summary {
+    position: static;
+    margin-top: 20px;
+  }
+  
+  .checkout-form {
+    padding: 16px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+  }
+  
+  .form-group {
+    width: 100%;
+  }
+}
+
+/* ============================================================================
+   MOBILE DASHBOARD
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .sc-dashboard {
+    flex-direction: column;
+  }
+  
+  .sc-sidebar {
+    width: 100%;
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .sc-main {
+    width: 100%;
+    padding: 16px;
+  }
+  
+  .sc-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sc-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================================
+   MOBILE ORDERS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .order-accordion {
+    padding: 12px;
+  }
+  
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .order-details {
+    padding: 12px;
+  }
+  
+  .order-items {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================================
+   MOBILE NOTIFICATIONS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .notifications-container {
+    padding: 0 12px;
+  }
+  
+  .notification-item {
+    flex-direction: column;
+    padding: 16px;
+  }
+  
+  .notification-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  .notification-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .btn-view-order,
+  .btn-mark-read {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ============================================================================
+   MOBILE PLANTING GUIDE
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .sc-cal-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .sc-cal-month {
+    padding: 12px;
+  }
+  
+  .sc-crop-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .sc-cal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================================
+   MOBILE SEED DETAILS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .sc-detail-page {
+    flex-direction: column;
+  }
+  
+  .sc-detail-left,
+  .sc-detail-right {
+    width: 100%;
+  }
+  
+  .sc-detail-image {
+    height: 300px;
+  }
+  
+  .sc-buy-section {
+    flex-direction: column;
+  }
+  
+  .sc-quantity-input {
+    width: 100%;
+  }
+}
+
+/* ============================================================================
+   ANDROID CHROME SPECIFIC
+   ============================================================================ */
+
+/* Hide address bar on scroll */
+@media (max-width: 768px) {
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+  
+  html {
+    height: -webkit-fill-available;
+  }
+}
+
+/* ============================================================================
+   LANDSCAPE MODE OPTIMIZATIONS
+   ============================================================================ */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .chat-container {
+    height: 100vh;
+  }
+  
+  .chat-messages {
+    max-height: calc(100vh - 200px);
+  }
+  
+  .modal {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* ============================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================================================ */
+
+/* Hardware acceleration for animations */
+.animated,
+.transition,
+.modal,
+.dropdown,
+.chat-message {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Reduce animations on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================================
+   SAFE AREA INSETS (for notched devices)
+   ============================================================================ */
+
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+  
+  .sc-nav {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+  
+  .chat-input {
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ============================================================================
+   DARK MODE SUPPORT (Android 10+)
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  /* Optional: Add dark mode styles if needed */
+  /* Currently using light theme only */
+}
+
+/* ============================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================================================ */
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #48bb78;
+  outline-offset: 2px;
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #2E7D32;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
+@media print {
+  .sc-nav,
+  .sc-sidebar,
+  .chat-input,
+  button,
+  .btn {
+    display: none;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .sc-main {
+    width: 100%;
+  }
+}
