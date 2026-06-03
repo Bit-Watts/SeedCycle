@@ -1,8 +1,8 @@
 <?php
 
 /**
- * PlantCache — local caching layer for Trefle API responses.
- * Checks DB first; only calls Trefle when data isn't cached.
+ * PlantCache — local caching layer for Perenual API responses.
+ * Checks DB first; only calls Perenual when data isn't cached.
  */
 class PlantCache {
 

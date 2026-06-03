@@ -168,7 +168,7 @@
                  value="<?= isset($success) ? '' : htmlspecialchars($_POST['growing_days'] ?? '') ?>">
         </div>
 
-        <!-- SUNLIGHT + WATER (auto-filled from Trefle) -->
+        <!-- SUNLIGHT + WATER (auto-filled from Perenual) -->
         <div class="sc-form-row">
           <div class="sc-form-group">
             <label><i class="fa-solid fa-sun" style="color:#f9a825;"></i> Sunlight Requirement</label>
@@ -255,7 +255,7 @@
   document.getElementById('image-input').value = '';
   <?php endif; ?>
 
-  // ── TREFLE PLANT LOOKUP ──────────────────────────────────────────────────
+  // ── PERENUAL PLANT LOOKUP ────────────────────────────────────────────────
   function fetchPlantInfo() {
     const query = document.getElementById('seed-name-input').value.trim();
     if (!query) {
