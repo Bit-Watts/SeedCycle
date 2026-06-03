@@ -33,6 +33,11 @@ if ($_navUserId && isset($conn)) {
 <link rel="apple-touch-icon" href="assets/images/icon-192x192.png">
 
 <nav class="sc-nav" data-user-id="<?= $_navUserId ?>">
+  <!-- Hamburger toggle — mobile only -->
+  <button class="sc-nav-hamburger" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
   <a href="index.php" class="sc-logo">
     <img src="assets/images/SeedCycleLogo.png" alt="SeedCycle" class="sc-logo-img">
     Seed<span>Cycle</span>
@@ -56,9 +61,36 @@ if ($_navUserId && isset($conn)) {
       <a href="cart.php" class="sc-nav-icon" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
       <a href="profile.php" class="sc-nav-icon" title="Profile"><i class="fa-solid fa-user"></i></a>
     </div>
+    <!-- Logout: desktop only, hidden on mobile (available in sidebar) -->
     <a href="logout.php"><button class="sc-btn-nav sc-nav-logout-btn">Logout</button></a>
   </div>
 </nav>
+
+<!-- Sidebar overlay for mobile -->
+<div class="sc-sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<script>
+function toggleSidebar() {
+  const sidebar  = document.querySelector('.sc-sidebar');
+  const overlay  = document.getElementById('sidebarOverlay');
+  const isOpen   = sidebar && sidebar.classList.contains('sc-sidebar--open');
+  if (isOpen) {
+    closeSidebar();
+  } else {
+    if (sidebar)  sidebar.classList.add('sc-sidebar--open');
+    if (overlay) overlay.classList.add('sc-sidebar-overlay--visible');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeSidebar() {
+  const sidebar = document.querySelector('.sc-sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebar)  sidebar.classList.remove('sc-sidebar--open');
+  if (overlay)  overlay.classList.remove('sc-sidebar-overlay--visible');
+  document.body.style.overflow = '';
+}
+</script>
 
 <!-- WebSocket Client -->
 <script src="assets/js/websocket-client.js"></script>
