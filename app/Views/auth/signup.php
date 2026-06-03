@@ -12,12 +12,7 @@
 <body>
 
 <nav class="sc-nav">
-  <a href="landing.php" class="sc-logo">Seed<span>Cycle</span></a>
-  <ul class="sc-navlinks">
-    <li><a href="index.php">Home</a></li>
-    <li><a href="marketplace.php">Marketplace</a></li>
-    <li><a href="planting-guide.php">Planting Guide</a></li>
-  </ul>
+  <a href="landing.php" class="sc-logo"><img src="assets/images/SeedCycleLogo.png" alt="SeedCycle" class="sc-logo-img"> Seed<span>Cycle</span></a>
   <?php if (isset($_SESSION['user_id'])): ?>
     <div class="sc-nav-user">
       <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?></span>

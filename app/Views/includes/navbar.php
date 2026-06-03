@@ -23,6 +23,8 @@ if ($_navUserId && isset($conn)) {
 ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="assets/css/mobile-optimizations.css">
+<link rel="icon" type="image/png" href="assets/images/SeedCycleLogo.png">
+<link rel="apple-touch-icon" href="assets/images/SeedCycleLogo.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2E7D32">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -31,7 +33,10 @@ if ($_navUserId && isset($conn)) {
 <link rel="apple-touch-icon" href="assets/images/icon-192x192.png">
 
 <nav class="sc-nav" data-user-id="<?= $_navUserId ?>">
-  <a href="index.php" class="sc-logo">Seed<span>Cycle</span></a>
+  <a href="index.php" class="sc-logo">
+    <img src="assets/images/SeedCycleLogo.png" alt="SeedCycle" class="sc-logo-img">
+    Seed<span>Cycle</span>
+  </a>
   <div class="sc-nav-user">
     <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_navName) ?></span>
     <a href="notifications.php" class="sc-nav-icon" title="Notifications" style="position: relative;">
