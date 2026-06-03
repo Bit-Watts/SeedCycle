@@ -171,6 +171,10 @@ function renderStars(float $rating, bool $interactive = false): string {
         <?php $msgs = ['invalid'=>'Invalid rating.','already'=>'You have already reviewed this seed.','not_purchased'=>'You can only review seeds you have purchased and received.']; ?>
         <div class="sc-review-alert error"><?= $msgs[$reviewError] ?? 'Something went wrong.' ?></div>
       <?php endif; ?>
+      <?php if (!empty($reportError)): ?>
+        <?php $rMsgs = ['invalid'=>'Invalid report.','already'=>'You have already reported this.']; ?>
+        <div class="sc-review-alert error"><?= $rMsgs[$reportError] ?? 'Could not submit report.' ?></div>
+      <?php endif; ?>
 
       <!-- Rating summary -->
       <?php if ($ratingData['total'] > 0): ?>
@@ -245,6 +249,14 @@ function renderStars(float $rating, bool $interactive = false): string {
                 onclick="openReport('review', <?= (int)$rv['id'] ?>, 'seed-details.php?id=<?= (int)$seed['id'] ?>')">
                 🚩 Report
               </button>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['user_id']) && (int)$rv['user_id'] === (int)$_SESSION['user_id']): ?>
+              <form method="POST" action="review-delete.php" style="display:inline;"
+                    onsubmit="return confirm('Delete your review?')">
+                <input type="hidden" name="review_id"    value="<?= (int)$rv['id'] ?>">
+                <input type="hidden" name="inventory_id" value="<?= (int)$seed['id'] ?>">
+                <button type="submit" class="sc-btn-delete-review">🗑 Delete</button>
+              </form>
             <?php endif; ?>
           </div>
         </div>

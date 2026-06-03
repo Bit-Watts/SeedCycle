@@ -10,7 +10,7 @@ class Review {
 
     public function getByInventory(int $inventoryId): array {
         $stmt = mysqli_prepare($this->conn,
-            'SELECT r.id, r.rating, r.comment, r.created_at,
+            'SELECT r.id, r.user_id, r.rating, r.comment, r.created_at,
                     u.first_name, u.last_name, u.username, u.profile_image
              FROM reviews r
              JOIN users u ON u.id = r.user_id
