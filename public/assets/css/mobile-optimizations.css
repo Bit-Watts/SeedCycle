@@ -647,3 +647,18 @@ img {
     width: 100%;
   }
 }
+
+/* ============================================================================
+   LOGO SIZE FIX — prevent oversized logo on mobile/WebView
+   ============================================================================ */
+.sc-logo-img {
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  object-fit: contain !important;
+  flex-shrink: 0 !important;
+  display: block !important;
+}
