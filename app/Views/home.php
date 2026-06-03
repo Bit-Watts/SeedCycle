@@ -6,8 +6,8 @@
   <title>SeedCycle</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="<?= asset('assets/css/base.css') ?>">
-  <link rel="stylesheet" href="<?= asset('assets/css/landing.css') ?>">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/landing.css">
 </head>
 <body>
 
@@ -39,21 +39,35 @@
     </div>
     <div class="sc-hero-visual">
       <p class="sc-visual-title">Available Seeds</p>
-      <div class="sc-seed-card">
-        <div class="sc-seed-icon"><i class="fa-solid fa-seedling"></i></div>
-        <div class="sc-seed-info"><p>Tomato Seeds <span class="sc-badge">In Season</span></p><span>Vegetable</span></div>
-        <span class="sc-seed-price">₱45</span>
-      </div>
-      <div class="sc-seed-card">
-        <div class="sc-seed-icon"><i class="fa-solid fa-leaf"></i></div>
-        <div class="sc-seed-info"><p>Basil Seeds</p><span>Herb</span></div>
-        <span class="sc-seed-price">₱30</span>
-      </div>
-      <div class="sc-seed-card">
-        <div class="sc-seed-icon"><i class="fa-solid fa-pepper-hot"></i></div>
-        <div class="sc-seed-info"><p>Chili Seeds</p><span>Vegetable</span></div>
-        <span class="sc-seed-price">₱55</span>
-      </div>
+      <?php if (!empty($landingSeeds)): ?>
+        <?php foreach ($landingSeeds as $ls): ?>
+        <a href="marketplace.php" style="text-decoration:none; color:inherit;">
+          <div class="sc-seed-card">
+            <div class="sc-seed-icon">
+              <?php if (!empty($ls['image_url'])): ?>
+                <img src="<?= htmlspecialchars($ls['image_url']) ?>" alt="<?= htmlspecialchars($ls['name']) ?>"
+                     style="width:36px; height:36px; object-fit:cover; border-radius:8px;">
+              <?php else: ?>
+                <i class="fa-solid fa-seedling"></i>
+              <?php endif; ?>
+            </div>
+            <div class="sc-seed-info">
+              <p><?= htmlspecialchars($ls['name']) ?>
+                <?php if ($ls['in_season']): ?>
+                  <span class="sc-badge">In Season</span>
+                <?php endif; ?>
+              </p>
+              <span><?= htmlspecialchars($ls['category'] ?? 'Seed') ?></span>
+            </div>
+            <span class="sc-seed-price">₱<?= number_format($ls['price'], 0) ?></span>
+          </div>
+        </a>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div style="text-align:center; padding:20px; color:#888; font-size:13px;">
+          No seeds available yet. <a href="marketplace.php" style="color:#4CAF50;">Browse marketplace →</a>
+        </div>
+      <?php endif; ?>
     </div>
   </section>
 
