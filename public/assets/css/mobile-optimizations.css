@@ -686,38 +686,43 @@ html, body {
 /* ── NAVBAR ── */
 @media (max-width: 600px) {
   .sc-nav {
-    padding: 10px 12px !important;
+    padding: 8px 12px !important;
     gap: 6px !important;
-    flex-wrap: nowrap !important;
+    flex-wrap: wrap !important;
     align-items: center !important;
   }
+  /* Logo takes full top row */
+  .sc-logo {
+    font-size: 18px !important;
+    flex: 1 1 auto !important;
+    white-space: nowrap !important;
+  }
+  /* Icons + logout fill second row, centered */
   .sc-nav-user {
-    gap: 4px !important;
-    flex-wrap: nowrap !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
     align-items: center !important;
-    flex-shrink: 1 !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    flex: 1 1 100% !important;
   }
   .sc-nav-icon {
-    min-width: 34px !important;
-    min-height: 34px !important;
-    width: 34px !important;
-    height: 34px !important;
-    font-size: 16px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 17px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     padding: 0 !important;
   }
   .sc-btn-nav {
-    padding: 7px 12px !important;
-    font-size: 12px !important;
-    min-height: 34px !important;
+    padding: 8px 18px !important;
+    font-size: 13px !important;
+    min-height: 38px !important;
     min-width: unset !important;
-    white-space: nowrap !important;
-  }
-  .sc-logo {
-    font-size: 16px !important;
-    flex-shrink: 0 !important;
     white-space: nowrap !important;
   }
 }
