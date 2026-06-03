@@ -32,7 +32,7 @@
       <a href="orders.php" class="sc-sidebar-link">🛍️ User Orders</a>
       <a href="shipments.php" class="sc-sidebar-link">🚚 Shipments</a>
       <a href="reports.php" class="sc-sidebar-link active">📈 Reports</a>
-      <a href="../index.php" class="sc-sidebar-link" style="margin-top:12px; color:#888;">← User View</a>
+      <?php /* <a href="../index.php" class="sc-sidebar-link" style="margin-top:12px; color:#888;">← User View</a> */ ?>
     </nav>
   </aside>
 
