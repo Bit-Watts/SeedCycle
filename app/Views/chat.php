@@ -83,7 +83,7 @@
     </div>
 
     <!-- ── MAIN CHAT AREA ── -->
-    <div class="chat-main">
+    <div class="chat-main" id="chatMain">
 
         <!-- Empty state -->
         <div class="chat-empty" id="chatEmpty" <?= $openConvId ? 'style="display:none"' : '' ?>>
@@ -98,6 +98,9 @@
             <!-- Header -->
             <div class="chat-header">
                 <div class="chat-header-info">
+                    <button class="chat-back-btn" onclick="showSidebar()" title="Back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
                     <div class="chat-avatar" id="chatHeaderAvatar">
                         <i class="fas fa-user-circle"></i>
                     </div>
@@ -160,6 +163,25 @@ function avatarHtml(src, name) {
     return `<i class="fas fa-user"></i>`;
 }
 
+/* ── MOBILE PANEL SWITCHING ── */
+function showChatPanel() {
+  if (window.innerWidth <= 768) {
+    document.getElementById('chatSidebar').classList.add('hidden');
+    document.getElementById('chatActive').classList.add('visible');
+    document.getElementById('chatMain').style.display = 'flex';
+    document.getElementById('chatMain').classList.add('visible');
+  }
+}
+
+function showSidebar() {
+  if (window.innerWidth <= 768) {
+    document.getElementById('chatSidebar').classList.remove('hidden');
+    document.getElementById('chatActive').classList.remove('visible');
+    const main = document.getElementById('chatMain');
+    if (main) { main.classList.remove('visible'); main.style.display = ''; }
+  }
+}
+
 /* ── LOAD CONVERSATION ── */
 function loadConversation(convId) {
     currentConvId = convId;
@@ -187,6 +209,7 @@ function loadConversation(convId) {
             renderHeader(data.conversation);
             renderMessages(data.messages);
             startPolling(convId);
+            showChatPanel(); // switch to chat panel on mobile
         })
         .catch(err => console.error('Load error:', err));
 }

@@ -387,4 +387,16 @@
 @media (max-width: 480px) {
   .sc-timeline-step { min-width: 60px; }
   .sc-timeline-label { font-size: 9px; }
+
+  /* Items table — reduce padding so columns fit */
+  .sc-items-table th,
+  .sc-items-table td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+  .sc-total-label,
+  .sc-total-value {
+    padding: 10px 6px;
+    font-size: 14px;
+  }
 }

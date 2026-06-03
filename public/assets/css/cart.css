@@ -285,4 +285,23 @@
 @media (max-width: 768px) {
   .sc-cart-layout { flex-direction: column; }
   .sc-cart-summary { width: 100%; position: static; }
+
+  .sc-cart-card {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sc-cart-name {
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .sc-cart-info {
+    min-width: 0;
+    flex: 1 1 120px;
+  }
+
+  .sc-cart-price-wrap {
+    min-width: unset;
+  }
 }
