@@ -119,6 +119,26 @@ class WebSocketNotifier {
     }
 
     /**
+     * Notify a seller that a new order has been placed for their seeds.
+     */
+    public function notifyNewOrder($conn, int $orderId, int $sellerId, string $buyerName, string $seedList): void {
+        try {
+            $title   = '🛒 New Order Received!';
+            $message = "{$buyerName} ordered: {$seedList}. Order #{$orderId}.";
+
+            $this->chatService->createNotification(
+                $orderId,
+                $sellerId,
+                'new_order',
+                $title,
+                $message
+            );
+        } catch (\Exception $e) {
+            error_log('notifyNewOrder failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Notify about shipment creation
      * 
      * @param int $orderId Order ID
