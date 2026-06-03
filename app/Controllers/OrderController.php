@@ -298,7 +298,10 @@ class OrderController {
                         
                         // Clear cart after successful order creation
                         $this->cartModel->clearByUser($userId);
-                        
+
+                        // Notify each seller whose seeds were ordered
+                        $this->notifySellers($conn, $orderId, $cartItems);
+
                         // Redirect based on payment method
                         if ($payment_method === 'cod') {
                             // COD: redirect to success page
@@ -435,6 +438,43 @@ class OrderController {
             return ['Shipment updated successfully.', null];
         }
         return [null, 'Failed to update shipment.'];
+    }
+
+    /**
+     * Notify sellers when an order is placed containing their seeds.
+     */
+    private function notifySellers($conn, int $orderId, array $cartItems): void {
+        try {
+            $buyer     = $this->userModel->findById($_SESSION['user_id']);
+            $buyerName = trim(($buyer['first_name'] ?? '') . ' ' . ($buyer['last_name'] ?? ''));
+
+            // Group seeds by seller
+            $sellerItems = [];
+            foreach ($cartItems as $item) {
+                $invId = (int)$item['inventory_id'];
+                $stmt  = mysqli_prepare($conn,
+                    'SELECT user_id FROM seed_listings
+                     WHERE inventory_id = ? AND status = "approved" LIMIT 1'
+                );
+                mysqli_stmt_bind_param($stmt, 'i', $invId);
+                mysqli_stmt_execute($stmt);
+                $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+                mysqli_stmt_close($stmt);
+
+                if (!empty($row['user_id'])) {
+                    $sid = (int)$row['user_id'];
+                    $sellerItems[$sid][] = $item['name'] ?? 'a seed';
+                }
+            }
+
+            // One notification per seller
+            foreach ($sellerItems as $sellerId => $seedNames) {
+                $seedList = implode(', ', array_unique($seedNames));
+                $this->wsNotifier->notifyNewOrder($conn, $orderId, $sellerId, $buyerName, $seedList);
+            }
+        } catch (\Throwable $e) {
+            error_log('Seller order notification failed: ' . $e->getMessage());
+        }
     }
 
     /**

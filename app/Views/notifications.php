@@ -207,7 +207,10 @@
                     $iconClass = 'order_update';
                     $icon = 'fa-box';
                     
-                    if (strpos(strtolower($notification['notification_type']), 'delivered') !== false) {
+                    if ($notification['notification_type'] === 'new_order') {
+                        $iconClass = 'order_update';
+                        $icon = 'fa-bag-shopping';
+                    } elseif (strpos(strtolower($notification['notification_type']), 'delivered') !== false) {
                         $iconClass = 'delivered';
                         $icon = 'fa-check-circle';
                     } elseif (strpos(strtolower($notification['notification_type']), 'ship') !== false) {
@@ -235,9 +238,15 @@
                             </span>
                         </div>
                         <div class="notification-actions">
+                            <?php if ($notification['notification_type'] === 'new_order'): ?>
+                                <a href="seller-orders.php" class="btn-view-order">
+                                    <i class="fas fa-truck-fast"></i> View Seller Orders
+                                </a>
+                            <?php else: ?>
                             <a href="order-tracking.php?id=<?= $notification['order_id'] ?>" class="btn-view-order">
                                 <i class="fas fa-eye"></i> View Order
                             </a>
+                            <?php endif; ?>
                             <?php if ($isUnread): ?>
                                 <a href="notifications.php?mark_read=1&id=<?= $notification['id'] ?>&ref=<?= urlencode($backUrl) ?>" class="btn-mark-read">
                                     <i class="fas fa-check"></i> Mark as Read
