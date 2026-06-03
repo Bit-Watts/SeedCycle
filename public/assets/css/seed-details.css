@@ -283,3 +283,28 @@
   }
   .sc-buy-section { gap: 10px; }
 }
+
+@media (max-width: 600px) {
+  .sc-detail-card {
+    padding: 14px 12px;
+    gap: 16px;
+  }
+  .sc-detail-layout {
+    gap: 16px;
+    padding: 0;
+  }
+  .sc-detail-image {
+    width: 120px;
+    height: 120px;
+    font-size: 48px;
+  }
+  .sc-detail-meta-list {
+    font-size: 12px;
+  }
+  .sc-seller-card {
+    padding: 12px !important;
+  }
+  .sc-qty-wrap {
+    gap: 6px;
+  }
+}

@@ -232,4 +232,6 @@
   .sc-calendar-grid { grid-template-columns:1fr; }
   .sc-weather-visual { flex-direction:column; }
   .sc-weather-stats { grid-template-columns:1fr 1fr; }
+  .sc-list-month { min-width: unset; flex-wrap: wrap; }
+  .sc-list-row { gap: 10px; padding: 12px; }
 }

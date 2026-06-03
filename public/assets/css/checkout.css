@@ -207,6 +207,13 @@
   .sc-checkout-summary { position: static; }
 }
 
+@media (max-width: 600px) {
+  .sc-checkout-section { padding: 16px 14px; }
+  .sc-checkout-form    { padding: 16px 14px; }
+  .sc-delivery-option  { min-width: unset; }
+  .sc-checkout-layout  { gap: 14px; }
+}
+
 /* ── CHECKOUT FORM CARD ── */
 .sc-checkout-form {
   background: var(--color-bg-card);

@@ -169,3 +169,6 @@
 @media (max-width: 520px) {
   .sc-2fa-card { padding: 24px 20px; }
 }
+@media (max-width: 380px) {
+  .sc-2fa-card { padding: 18px 14px; }
+}

@@ -557,4 +557,6 @@ textarea.sc-form-control { resize: vertical; min-height: 60px; }
   .sc-seller-stats { grid-template-columns: 1fr 1fr; }
   .sc-tabs { gap: 6px; }
   .sc-tab { padding: 8px 14px; font-size: 12px; }
+  .sc-modal { max-width: 96vw; }
+  .sc-form-group { padding: 10px 16px 0; }
 }
