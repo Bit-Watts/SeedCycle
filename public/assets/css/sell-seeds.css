@@ -309,3 +309,19 @@
   margin: 10px 0 0;
   font-style: italic;
 }
+
+/* ── LISTINGS TABLE MOBILE ── */
+@media (max-width: 600px) {
+  .sc-listings-section {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sc-listings-table {
+    min-width: 420px;
+    font-size: 12px;
+  }
+  .sc-listings-table th,
+  .sc-listings-table td {
+    padding: 8px 8px;
+  }
+}

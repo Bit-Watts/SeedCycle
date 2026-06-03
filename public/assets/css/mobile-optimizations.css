@@ -131,14 +131,16 @@ img {
    ============================================================================ */
 
 @media (max-width: 768px) {
-  /* Stack navigation items vertically */
+  /* Keep navigation in one row */
   .sc-nav {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     padding: 12px 16px;
+    align-items: center;
   }
   
   .sc-nav-user {
-    gap: 12px;
+    gap: 8px;
+    align-items: center;
   }
   
   .sc-nav-icon {
@@ -685,26 +687,39 @@ html, body {
 @media (max-width: 600px) {
   .sc-nav {
     padding: 10px 12px !important;
-    gap: 8px;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
   }
   .sc-nav-user {
-    gap: 6px !important;
-    flex-wrap: nowrap;
+    gap: 4px !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    flex-shrink: 1 !important;
   }
   .sc-nav-icon {
-    min-width: 36px !important;
-    min-height: 36px !important;
-    width: 36px !important;
-    height: 36px !important;
-    font-size: 17px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
   }
   .sc-btn-nav {
-    padding: 8px 14px !important;
-    font-size: 13px !important;
-    min-height: 36px !important;
+    padding: 7px 12px !important;
+    font-size: 12px !important;
+    min-height: 34px !important;
     min-width: unset !important;
+    white-space: nowrap !important;
   }
-  .sc-logo { font-size: 18px !important; }
+  .sc-logo {
+    font-size: 16px !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
 }
 
 /* ── DASHBOARD LAYOUT ── */
