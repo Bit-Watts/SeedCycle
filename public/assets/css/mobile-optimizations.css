@@ -687,55 +687,58 @@ html, body {
 @media (max-width: 600px) {
   .sc-nav {
     padding: 8px 12px !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     align-items: center !important;
-    gap: 4px !important;
+    gap: 8px !important;
     overflow: visible !important;
   }
-  /* Logo on first row */
   .sc-logo {
     font-size: 17px !important;
-    flex: 1 1 auto !important;
+    flex-shrink: 0 !important;
     white-space: nowrap !important;
-    overflow: visible !important;
-    order: 1 !important;
   }
-  /* Icons + buttons on second row, full width centered */
-  .sc-nav-user {
-    order: 2 !important;
-    width: 100% !important;
-    flex: 0 0 100% !important;
+  /* Icons group */
+  .sc-nav-icons {
     display: flex !important;
-    justify-content: center !important;
     align-items: center !important;
-    gap: 6px !important;
-    flex-wrap: nowrap !important;
-    overflow: visible !important;
-    padding-bottom: 2px !important;
+    gap: 2px !important;
   }
   .sc-nav-icon {
-    width: 38px !important;
-    height: 38px !important;
-    min-width: 38px !important;
-    min-height: 38px !important;
-    font-size: 17px !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    font-size: 16px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     padding: 0 !important;
     flex-shrink: 0 !important;
   }
+  /* Push logout to the far right */
+  .sc-nav-user {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-wrap: nowrap !important;
+    margin-left: auto !important;
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
+  }
   .sc-btn-nav {
-    padding: 8px 16px !important;
-    font-size: 13px !important;
-    min-height: 38px !important;
+    padding: 7px 12px !important;
+    font-size: 12px !important;
+    min-height: 34px !important;
     min-width: unset !important;
     white-space: nowrap !important;
     flex-shrink: 0 !important;
   }
+  .sc-nav-greeting {
+    display: none !important;
+  }
 }
 
-/* Ensure body overflow-x:hidden doesn't clip the navbar children */
+/* Ensure nav never clips its children */
 .sc-nav {
   overflow: visible !important;
 }
