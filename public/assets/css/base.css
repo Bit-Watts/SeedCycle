@@ -145,7 +145,6 @@ ul, ol { list-style: none; }
   font-size: 22px;
   color: #fff;
   text-decoration: none;
-  overflow: hidden;
 }
 
 .sc-logo span { color: var(--color-accent-alt); }
@@ -185,6 +184,14 @@ ul, ol { list-style: none; }
 .sc-nav-user {
   display: flex;
   align-items: center;
+  gap: 8px;
+}
+
+.sc-nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
   gap: 14px;
 }
 

@@ -39,21 +39,23 @@ if ($_navUserId && isset($conn)) {
   </a>
   <div class="sc-nav-user">
     <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_navName) ?></span>
-    <a href="notifications.php" class="sc-nav-icon" title="Notifications" style="position: relative;">
-      <i class="fa-solid fa-bell"></i>
-      <?php if ($_unreadCount > 0): ?>
-        <span class="notification-badge" style="position:absolute;top:-4px;right:-4px;background:#e53935;color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;">
-          <?= $_unreadCount > 99 ? '99+' : $_unreadCount ?>
-        </span>
-      <?php else: ?>
-        <span class="notification-badge" style="display:none;">0</span>
-      <?php endif; ?>
-    </a>
-    <a href="chat.php" class="sc-nav-icon" title="Messages" style="position: relative;">
-      <i class="fa-solid fa-comments"></i>
-    </a>
-    <a href="cart.php" class="sc-nav-icon" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
-    <a href="profile.php" class="sc-nav-icon" title="Profile"><i class="fa-solid fa-user"></i></a>
+    <div class="sc-nav-icons">
+      <a href="notifications.php" class="sc-nav-icon" title="Notifications" style="position: relative;">
+        <i class="fa-solid fa-bell"></i>
+        <?php if ($_unreadCount > 0): ?>
+          <span class="notification-badge" style="position:absolute;top:-4px;right:-4px;background:#e53935;color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;">
+            <?= $_unreadCount > 99 ? '99+' : $_unreadCount ?>
+          </span>
+        <?php else: ?>
+          <span class="notification-badge" style="display:none;">0</span>
+        <?php endif; ?>
+      </a>
+      <a href="chat.php" class="sc-nav-icon" title="Messages" style="position: relative;">
+        <i class="fa-solid fa-comments"></i>
+      </a>
+      <a href="cart.php" class="sc-nav-icon" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
+      <a href="profile.php" class="sc-nav-icon" title="Profile"><i class="fa-solid fa-user"></i></a>
+    </div>
     <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
   </div>
 </nav>
