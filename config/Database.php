@@ -8,9 +8,9 @@ if (!headers_sent()) {
 }
 
 $host     = 'localhost';
-$db_name  = 'seed cycle'; // your local database name
-$username = 'root';      // default XAMPP username
-$password = '';           // default XAMPP password (empty)
+$db_name  = 'u500694472_seedcycle';
+$username = 'u500694472_seedCycle';
+$password = '$eedCycle1';
 
 $conn = mysqli_connect($host, $username, $password, $db_name);
 
