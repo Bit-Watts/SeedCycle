@@ -48,11 +48,16 @@ input[type="submit"],
 input[type="reset"],
 .btn,
 .sc-btn,
-.sc-btn-nav,
-.sc-nav-icon {
+.sc-btn-nav {
   min-height: 44px;
   min-width: 44px;
   padding: 12px 20px;
+}
+
+.sc-nav-icon {
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0;
 }
 
 /* Larger tap targets for mobile */

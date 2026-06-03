@@ -19,7 +19,7 @@ $_navItems = [
     'settings'          => ['href' => 'settings.php',         'icon' => '<i class="fa-solid fa-gear"></i>',                 'label' => 'Settings'],
 ];
 ?>
-<aside class="sc-sidebar">
+<aside class="sc-sidebar sc-sidebar-collapsible" id="mainSidebar">
   <div class="sc-sidebar-avatar">
     <div class="sc-avatar" style="overflow:hidden;">
       <?php if (!empty($_pi)): ?>
@@ -33,12 +33,118 @@ $_navItems = [
   </div>
   <nav class="sc-sidebar-nav">
     <?php foreach ($_navItems as $key => $item): ?>
-      <a href="<?= $item['href'] ?>" class="sc-sidebar-link<?= $_activePage === $key ? ' active' : '' ?>">
-        <?= $item['icon'] ?> <?= $item['label'] ?>
+      <a href="<?= $item['href'] ?>"
+         class="sc-sidebar-link<?= $_activePage === $key ? ' active' : '' ?>"
+         title="<?= htmlspecialchars(strip_tags($item['label'])) ?>">
+        <span class="sc-sidebar-icon"><?= $item['icon'] ?></span>
+        <span class="sc-sidebar-label"><?= $item['label'] ?></span>
       </a>
     <?php endforeach; ?>
-    <a href="logout.php" class="sc-sidebar-link sc-sidebar-logout">
-      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    <a href="logout.php" class="sc-sidebar-link sc-sidebar-logout" title="Logout">
+      <span class="sc-sidebar-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+      <span class="sc-sidebar-label">Logout</span>
     </a>
   </nav>
 </aside>
+
+<style>
+/* ── COLLAPSIBLE SIDEBAR ── */
+.sc-sidebar-collapsible {
+  width: 58px;
+  transition: width 0.25s ease;
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 58px;
+}
+
+.sc-sidebar-collapsible .sc-sidebar-nav {
+  width: 230px;
+}
+
+.sc-sidebar-collapsible:hover,
+.sc-sidebar-collapsible.sc-sidebar--expanded {
+  width: 230px;
+}
+
+/* Hide avatar text and email when collapsed */
+.sc-sidebar-collapsible .sc-sidebar-name,
+.sc-sidebar-collapsible .sc-sidebar-email {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  overflow: hidden;
+}
+
+.sc-sidebar-collapsible:hover .sc-sidebar-name,
+.sc-sidebar-collapsible:hover .sc-sidebar-email,
+.sc-sidebar-collapsible.sc-sidebar--expanded .sc-sidebar-name,
+.sc-sidebar-collapsible.sc-sidebar--expanded .sc-sidebar-email {
+  opacity: 1;
+}
+
+/* Avatar center when collapsed */
+.sc-sidebar-collapsible .sc-sidebar-avatar {
+  display: none;
+}
+
+.sc-sidebar-collapsible:hover .sc-sidebar-avatar,
+.sc-sidebar-collapsible.sc-sidebar--expanded .sc-sidebar-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Shrink avatar when collapsed */
+.sc-sidebar-collapsible .sc-avatar {
+  width: 52px;
+  height: 52px;
+  font-size: 22px;
+}
+
+/* Link layout */
+.sc-sidebar-collapsible .sc-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sc-sidebar-collapsible .sc-sidebar-icon {
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.sc-sidebar-collapsible .sc-sidebar-label {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.sc-sidebar-collapsible:hover .sc-sidebar-label,
+.sc-sidebar-collapsible.sc-sidebar--expanded .sc-sidebar-label {
+  opacity: 1;
+}
+
+/* Active item always shows label */
+.sc-sidebar-collapsible .sc-sidebar-link.active .sc-sidebar-label {
+  opacity: 1;
+}
+
+/* On mobile — sidebar is full overlay, ignore collapsible */
+@media (max-width: 768px) {
+  .sc-sidebar-collapsible {
+    width: 270px !important;
+    white-space: normal !important;
+  }
+  .sc-sidebar-collapsible .sc-sidebar-label,
+  .sc-sidebar-collapsible .sc-sidebar-name,
+  .sc-sidebar-collapsible .sc-sidebar-email {
+    opacity: 1 !important;
+  }
+}
+</style>

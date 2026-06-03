@@ -184,15 +184,14 @@ ul, ol { list-style: none; }
 .sc-nav-user {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 14px;
 }
 
 .sc-nav-icons {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-}
-  gap: 14px;
 }
 
 .sc-nav-greeting {
@@ -213,6 +212,8 @@ ul, ol { list-style: none; }
   color: #fff;
   transition: background var(--transition);
   position: relative;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 .sc-nav-icon:hover { background: rgba(255,255,255,0.28); }
