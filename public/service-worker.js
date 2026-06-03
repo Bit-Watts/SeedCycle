@@ -3,7 +3,7 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'seedcycle-v1.3.0';
+const CACHE_NAME = 'seedcycle-v1.4.0';
 const OFFLINE_URL = '/public/offline.html';
 
 // Assets to cache on install

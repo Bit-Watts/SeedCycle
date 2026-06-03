@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../Helpers/asset.php';
+
 /**
  * BaseController — shared functionality for all controllers.
  * Handles session initialization and authentication checks.

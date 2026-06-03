@@ -22,7 +22,7 @@ if ($_navUserId && isset($conn)) {
 }
 ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="assets/css/mobile-optimizations.css">
+<link rel="stylesheet" href="<?= asset('assets/css/mobile-optimizations.css') ?>">
 <link rel="icon" type="image/png" href="assets/images/SeedCycleLogo.png">
 <link rel="apple-touch-icon" href="assets/images/SeedCycleLogo.png">
 <link rel="manifest" href="manifest.json">
@@ -93,7 +93,7 @@ function closeSidebar() {
 </script>
 
 <!-- WebSocket Client -->
-<script src="assets/js/websocket-client.js"></script>
+<script src="<?= asset('assets/js/websocket-client.js') ?>"></script>
 
 <!-- PWA Installation -->
 <script>
