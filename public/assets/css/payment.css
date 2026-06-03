@@ -194,3 +194,8 @@
   .sc-payment-actions { flex-direction: column; }
   .sc-payment-actions .sc-btn { width: 100%; justify-content: center; }
 }
+@media (max-width: 400px) {
+  .sc-payment-card  { padding: 20px 14px; }
+  .sc-payment-title-success,
+  .sc-payment-title-failed { font-size: 20px; }
+}

@@ -56,7 +56,7 @@ if ($_navUserId && isset($conn)) {
       <a href="cart.php" class="sc-nav-icon" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
       <a href="profile.php" class="sc-nav-icon" title="Profile"><i class="fa-solid fa-user"></i></a>
     </div>
-    <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
+    <a href="logout.php"><button class="sc-btn-nav sc-nav-logout-btn">Logout</button></a>
   </div>
 </nav>
 

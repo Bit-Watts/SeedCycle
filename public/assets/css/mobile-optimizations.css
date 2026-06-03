@@ -689,15 +689,14 @@ html, body {
     padding: 8px 12px !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 6px !important;
     overflow: visible !important;
   }
   .sc-logo {
-    font-size: 17px !important;
+    font-size: 16px !important;
     flex-shrink: 0 !important;
     white-space: nowrap !important;
   }
-  /* Icons group */
   .sc-nav-icons {
     display: flex !important;
     align-items: center !important;
@@ -715,27 +714,37 @@ html, body {
     padding: 0 !important;
     flex-shrink: 0 !important;
   }
-  /* Push logout to the far right */
   .sc-nav-user {
     display: flex !important;
     align-items: center !important;
-    gap: 4px !important;
+    gap: 2px !important;
     flex-wrap: nowrap !important;
     margin-left: auto !important;
-    flex-shrink: 1 !important;
-    min-width: 0 !important;
   }
-  .sc-btn-nav {
-    padding: 7px 12px !important;
-    font-size: 12px !important;
-    min-height: 34px !important;
-    min-width: unset !important;
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
+  /* Hide logout from navbar on mobile — it's in the sidebar */
+  .sc-nav-logout-btn,
+  .sc-nav-logout-btn + a,
+  a:has(.sc-nav-logout-btn) {
+    display: none !important;
   }
   .sc-nav-greeting {
     display: none !important;
   }
+}
+
+/* Sidebar logout style */
+.sc-sidebar-logout {
+  color: #e53935 !important;
+  margin-top: 8px;
+  border-top: 1px solid var(--color-border-light);
+  padding-top: 12px !important;
+}
+.sc-sidebar-logout i { color: #e53935 !important; }
+.sc-sidebar-logout:hover { background: #ffebee !important; }
+
+/* Desktop: show logout in navbar normally */
+@media (min-width: 601px) {
+  .sc-nav-logout-btn { display: inline-block; }
 }
 
 /* Ensure nav never clips its children */

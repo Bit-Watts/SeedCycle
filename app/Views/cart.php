@@ -40,22 +40,26 @@
       <div class="sc-cart-items" id="cart-items-container">
         <?php foreach ($cartItems as $item): ?>
         <div class="sc-cart-card" id="item-<?= $item['id'] ?>">
-          <div class="sc-cart-emoji">🌱</div>
-          <div class="sc-cart-info">
-            <p class="sc-cart-name"><?= htmlspecialchars($item['name']) ?></p>
-            <p class="sc-cart-type"><?= htmlspecialchars($item['category'] ?? 'Seed') ?></p>
-            <p class="sc-cart-stock">Stock: <?= (int)$item['stock_quantity'] ?> packs</p>
+          <div class="sc-cart-card-top">
+            <div class="sc-cart-emoji">🌱</div>
+            <div class="sc-cart-info">
+              <p class="sc-cart-name"><?= htmlspecialchars($item['name']) ?></p>
+              <p class="sc-cart-type"><?= htmlspecialchars($item['category'] ?? 'Seed') ?></p>
+              <p class="sc-cart-stock">Stock: <?= (int)$item['stock_quantity'] ?> packs</p>
+            </div>
           </div>
-          <div class="sc-cart-qty">
-            <button class="sc-qty-btn" onclick="changeQty(<?= $item['id'] ?>, <?= (int)$item['inventory_id'] ?>, -1)">−</button>
-            <span class="sc-qty-val" id="qty-<?= $item['id'] ?>"><?= (int)$item['quantity'] ?></span>
-            <button class="sc-qty-btn" onclick="changeQty(<?= $item['id'] ?>, <?= (int)$item['inventory_id'] ?>, 1, <?= (int)$item['stock_quantity'] ?>)">+</button>
+          <div class="sc-cart-card-bottom">
+            <div class="sc-cart-qty">
+              <button class="sc-qty-btn" onclick="changeQty(<?= $item['id'] ?>, <?= (int)$item['inventory_id'] ?>, -1)">−</button>
+              <span class="sc-qty-val" id="qty-<?= $item['id'] ?>"><?= (int)$item['quantity'] ?></span>
+              <button class="sc-qty-btn" onclick="changeQty(<?= $item['id'] ?>, <?= (int)$item['inventory_id'] ?>, 1, <?= (int)$item['stock_quantity'] ?>)">+</button>
+            </div>
+            <div class="sc-cart-price-wrap">
+              <span class="sc-cart-unit">₱<?= number_format($item['price'], 2) ?>/pack</span>
+              <span class="sc-cart-subtotal" id="sub-<?= $item['id'] ?>">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></span>
+            </div>
+            <button class="sc-btn-remove" onclick="removeItem(<?= $item['id'] ?>)" title="Remove">✕</button>
           </div>
-          <div class="sc-cart-price-wrap">
-            <span class="sc-cart-unit">₱<?= number_format($item['price'], 2) ?>/pack</span>
-            <span class="sc-cart-subtotal" id="sub-<?= $item['id'] ?>">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></span>
-          </div>
-          <button class="sc-btn-remove" onclick="removeItem(<?= $item['id'] ?>)" title="Remove">✕</button>
         </div>
         <?php endforeach; ?>
       </div>

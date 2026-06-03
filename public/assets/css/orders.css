@@ -365,3 +365,19 @@
     justify-content: center;
   }
 }
+
+@media (max-width: 400px) {
+  .sc-order-accordion-badges {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+  .sc-order-accordion-total {
+    font-size: 14px;
+    min-width: unset;
+  }
+  .sc-order-accordion-toggle {
+    width: 26px;
+    height: 26px;
+  }
+}

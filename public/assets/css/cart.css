@@ -52,15 +52,28 @@
   background: var(--color-bg-card);
   border: 1px solid var(--color-border-light);
   border-radius: var(--radius-xl);
-  padding: 16px 20px;
+  padding: 14px 16px;
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
+  gap: 10px;
   box-shadow: var(--shadow-xs);
   transition: box-shadow var(--transition);
 }
 
 .sc-cart-card:hover { box-shadow: var(--shadow-sm); }
+
+.sc-cart-card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sc-cart-card-bottom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 2px;
+}
 
 .sc-cart-emoji {
   width: 56px;
@@ -285,23 +298,17 @@
 @media (max-width: 768px) {
   .sc-cart-layout { flex-direction: column; }
   .sc-cart-summary { width: 100%; position: static; }
+}
 
-  .sc-cart-card {
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
+@media (max-width: 600px) {
   .sc-cart-name {
     white-space: normal;
     word-break: break-word;
   }
-
-  .sc-cart-info {
-    min-width: 0;
-    flex: 1 1 120px;
+  .sc-cart-card-bottom {
+    justify-content: space-between;
   }
-
   .sc-cart-price-wrap {
-    min-width: unset;
+    margin-left: auto;
   }
 }
