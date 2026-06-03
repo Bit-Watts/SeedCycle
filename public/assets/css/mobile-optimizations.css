@@ -662,3 +662,291 @@ img {
   flex-shrink: 0 !important;
   display: block !important;
 }
+
+/* ============================================================================
+   HORIZONTAL OVERFLOW PREVENTION — Android WebView
+   ============================================================================ */
+
+/* Global: prevent any element from causing horizontal scroll */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Every element respects viewport width */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* ── NAVBAR ── */
+@media (max-width: 600px) {
+  .sc-nav {
+    padding: 10px 12px !important;
+    gap: 8px;
+  }
+  .sc-nav-user {
+    gap: 6px !important;
+    flex-wrap: nowrap;
+  }
+  .sc-nav-icon {
+    min-width: 36px !important;
+    min-height: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 17px !important;
+  }
+  .sc-btn-nav {
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    min-height: 36px !important;
+    min-width: unset !important;
+  }
+  .sc-logo { font-size: 18px !important; }
+}
+
+/* ── DASHBOARD LAYOUT ── */
+@media (max-width: 768px) {
+  .sc-dashboard {
+    flex-direction: column !important;
+  }
+  .sc-sidebar {
+    width: 100% !important;
+    min-width: unset !important;
+    position: static !important;
+    height: auto !important;
+  }
+  .sc-main {
+    width: 100% !important;
+    min-width: unset !important;
+    padding: 16px 12px !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* ── STATS GRIDS ── */
+@media (max-width: 600px) {
+  .sc-stats-grid,
+  .sc-seller-stats,
+  .sc-stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+@media (max-width: 380px) {
+  .sc-stats-grid,
+  .sc-seller-stats {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ── MARKETPLACE GRID ── */
+@media (max-width: 600px) {
+  .sc-market-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 0 !important;
+  }
+  .sc-market-card {
+    min-width: unset !important;
+  }
+}
+@media (max-width: 380px) {
+  .sc-market-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── ORDERS ACCORDION ── */
+@media (max-width: 600px) {
+  .sc-order-accordion-header {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 12px 14px !important;
+  }
+  .sc-order-accordion-right {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .sc-order-accordion-total {
+    font-size: 15px !important;
+    min-width: unset !important;
+  }
+  .sc-order-details-grid {
+    grid-template-columns: 1fr !important;
+    padding: 12px !important;
+  }
+}
+
+/* ── SELLER ORDERS ── */
+@media (max-width: 600px) {
+  .sc-order-body {
+    grid-template-columns: 1fr !important;
+  }
+  .sc-order-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    padding: 10px 14px !important;
+  }
+}
+
+/* ── SECTION HEADERS ── */
+@media (max-width: 600px) {
+  .sc-section-header {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  .sc-main-header {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+}
+
+/* ── FOOTER ── */
+@media (max-width: 600px) {
+  .sc-footer {
+    padding: 14px 12px !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    text-align: center !important;
+  }
+}
+
+/* ── TRACKING / DETAIL GRID ── */
+@media (max-width: 600px) {
+  .sc-tracking-grid,
+  .sc-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .sc-info-card {
+    padding: 14px 12px !important;
+  }
+}
+
+/* ── CALENDAR GRID ── */
+@media (max-width: 600px) {
+  .sc-calendar-grid,
+  .sc-feat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+@media (max-width: 380px) {
+  .sc-calendar-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── SELL/EDIT FORM ── */
+@media (max-width: 600px) {
+  .sc-form-row {
+    grid-template-columns: 1fr !important;
+  }
+  .sc-form-half {
+    max-width: 100% !important;
+  }
+  .sc-sell-card {
+    padding: 16px 12px !important;
+  }
+  .sc-input-fetch-row {
+    flex-direction: column !important;
+  }
+  .sc-btn-fetch {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* ── PROFILE LISTINGS ── */
+@media (max-width: 600px) {
+  .mlc-card {
+    flex-direction: column !important;
+  }
+  .mlc-thumb {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 160px !important;
+  }
+  .mlc-thumb img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 160px !important;
+  }
+}
+
+/* ── SEED DETAILS PAGE ── */
+@media (max-width: 600px) {
+  .sc-detail-layout {
+    flex-direction: column !important;
+  }
+  .sc-detail-left,
+  .sc-detail-right {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+  .sc-detail-meta-list {
+    gap: 8px !important;
+  }
+}
+
+/* ── MODALS ── */
+@media (max-width: 600px) {
+  .sc-modal {
+    max-width: 96vw !important;
+    margin: 0 2vw !important;
+  }
+  .sc-modal-overlay {
+    padding: 10px !important;
+    align-items: center !important;
+  }
+}
+
+/* ── GENERAL TABLE FIX ── */
+@media (max-width: 600px) {
+  .sc-table-wrap,
+  .sc-items-table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .sc-listings-table,
+  .sc-items-table {
+    min-width: 400px;
+    font-size: 11px !important;
+  }
+  .sc-listings-table th,
+  .sc-listings-table td,
+  .sc-items-table th,
+  .sc-items-table td {
+    padding: 8px 6px !important;
+  }
+}
+
+/* ── SELLER PROFILE HEADER ── */
+@media (max-width: 600px) {
+  .seller-profile-header {
+    flex-wrap: wrap !important;
+    padding: 16px !important;
+    gap: 12px !important;
+  }
+  .seller-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  .seller-listings-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── CHECKOUT ── */
+@media (max-width: 600px) {
+  .sc-checkout-layout {
+    flex-direction: column !important;
+  }
+  .sc-checkout-form,
+  .sc-checkout-summary {
+    width: 100% !important;
+  }
+}
