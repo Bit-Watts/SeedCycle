@@ -3,7 +3,7 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'seedcycle-v1.1.0';
+const CACHE_NAME = 'seedcycle-v1.2.0';
 const OFFLINE_URL = '/public/offline.html';
 
 // Assets to cache on install
@@ -50,55 +50,59 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - network-first for PHP pages, cache-first for static assets
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') {
     return;
   }
-  
+
   // Skip WebSocket requests
   if (event.request.url.startsWith('ws://') || event.request.url.startsWith('wss://')) {
     return;
   }
-  
-  event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        // Return cached response if found
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        
-        // Otherwise fetch from network
-        return fetch(event.request)
-          .then((response) => {
-            // Don't cache non-successful responses
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
+
+  const url = event.request.url;
+  const isStaticAsset = url.match(/\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|woff|woff2)$/);
+  const isPhpPage     = url.match(/\.php/) || url.endsWith('/');
+
+  if (isPhpPage) {
+    // ── NETWORK-FIRST for PHP pages ──────────────────────────────────────
+    // Always fetch fresh data; only fall back to cache if offline
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Valid response — update cache for offline fallback
+          if (response && response.status === 200 && response.type === 'basic') {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => {
+          // Offline — serve cached version or offline page
+          return caches.match(event.request)
+            .then((cached) => cached || caches.match(OFFLINE_URL));
+        })
+    );
+  } else if (isStaticAsset) {
+    // ── CACHE-FIRST for static assets ────────────────────────────────────
+    // CSS, JS, images rarely change — serve from cache instantly
+    event.respondWith(
+      caches.match(event.request)
+        .then((cached) => {
+          if (cached) return cached;
+          return fetch(event.request).then((response) => {
+            if (response && response.status === 200) {
+              const clone = response.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
             }
-            
-            // Clone the response
-            const responseToCache = response.clone();
-            
-            // Cache CSS, JS, and image files
-            if (event.request.url.match(/\.(css|js|png|jpg|jpeg|gif|svg|webp)$/)) {
-              caches.open(CACHE_NAME)
-                .then((cache) => {
-                  cache.put(event.request, responseToCache);
-                });
-            }
-            
             return response;
-          })
-          .catch(() => {
-            // If both cache and network fail, show offline page
-            if (event.request.mode === 'navigate') {
-              return caches.match(OFFLINE_URL);
-            }
-          });
-      })
-  );
+          }).catch(() => caches.match(OFFLINE_URL));
+        })
+    );
+  }
+  // All other requests: let browser handle normally (no service worker intercept)
 });
 
 // Background sync for offline actions
