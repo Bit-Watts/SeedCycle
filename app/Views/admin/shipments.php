@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle Admin - Shipments</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 
 <nav class="sc-nav">
-  <div class="sc-logo">Seed<span>Cycle</span> <span style="font-size:12px; background:#FFC107; color:#333; padding:2px 8px; border-radius:4px; margin-left:8px; font-family:'Roboto',sans-serif; font-weight:600;">ADMIN</span></div>
+  <a href="dashboard.php" class="sc-logo">Seed<span>Cycle</span> <span style="font-size:12px; background:#FFC107; color:#333; padding:2px 8px; border-radius:4px; margin-left:8px; font-family:'Roboto',sans-serif; font-weight:600;">ADMIN</span></a>
   <div class="sc-nav-user">
     <span class="sc-nav-greeting">Admin 👋</span>
     <a href="../logout.php"><button class="sc-btn-nav">Logout</button></a>
@@ -25,11 +25,11 @@
       <p class="sc-sidebar-name">Admin Panel</p>
     </div>
     <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link">📊 Dashboard</a>
+      <a href="dashboard.php" class="sc-sidebar-link">📊 Dashboard</a>
       <a href="users.php" class="sc-sidebar-link">👥 Users</a>
       <a href="seeds.php" class="sc-sidebar-link">🌱 Seeds</a>
       <a href="listings.php" class="sc-sidebar-link">📋 Listings</a>
-      <a href="orders.php" class="sc-sidebar-link">🛍️ My Orders</a>
+      <a href="orders.php" class="sc-sidebar-link">🛍️ User Orders</a>
       <a href="shipments.php" class="sc-sidebar-link active">🚚 Shipments</a>
       <a href="reports.php" class="sc-sidebar-link">📈 Reports</a>
       <a href="../index.php" class="sc-sidebar-link" style="margin-top:12px; color:#888;">← User View</a>
@@ -42,60 +42,6 @@
       <p>Manage order shipments and tracking.</p>
     </div>
 
-    <?php if (!empty($message)): ?>
-      <div style="background:#e8f5e9; color:#2E7D32; padding:10px 16px; border-radius:8px; font-size:13px; border:1px solid #c8e6c9;"><?= htmlspecialchars($message) ?></div>
-    <?php endif; ?>
-    <?php if (!empty($error)): ?>
-      <div style="background:#ffebee; color:#c62828; padding:10px 16px; border-radius:8px; font-size:13px; border:1px solid #ffcdd2;"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
-
-    <!-- ADD SHIPMENT FORM -->
-    <?php if (!empty($unshippedOrders)): ?>
-    <div class="sc-admin-form">
-      <h3>➕ Add Shipment</h3>
-      <form method="POST" action="shipments.php">
-        <input type="hidden" name="action" value="add">
-        <div class="sc-form-row">
-          <div class="sc-form-group">
-            <label>Order *</label>
-            <select name="order_id" required>
-              <option value="">Select order</option>
-              <?php foreach ($unshippedOrders as $uo): ?>
-                <option value="<?= (int)$uo['id'] ?>">#<?= (int)$uo['id'] ?> — <?= htmlspecialchars($uo['first_name'] . ' ' . $uo['last_name']) ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          <div class="sc-form-group">
-            <label>Courier *</label>
-            <input type="text" name="courier" required placeholder="e.g. LBC, J&T, Ninja Van">
-          </div>
-        </div>
-        <div class="sc-form-row">
-          <div class="sc-form-group">
-            <label>Tracking Number *</label>
-            <input type="text" name="tracking_number" required placeholder="e.g. LBC123456789">
-          </div>
-          <div class="sc-form-group">
-            <label>Estimated Delivery</label>
-            <input type="date" name="estimated_delivery">
-          </div>
-        </div>
-        <div class="sc-form-group" style="max-width:200px;">
-          <label>Status</label>
-          <select name="status">
-            <option value="pending">Pending</option>
-            <option value="shipped">Shipped</option>
-            <option value="in_transit">In Transit</option>
-            <option value="out_for_delivery">Out for Delivery</option>
-            <option value="delivered">Delivered</option>
-          </select>
-        </div>
-        <button type="submit" class="sc-btn-submit">Add Shipment</button>
-      </form>
-    </div>
-    <?php endif; ?>
-
-    <!-- SHIPMENTS TABLE -->
     <div class="sc-section">
       <div class="sc-section-header">
         <h2>All Shipments</h2>
@@ -115,7 +61,6 @@
               <th style="padding:10px 12px; color:#2E7D32;">Tracking #</th>
               <th style="padding:10px 12px; color:#2E7D32;">Est. Delivery</th>
               <th style="padding:10px 12px; color:#2E7D32;">Status</th>
-              <th style="padding:10px 12px; color:#2E7D32;">Update</th>
             </tr>
           </thead>
           <tbody>
@@ -133,23 +78,6 @@
                   background:#e8f5e9; color:#2E7D32;">
                   <?= htmlspecialchars(ucwords(str_replace('_', ' ', $s['status'] ?? 'pending'))) ?>
                 </span>
-              </td>
-              <td style="padding:10px 12px;">
-                <form method="POST" action="shipments.php" style="display:flex; gap:6px; align-items:center;">
-                  <input type="hidden" name="action" value="update">
-                  <input type="hidden" name="shipment_id" value="<?= (int)$s['id'] ?>">
-                  <input type="hidden" name="courier" value="<?= htmlspecialchars($s['courier']) ?>">
-                  <input type="hidden" name="tracking_number" value="<?= htmlspecialchars($s['tracking_number']) ?>">
-                  <input type="hidden" name="estimated_delivery" value="<?= htmlspecialchars($s['estimated_delivery'] ?? '') ?>">
-                  <select name="status" style="padding:5px 8px; border:1.5px solid #c8e6c9; border-radius:6px; font-size:12px; font-family:'Roboto',sans-serif; color:#333; outline:none; background:#fff;">
-                    <?php foreach (['pending','shipped','in_transit','out_for_delivery','delivered'] as $st): ?>
-                      <option value="<?= $st ?>" <?= ($s['status'] ?? '') === $st ? 'selected' : '' ?>>
-                        <?= ucwords(str_replace('_', ' ', $st)) ?>
-                      </option>
-                    <?php endforeach; ?>
-                  </select>
-                  <button type="submit" style="background:#4CAF50; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer; font-family:'Roboto',sans-serif;">Save</button>
-                </form>
               </td>
             </tr>
             <?php endforeach; ?>

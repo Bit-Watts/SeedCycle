@@ -22,9 +22,14 @@ class Seed {
                     i.planting_start_month, i.planting_end_month, i.growing_days,
                     (SELECT image_url FROM seed_images WHERE inventory_id = i.id LIMIT 1) AS image_url,
                     IFNULL(ROUND(AVG(r.rating), 1), 0) AS avg_rating,
-                    COUNT(r.id) AS review_count
+                    COUNT(r.id) AS review_count,
+                    u.id AS seller_id,
+                    u.first_name AS seller_first_name,
+                    u.last_name AS seller_last_name
              FROM inventory i
              LEFT JOIN reviews r ON r.inventory_id = i.id
+             LEFT JOIN seed_listings sl ON sl.inventory_id = i.id AND sl.status = "approved"
+             LEFT JOIN users u ON u.id = sl.user_id
              WHERE i.is_active = 1 AND i.stock_quantity > 0
              GROUP BY i.id
              ORDER BY i.created_at DESC'
@@ -40,6 +45,7 @@ class Seed {
         $stmt = mysqli_prepare($this->conn,
             'SELECT i.id, i.name, i.category, i.description, i.price, i.stock_quantity,
                     i.planting_start_month, i.planting_end_month, i.growing_days,
+                    i.sunlight, i.watering,
                     (SELECT image_url FROM seed_images WHERE inventory_id = i.id LIMIT 1) AS image_url
              FROM inventory i
              WHERE i.id = ? AND i.is_active = 1 LIMIT 1'

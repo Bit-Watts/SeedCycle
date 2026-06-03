@@ -4,31 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle - Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/login.css">
 </head>
 <body>
 
 <nav class="sc-nav">
-  <div class="sc-logo">Seed<span>Cycle</span></div>
+  <a href="landing.php" class="sc-logo">Seed<span>Cycle</span></a>
   <?php if (isset($_SESSION['user_id'])): ?>
     <div class="sc-nav-user">
-      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?> 👋</span>
-      <a href="index.php"><button class="sc-btn-nav">Dashboard</button></a>
-      <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
+      <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($_SESSION['first_name'] ?? 'Grower') ?></span>
+      <a href="index.php" class="sc-btn-nav">Dashboard</a>
+      <a href="logout.php" class="sc-btn-nav">Logout</a>
     </div>
   <?php else: ?>
-    <a href="login.php"><button class="sc-btn-nav">Login</button></a>
+    <a href="signup.php" class="sc-btn-nav">Sign Up</a>
   <?php endif; ?>
 </nav>
 
-<div class="sc-page">
-  <div class="sc-login-card">
-    <h2>Welcome Back!</h2>
+<div class="sc-auth-page">
+  <div class="sc-auth-card sc-login-card">
+    <h2>Welcome Back 👋</h2>
     <p>Login to your SeedCycle account</p>
 
     <?php if (isset($error)): ?>
-      <div class="sc-error"><?= $error ?></div>
+      <div class="sc-error"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
     <form action="" method="POST">
@@ -40,7 +42,7 @@
         <label>Password</label>
         <input type="password" name="password" placeholder="••••••••" required>
       </div>
-      <a href="#" class="sc-forgot">Forgot password?</a>
+      <a href="forgot-password.php" class="sc-forgot">Forgot password?</a>
       <button type="submit" class="sc-btn-login">Login</button>
     </form>
 

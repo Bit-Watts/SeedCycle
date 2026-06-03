@@ -1,0 +1,196 @@
+/* =============================================================================
+   PAYMENT.CSS — Payment success and failed pages
+   Loads base.css first. Only payment result page styles here.
+============================================================================= */
+
+/* ── SHARED CONTAINER ── */
+.sc-payment-page {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.sc-payment-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  padding: 48px 40px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+/* ── ICON CIRCLE ── */
+.sc-payment-icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 38px;
+  color: #fff;
+}
+
+.sc-payment-icon-success {
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+  animation: scaleIn 0.45s ease;
+}
+
+.sc-payment-icon-failed {
+  background: linear-gradient(135deg, #ef5350, var(--color-error-text));
+  animation: shakeIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shakeIn {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-10px); }
+  75%       { transform: translateX(10px); }
+}
+
+/* ── TITLE ── */
+.sc-payment-title-success { font-size: 26px; color: var(--color-primary); margin-bottom: 10px; }
+.sc-payment-title-failed  { font-size: 26px; color: var(--color-error-text); margin-bottom: 10px; }
+
+.sc-payment-message {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+/* ── ORDER DETAILS BOX ── */
+.sc-payment-details {
+  background: var(--color-bg-page);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.sc-payment-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 14px;
+}
+
+.sc-payment-detail-row:last-child { border-bottom: none; }
+
+.sc-payment-detail-label { color: var(--color-text-muted); font-weight: 500; }
+.sc-payment-detail-value { font-weight: 600; color: var(--color-text); }
+.sc-payment-detail-value.amount {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  color: var(--color-primary);
+}
+.sc-payment-detail-value.failed-status { color: var(--color-error-text); }
+
+/* ── REFERENCE BOX ── */
+.sc-payment-reference {
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.sc-payment-reference-label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sc-payment-reference-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  word-break: break-all;
+}
+
+/* ── ERROR DETAILS BOX ── */
+.sc-payment-error-box {
+  background: var(--color-error-bg);
+  border: 1px solid #ffcdd2;
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.sc-payment-error-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-error-text);
+  margin-bottom: 6px;
+}
+
+.sc-payment-error-text {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ── ORDER ITEMS ── */
+.sc-payment-items { margin-bottom: 24px; text-align: left; }
+
+.sc-payment-items-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sc-payment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sc-payment-item:last-child { border-bottom: none; }
+
+.sc-payment-item-name { color: var(--color-text); font-weight: 500; }
+.sc-payment-item-qty  { color: var(--color-text-muted); font-size: 12px; margin-left: 6px; }
+.sc-payment-item-price { color: var(--color-primary); font-weight: 700; }
+
+/* ── ACTION BUTTONS ── */
+.sc-payment-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.sc-payment-help {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.sc-payment-help a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .sc-payment-page  { margin: 20px auto; }
+  .sc-payment-card  { padding: 32px 20px; }
+  .sc-payment-actions { flex-direction: column; }
+  .sc-payment-actions .sc-btn { width: 100%; justify-content: center; }
+}

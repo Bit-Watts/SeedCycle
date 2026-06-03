@@ -1,13 +1,367 @@
-/* ── ORDERS PAGE ── */
-/* Orders page uses dashboard.css layout (sidebar + main).
-   Page-specific styles are minimal as the table uses dashboard.css classes. */
+/* ── MY ORDERS PAGE ── */
 
-/* Status badge colors for orders */
-.sc-order-status-pending          { background: #fff8e1; color: #f57f17; }
-.sc-order-status-processing       { background: #e3f2fd; color: #1565c0; }
-.sc-order-status-confirmed        { background: #e3f2fd; color: #1565c0; }
-.sc-order-status-shipped          { background: #e8f5e9; color: #2E7D32; }
-.sc-order-status-in_transit       { background: #f3e5f5; color: #6a1b9a; }
-.sc-order-status-out_for_delivery { background: #fff3e0; color: #e65100; }
-.sc-order-status-delivered        { background: #e8f5e9; color: #1b5e20; }
-.sc-order-status-cancelled        { background: #ffebee; color: #c62828; }
+/* ═══════════════════════════════════════════════════════════════
+   ACCORDION LAYOUT
+   ═══════════════════════════════════════════════════════════════ */
+
+.sc-orders-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sc-order-accordion-item {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition) cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-xs);
+}
+
+.sc-order-accordion-item:hover {
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.12);
+  border-color: var(--color-border);
+}
+
+.sc-order-accordion-item.active {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.15);
+}
+
+.sc-order-cancelled {
+  opacity: 0.7;
+  border-color: #ffcdd2;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACCORDION HEADER (Clickable)
+   ═══════════════════════════════════════════════════════════════ */
+
+.sc-order-accordion-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  align-items: center;
+}
+
+.sc-order-accordion-header:hover {
+  background: #f5fbf0;
+}
+
+.sc-order-accordion-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sc-order-accordion-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.sc-order-accordion-id i {
+  font-size: 18px;
+}
+
+.sc-order-accordion-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #888;
+}
+
+.sc-order-accordion-center {
+  display: flex;
+  align-items: center;
+}
+
+.sc-order-accordion-seeds {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.sc-order-accordion-seeds i {
+  color: var(--color-primary-light);
+  font-size: 16px;
+}
+
+.sc-order-accordion-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sc-order-accordion-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.sc-order-accordion-total {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+  min-width: 100px;
+  text-align: right;
+}
+
+.sc-order-accordion-toggle {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5fbf0;
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+}
+
+.sc-order-accordion-toggle i {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACCORDION BODY (Collapsible)
+   ═══════════════════════════════════════════════════════════════ */
+
+.sc-order-accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--color-bg-light);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.sc-order-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.sc-order-detail-section {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.sc-order-detail-section h4 {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sc-order-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+  font-size: 13px;
+}
+
+.sc-order-detail-item:last-child {
+  border-bottom: none;
+}
+
+.sc-detail-label {
+  color: #888;
+  font-weight: 500;
+}
+
+.sc-detail-value {
+  color: #333;
+  font-weight: 600;
+  text-align: right;
+}
+
+.sc-detail-amount {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  color: var(--color-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTION BUTTONS
+   ═══════════════════════════════════════════════════════════════ */
+
+.sc-order-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px 20px;
+  background: var(--color-bg-card);
+  border-top: 1px solid var(--color-border-light);
+  justify-content: flex-end;
+}
+
+.sc-btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-lg);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  text-decoration: none;
+  transition: all var(--transition);
+  border: none;
+  cursor: pointer;
+}
+
+.sc-btn-track {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+  color: #ffffff;
+  box-shadow: var(--shadow-md);
+}
+
+.sc-btn-track:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.sc-btn-pay {
+  background: linear-gradient(135deg, #FBC02D 0%, #F9A825 100%);
+  color: #333;
+  box-shadow: var(--shadow-md);
+}
+
+.sc-btn-pay:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.sc-btn-remove {
+  background: linear-gradient(135deg, #ef5350 0%, #c62828 100%);
+  color: #ffffff;
+  box-shadow: var(--shadow-md);
+}
+
+.sc-btn-remove:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STATUS BADGES
+   ═══════════════════════════════════════════════════════════════ */
+
+.sc-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: var(--radius-2xl);
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.sc-status-pending          { background: var(--color-warning-bg); color: var(--color-warning-text); }
+.sc-status-packed           { background: #e3f2fd; color: #1565c0; }
+.sc-status-processing       { background: #e3f2fd; color: #1565c0; }
+.sc-status-confirmed        { background: #e3f2fd; color: #1565c0; }
+.sc-status-shipped          { background: var(--color-success-bg); color: var(--color-primary); }
+.sc-status-in_transit       { background: #f3e5f5; color: #6a1b9a; }
+.sc-status-out_for_delivery { background: #fff3e0; color: #e65100; }
+.sc-status-delivered        { background: var(--color-success-bg); color: var(--color-primary-dark); }
+.sc-status-cancelled        { background: var(--color-error-bg); color: var(--color-error-text); }
+
+/* Payment badges */
+.sc-payment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: var(--radius-2xl);
+  white-space: nowrap;
+}
+
+.sc-payment-paid    { background: var(--color-success-bg); color: var(--color-primary-dark); }
+.sc-payment-cod     { background: var(--color-warning-bg); color: var(--color-warning-text); }
+.sc-payment-pending { background: #e3f2fd; color: #1565c0; }
+.sc-payment-failed  { background: var(--color-error-bg); color: var(--color-error-text); }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 968px) {
+  .sc-order-accordion-header {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sc-order-accordion-right {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .sc-order-accordion-badges {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .sc-order-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .sc-order-accordion-header {
+    padding: 14px 16px;
+  }
+
+  .sc-order-accordion-id {
+    font-size: 14px;
+  }
+
+  .sc-order-accordion-seeds {
+    font-size: 13px;
+  }
+
+  .sc-order-accordion-total {
+    font-size: 16px;
+  }
+
+  .sc-order-details-grid {
+    padding: 16px;
+  }
+
+  .sc-order-actions {
+    flex-direction: column;
+    padding: 12px 16px;
+  }
+
+  .sc-btn-action {
+    width: 100%;
+    justify-content: center;
+  }
+}

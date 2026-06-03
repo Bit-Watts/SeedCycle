@@ -4,46 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SeedCycle - Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 <body>
-<nav class="sc-nav">
-  <a href="index.php" class="sc-logo">Seed<span>Cycle</span></a>
-  <div class="sc-nav-user">
-    <span class="sc-nav-greeting">Hi, <?= htmlspecialchars($user['first_name'] ?? 'Grower') ?> 👋</span>
-    <a href="cart.php" class="sc-nav-icon" title="Cart">🛒</a>
-    <a href="profile.php" class="sc-nav-icon" title="Profile">👤</a>
-    <a href="logout.php"><button class="sc-btn-nav">Logout</button></a>
-  </div>
-</nav>
+<?php require __DIR__ . '/includes/navbar.php'; ?>
 
 <div class="sc-dashboard">
 
-  <aside class="sc-sidebar">
-    <div class="sc-sidebar-avatar">
-      <div class="sc-avatar" style="overflow:hidden;">
-        <?php $pi = $user['profile_image'] ?? $_SESSION['profile_image'] ?? ''; ?>
-        <?php if (!empty($pi)): ?>
-          <img src="<?= htmlspecialchars($pi) ?>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-        <?php else: ?>
-          🌱
-        <?php endif; ?>
-      </div>
-      <p class="sc-sidebar-name"><?= htmlspecialchars($user['first_name'] ?? 'Grower') ?></p>
-      <p class="sc-sidebar-email"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-    </div>
-    <nav class="sc-sidebar-nav">
-      <a href="index.php" class="sc-sidebar-link active">📊 Overview</a>
-      <a href="my-seeds.php" class="sc-sidebar-link">🌾 My Seeds</a>
-      <a href="sell-seeds.php" class="sc-sidebar-link">➕ Sell Seeds</a>
-      <a href="seller-orders.php" class="sc-sidebar-link">📦 To Ship</a>
-      <a href="marketplace.php" class="sc-sidebar-link">🛒 Marketplace</a>
-      <a href="planting-guide.php" class="sc-sidebar-link">📅 Planting Guide</a>
-      <a href="orders.php" class="sc-sidebar-link">🛍️ My Orders</a>
-      <a href="settings.php" class="sc-sidebar-link">⚙️ Settings</a>
-    </nav>
-  </aside>
+  <?php $activePage = 'dashboard'; require __DIR__ . '/includes/sidebar.php'; ?>
 
   <main class="sc-main">
 
@@ -54,30 +25,30 @@
 
     <div class="sc-stats-grid">
       <div class="sc-stat-card">
-        <div class="sc-stat-icon">🌾</div>
+        <div class="sc-stat-icon"><i class="fa-solid fa-wheat-awn"></i></div>
         <div class="sc-stat-info">
           <span class="sc-stat-value"><?= (int)($listingsCount ?? 0) ?></span>
           <span class="sc-stat-label">Seeds Listed</span>
         </div>
       </div>
       <div class="sc-stat-card">
-        <div class="sc-stat-icon">🛒</div>
+        <div class="sc-stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
         <div class="sc-stat-info">
           <span class="sc-stat-value"><?= (int)($ordersCount ?? 0) ?></span>
           <span class="sc-stat-label">Orders Placed</span>
         </div>
       </div>
       <div class="sc-stat-card">
-        <div class="sc-stat-icon">📦</div>
+        <div class="sc-stat-icon"><i class="fa-solid fa-box"></i></div>
         <div class="sc-stat-info">
-          <span class="sc-stat-value">0</span>
+          <span class="sc-stat-value"><?= (int)($ordersReceivedCount ?? 0) ?></span>
           <span class="sc-stat-label">Orders Received</span>
         </div>
       </div>
       <div class="sc-stat-card">
-        <div class="sc-stat-icon">🔔</div>
+        <div class="sc-stat-icon"><i class="fa-solid fa-bell"></i></div>
         <div class="sc-stat-info">
-          <span class="sc-stat-value">0</span>
+          <span class="sc-stat-value"><?= (int)($notificationsCount ?? 0) ?></span>
           <span class="sc-stat-label">Notifications</span>
         </div>
       </div>
@@ -91,6 +62,7 @@
       <div class="sc-seed-grid">
         <?php if (!empty($recommendedSeeds)): ?>
           <?php foreach ($recommendedSeeds as $rs): ?>
+          <a href="seed-details.php?id=<?= (int)$rs['id'] ?>" class="sc-seed-card-link">
           <div class="sc-seed-card">
             <div class="sc-seed-emoji">
               <?php if (!empty($rs['image_url'])): ?>
@@ -103,10 +75,11 @@
             <div class="sc-seed-details">
               <p class="sc-seed-name"><?= htmlspecialchars($rs['name']) ?></p>
               <p class="sc-seed-type"><?= htmlspecialchars($rs['category'] ?? 'Seed') ?></p>
-              <p class="sc-seed-tip">📅 <?= htmlspecialchars($rs['month_range']) ?></p>
+              <p class="sc-seed-tip"><i class="fa-solid fa-calendar-days"></i> <?= htmlspecialchars($rs['month_range']) ?></p>
             </div>
             <span class="sc-seed-price">₱<?= number_format($rs['price'], 2) ?></span>
           </div>
+          </a>
           <?php endforeach; ?>
         <?php else: ?>
           <p style="color:#888; font-size:13px;">No seeds available right now. <a href="marketplace.php" style="color:#4CAF50;">Browse marketplace →</a></p>
@@ -149,31 +122,7 @@
   </main>
 </div>
 
-<footer class="sc-footer">
-  <p>© 2026 SeedCycle. All rights reserved.</p>
-</footer>
-
-<!-- LOGOUT CONFIRMATION MODAL -->
-<div class="sc-logout-overlay" id="logoutOverlay">
-  <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
-    <h3>Leaving so soon?</h3>
-    <p>Are you sure you want to logout?</p>
-    <div class="sc-logout-actions">
-      <button class="sc-logout-confirm" onclick="window.location.href='logout.php'">Yes, Logout</button>
-      <button class="sc-logout-cancel" onclick="document.getElementById('logoutOverlay').classList.remove('active')">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href="logout.php"]').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('logoutOverlay').classList.add('active');
-      });
-    });
-  });
-</script>
+<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/includes/logout-modal.php'; ?>
 </body>
 </html>

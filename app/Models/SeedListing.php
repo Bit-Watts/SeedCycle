@@ -24,7 +24,6 @@ class SeedListing {
         int    $stockQuantity = 1,
         string $imageUrl = ''
     ): int|false {
-        // Insert into inventory (is_active = 0 until approved)
         $stmt = mysqli_prepare($this->conn,
             'INSERT INTO inventory (name, category, description, price, stock_quantity,
              planting_start_month, planting_end_month, growing_days, is_active)
@@ -41,7 +40,6 @@ class SeedListing {
         $inventoryId = (int)mysqli_insert_id($this->conn);
         mysqli_stmt_close($stmt);
 
-        // Insert image if provided
         if ($imageUrl) {
             $stmt2 = mysqli_prepare($this->conn,
                 'INSERT INTO seed_images (inventory_id, image_url) VALUES (?, ?)'
@@ -51,7 +49,6 @@ class SeedListing {
             mysqli_stmt_close($stmt2);
         }
 
-        // Insert seed_listing (pending)
         $stmt3 = mysqli_prepare($this->conn,
             'INSERT INTO seed_listings (user_id, inventory_id, status) VALUES (?, ?, "pending")'
         );
@@ -101,8 +98,136 @@ class SeedListing {
         return $listings;
     }
 
+    public function removeListing(int $inventoryId, int $userId): bool {
+        // Verify ownership
+        $stmt = mysqli_prepare($this->conn,
+            'SELECT sl.id, sl.status FROM seed_listings sl
+             WHERE sl.inventory_id = ? AND sl.user_id = ? LIMIT 1'
+        );
+        mysqli_stmt_bind_param($stmt, 'ii', $inventoryId, $userId);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        if (!$row) return false;
+
+        if ($row['status'] === 'approved') {
+            // Delist: hide from marketplace, keep record for existing orders
+            $stmt2 = mysqli_prepare($this->conn,
+                'UPDATE inventory SET is_active = 0, stock_quantity = 0 WHERE id = ?'
+            );
+            mysqli_stmt_bind_param($stmt2, 'i', $inventoryId);
+            mysqli_stmt_execute($stmt2);
+            mysqli_stmt_close($stmt2);
+
+            $stmt3 = mysqli_prepare($this->conn,
+                'UPDATE seed_listings SET status = "rejected" WHERE inventory_id = ? AND user_id = ?'
+            );
+            mysqli_stmt_bind_param($stmt3, 'ii', $inventoryId, $userId);
+            $ok = mysqli_stmt_execute($stmt3);
+            mysqli_stmt_close($stmt3);
+            return $ok;
+        } else {
+            // Pending or rejected: fully delete
+            $stmt2 = mysqli_prepare($this->conn,
+                'DELETE FROM seed_images WHERE inventory_id = ?'
+            );
+            mysqli_stmt_bind_param($stmt2, 'i', $inventoryId);
+            mysqli_stmt_execute($stmt2);
+            mysqli_stmt_close($stmt2);
+
+            $stmt3 = mysqli_prepare($this->conn,
+                'DELETE FROM seed_listings WHERE inventory_id = ? AND user_id = ?'
+            );
+            mysqli_stmt_bind_param($stmt3, 'ii', $inventoryId, $userId);
+            mysqli_stmt_execute($stmt3);
+            mysqli_stmt_close($stmt3);
+
+            $stmt4 = mysqli_prepare($this->conn,
+                'DELETE FROM inventory WHERE id = ?'
+            );
+            mysqli_stmt_bind_param($stmt4, 'i', $inventoryId);
+            $ok = mysqli_stmt_execute($stmt4);
+            mysqli_stmt_close($stmt4);
+            return $ok;
+        }
+    }
+
+    public function updateListing(int $inventoryId, int $userId, string $name, string $category,
+                                  float $price, string $description, ?int $startMonth,
+                                  ?int $endMonth, ?int $growingDays, int $stockQty): bool {
+        // Verify ownership
+        $stmt = mysqli_prepare($this->conn,
+            'SELECT sl.id FROM seed_listings sl
+             WHERE sl.inventory_id = ? AND sl.user_id = ? LIMIT 1'
+        );
+        mysqli_stmt_bind_param($stmt, 'ii', $inventoryId, $userId);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+        $owns = mysqli_stmt_num_rows($stmt) > 0;
+        mysqli_stmt_close($stmt);
+        if (!$owns) return false;
+
+        $stmt2 = mysqli_prepare($this->conn,
+            'UPDATE inventory SET name=?, category=?, description=?, price=?,
+             stock_quantity=?, planting_start_month=?, planting_end_month=?, growing_days=?
+             WHERE id=?'
+        );
+        mysqli_stmt_bind_param($stmt2, 'sssdiiiii',
+            $name, $category, $description, $price,
+            $stockQty, $startMonth, $endMonth, $growingDays, $inventoryId
+        );
+        $ok = mysqli_stmt_execute($stmt2);
+        mysqli_stmt_close($stmt2);
+        return $ok;
+    }
+
+    public function updateImage(int $inventoryId, int $userId, string $imageUrl): bool {
+        // Verify ownership
+        $stmt = mysqli_prepare($this->conn,
+            'SELECT sl.id FROM seed_listings sl
+             WHERE sl.inventory_id = ? AND sl.user_id = ? LIMIT 1'
+        );
+        mysqli_stmt_bind_param($stmt, 'ii', $inventoryId, $userId);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+        $owns = mysqli_stmt_num_rows($stmt) > 0;
+        mysqli_stmt_close($stmt);
+        if (!$owns) return false;
+
+        // Delete old image record then insert new
+        $stmt2 = mysqli_prepare($this->conn, 'DELETE FROM seed_images WHERE inventory_id = ?');
+        mysqli_stmt_bind_param($stmt2, 'i', $inventoryId);
+        mysqli_stmt_execute($stmt2);
+        mysqli_stmt_close($stmt2);
+
+        $stmt3 = mysqli_prepare($this->conn,
+            'INSERT INTO seed_images (inventory_id, image_url) VALUES (?, ?)'
+        );
+        mysqli_stmt_bind_param($stmt3, 'is', $inventoryId, $imageUrl);
+        $ok = mysqli_stmt_execute($stmt3);
+        mysqli_stmt_close($stmt3);
+        return $ok;
+    }
+
+    public function getByInventoryId(int $inventoryId, int $userId): ?array {
+        $stmt = mysqli_prepare($this->conn,
+            'SELECT sl.id, sl.status, i.id AS inventory_id, i.name AS seed_name,
+                    i.category, i.price, i.description, i.stock_quantity,
+                    i.planting_start_month, i.planting_end_month, i.growing_days,
+                    (SELECT image_url FROM seed_images WHERE inventory_id = i.id LIMIT 1) AS image_url
+             FROM seed_listings sl
+             JOIN inventory i ON i.id = sl.inventory_id
+             WHERE sl.inventory_id = ? AND sl.user_id = ? LIMIT 1'
+        );
+        mysqli_stmt_bind_param($stmt, 'ii', $inventoryId, $userId);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+        return $row ?: null;
+    }
+
     public function addStock(int $inventoryId, int $userId, int $qty): bool {
-        // Verify this inventory item belongs to the user via seed_listings
         $stmt = mysqli_prepare($this->conn,
             'SELECT sl.id FROM seed_listings sl
              WHERE sl.inventory_id = ? AND sl.user_id = ? AND sl.status = "approved" LIMIT 1'
@@ -143,12 +268,7 @@ class SeedListing {
         return $listings;
     }
 
-    /**
-     * Approve: activate the inventory item so it shows on marketplace.
-     * Reject: soft-delete the inventory item.
-     */
     public function updateStatus(int $listingId, string $status): bool {
-        // Get inventory_id first
         $stmt2 = mysqli_prepare($this->conn,
             'SELECT inventory_id FROM seed_listings WHERE id = ? LIMIT 1'
         );
@@ -160,7 +280,6 @@ class SeedListing {
         if (!$row) return false;
         $inventoryId = (int)$row['inventory_id'];
 
-        // Update listing status
         $stmt = mysqli_prepare($this->conn,
             'UPDATE seed_listings SET status = ? WHERE id = ?'
         );
@@ -168,8 +287,6 @@ class SeedListing {
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
-        // Activate or deactivate inventory
-        // On approve: set is_active=1 and ensure stock_quantity >= 1
         if ($status === 'approved') {
             $stmt3 = mysqli_prepare($this->conn,
                 'UPDATE inventory SET is_active = 1,

@@ -21,6 +21,12 @@ class DashboardController {
             header('Location: login.php');
             exit;
         }
+        
+        // Redirect admin users to admin panel
+        if (($_SESSION['role'] ?? 'user') === 'admin') {
+            header('Location: admin/dashboard.php');
+            exit;
+        }
     }
 
     public function overview(): void {
@@ -46,6 +52,27 @@ class DashboardController {
         $listingsCount = (int)(mysqli_fetch_assoc(mysqli_stmt_get_result($stmt2))['cnt'] ?? 0);
         mysqli_stmt_close($stmt2);
 
+        // Real stat: orders received as seller (orders containing user's approved seeds)
+        $stmt3 = mysqli_prepare($conn,
+            'SELECT COUNT(DISTINCT o.id) AS cnt
+             FROM orders o
+             JOIN order_items oi ON oi.order_id = o.id
+             JOIN seed_listings sl ON sl.inventory_id = oi.inventory_id
+             WHERE sl.user_id = ? AND sl.status = "approved"'
+        );
+        mysqli_stmt_bind_param($stmt3, 'i', $userId);
+        mysqli_stmt_execute($stmt3);
+        $ordersReceivedCount = (int)(mysqli_fetch_assoc(mysqli_stmt_get_result($stmt3))['cnt'] ?? 0);
+        mysqli_stmt_close($stmt3);
+
+        // Real stat: unread notifications count
+        $stmt4 = mysqli_prepare($conn,
+            'SELECT COUNT(*) AS cnt FROM order_notifications WHERE user_id = ? AND is_read = 0'
+        );
+        mysqli_stmt_bind_param($stmt4, 'i', $userId);
+        mysqli_stmt_execute($stmt4);
+        $notificationsCount = (int)(mysqli_fetch_assoc(mysqli_stmt_get_result($stmt4))['cnt'] ?? 0);
+        mysqli_stmt_close($stmt4);
         require_once __DIR__ . '/../Models/Seed.php';
 
         // Recommended seeds: up to 4 active, in-stock seeds
@@ -94,6 +121,8 @@ class DashboardController {
 
     public function profile(): void {
         $this->requireAuth();
+        global $conn;
+
         $row = $this->userModel->findById($_SESSION['user_id']);
         if (!$row) { $this->sessionExpired(); }
 
@@ -104,13 +133,31 @@ class DashboardController {
             'email'         => $row['email'],
             'phone_number'  => $row['phone_number'] ?? '',
             'address'       => $row['address']      ?? '',
+            'profile_image' => $row['profile_image'] ?? '',
             'joined'        => date('F Y', strtotime($row['created_at'])),
         ];
 
-        $orders   = $this->orderModel->getByUser($_SESSION['user_id']);
-        // profile view expects $purchased and $listings
-        $purchased = $orders;
-        $listings  = []; // inventory is not user-owned
+        // Purchased orders
+        $purchased = $this->orderModel->getByUser($_SESSION['user_id']);
+
+        // Seed listings by this user
+        $stmt = mysqli_prepare($conn,
+            'SELECT i.id, i.name, i.category, i.price, i.stock_quantity, i.is_active,
+                    sl.status AS listing_status, sl.created_at AS listed_at,
+                    (SELECT image_url FROM seed_images WHERE inventory_id = i.id LIMIT 1) AS image_url
+             FROM seed_listings sl
+             JOIN inventory i ON i.id = sl.inventory_id
+             WHERE sl.user_id = ?
+             ORDER BY sl.created_at DESC'
+        );
+        mysqli_stmt_bind_param($stmt, 'i', $_SESSION['user_id']);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $myListings = [];
+        while ($r = mysqli_fetch_assoc($result)) {
+            $myListings[] = $r;
+        }
+        mysqli_stmt_close($stmt);
 
         require __DIR__ . '/../Views/profile.php';
     }

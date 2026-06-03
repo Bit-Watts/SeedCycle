@@ -1,7 +1,7 @@
 <!-- LOGOUT CONFIRMATION MODAL -->
 <div class="sc-logout-overlay" id="logoutOverlay">
   <div class="sc-logout-modal">
-    <div class="sc-logout-icon">👋</div>
+    <div class="sc-logout-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
     <h3>Leaving so soon?</h3>
     <p>Are you sure you want to logout?</p>
     <div class="sc-logout-actions">

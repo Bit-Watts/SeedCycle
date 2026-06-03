@@ -12,7 +12,8 @@ class User {
 
     public function findByEmail(string $email): ?array {
         return DB::fetch($this->conn,
-            'SELECT id, first_name, last_name, username, email, password_hash, role, is_active, profile_image
+            'SELECT id, first_name, last_name, username, email, password_hash, role, is_active,
+                    profile_image, totp_enabled, totp_secret
              FROM users WHERE email = ? LIMIT 1',
             's', [$email]
         );
